@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reading Room | MetaVoxa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root { --library-bg: #1a1512; --library-dark: #0f0c0a; --library-accent: #2d241e; --leather: #8b4513; --gold: #c9a961; --gold-dim: #9a7b3d; --parchment: #e8dcc8; --parchment-dim: #b8a890; --green-deep: #1e3328; --burgundy-deep: #3d1a25; --navy-deep: #1a2332; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Cormorant Garamond', serif; background: var(--library-bg); color: var(--parchment); min-height: 100vh; background-image: radial-gradient(ellipse at top, rgba(201, 169, 97, 0.1) 0%, transparent 50%), linear-gradient(to bottom, var(--library-bg) 0%, var(--library-dark) 100%); }
+        .nav-bar { background: var(--library-dark); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(201, 169, 97, 0.2); }
+        .nav-left { display: flex; align-items: center; gap: 2rem; }
+        .home-link { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--gold); text-decoration: none; letter-spacing: 0.1em; }
+        .room-nav { display: flex; gap: 1.5rem; }
+        .room-link { color: var(--parchment-dim); text-decoration: none; font-size: 0.85rem; font-family: 'Inter', sans-serif; letter-spacing: 0.05em; transition: color 0.3s ease; }
+        .room-link:hover, .room-link.active { color: var(--gold); }
+        .room-link.active { border-bottom: 1px solid var(--gold); }
+        .external-nav { display: flex; gap: 1rem; }
+        .external-link { color: var(--gold-dim); text-decoration: none; font-size: 0.75rem; font-family: 'Inter', sans-serif; opacity: 0.6; transition: opacity 0.3s ease; }
+        .external-link:hover { opacity: 1; }
+        .library-header { text-align: center; padding: 4rem 2rem 3rem; position: relative; }
+        .library-header::before { content: '❦'; position: absolute; top: 2rem; left: 50%; transform: translateX(-50%); color: var(--gold-dim); font-size: 1.5rem; opacity: 0.5; }
+        .library-title { font-family: 'Playfair Display', serif; font-size: 3rem; color: var(--gold); margin-bottom: 1rem; letter-spacing: 0.1em; font-weight: 500; }
+        .library-subtitle { font-size: 1.1rem; color: var(--parchment-dim); font-style: italic; letter-spacing: 0.05em; }
+        .alcoves-container { max-width: 1200px; margin: 0 auto; padding: 2rem; display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; }
+        .alcove { background: linear-gradient(135deg, var(--library-accent) 0%, var(--library-bg) 100%); border: 1px solid rgba(201, 169, 97, 0.2); border-radius: 4px; padding: 2.5rem; position: relative; overflow: hidden; transition: all 0.4s ease; cursor: pointer; }
+        .alcove::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--gold); transform: scaleX(0); transition: transform 0.4s ease; }
+        .alcove:hover::before { transform: scaleX(1); }
+        .alcove:hover { border-color: var(--gold-dim); transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+        .alcove.healthcare { border-left: 4px solid var(--burgundy-deep); }
+        .alcove.neurodivergence { border-left: 4px solid var(--green-deep); }
+        .alcove.material { border-left: 4px solid var(--leather); }
+        .alcove.diplomatic { border-left: 4px solid var(--navy-deep); }
+        .alcove-icon { font-size: 2rem; margin-bottom: 1rem; opacity: 0.8; }
+        .alcove-name { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--gold); margin-bottom: 0.75rem; letter-spacing: 0.05em; }
+        .alcove-desc { font-size: 1rem; color: var(--parchment-dim); line-height: 1.7; margin-bottom: 1.5rem; font-style: italic; }
+        .alcove-collection { border-top: 1px solid rgba(201, 169, 97, 0.2); padding-top: 1rem; }
+        .collection-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--gold-dim); margin-bottom: 0.75rem; font-family: 'Inter', sans-serif; }
+        .book-list { list-style: none; }
+        .book-item { padding: 0.5rem 0; border-bottom: 1px solid rgba(201, 169, 97, 0.1); font-size: 0.95rem; color: var(--parchment); transition: color 0.3s ease; display: flex; justify-content: space-between; align-items: center; }
+        .book-item:hover { color: var(--gold); }
+        .book-author { font-size: 0.8rem; color: var(--parchment-dim); font-style: italic; }
+        .recommend-btn { display: inline-block; margin-top: 1rem; padding: 0.5rem 1rem; background: transparent; border: 1px solid var(--gold-dim); color: var(--gold); text-decoration: none; font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; transition: all 0.3s ease; font-family: 'Inter', sans-serif; }
+        .recommend-btn:hover { background: var(--gold); color: var(--library-dark); }
+        .reading-nook { max-width: 800px; margin: 4rem auto; padding: 3rem; background: var(--library-accent); border: 1px solid rgba(201, 169, 97, 0.3); text-align: center; position: relative; }
+        .reading-nook::before, .reading-nook::after { content: '❧'; position: absolute; color: var(--gold-dim); font-size: 1.2rem; }
+        .reading-nook::before { top: 1rem; left: 1rem; }
+        .reading-nook::after { bottom: 1rem; right: 1rem; }
+        .nook-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--gold); margin-bottom: 1rem; }
+        .nook-text { font-size: 1.1rem; color: var(--parchment-dim); line-height: 1.7; margin-bottom: 1.5rem; font-style: italic; }
+        @media (max-width: 900px) { .alcoves-container { grid-template-columns: 1fr; padding: 1rem; } .nav-bar { flex-direction: column; gap: 1rem; } .library-title { font-size: 2rem; } }
+    </style>
+</head>
+<body>
+    <nav class="nav-bar">
+        <div class="nav-left">
+            <a href="index.html" class="home-link">MetaVoxa</a>
+            <div class="room-nav">
+                <a href="pattern-thoughts.html" class="room-link">Pattern Thoughts</a>
+                <a href="reading-room.html" class="room-link active">Reading Room</a>
+                <a href="star-month.html" class="room-link">Star of the Month</a>
+            </div>
+        </div>
+        <div class="external-nav">
+            <a href="https://metavoxa.substack.com" class="external-link" target="_blank">Substack ↗</a>
+            <a href="https://instagram.com/kwissbae" class="external-link" target="_blank">Instagram ↗</a>
+        </div>
+    </nav>
+    <header class="library-header">
+        <h1 class="library-title">The Reading Room</h1>
+        <p class="library-subtitle">Four alcoves. Four ways of knowing. Curated over time.</p>
+    </header>
+    <main class="alcoves-container">
+        <article class="alcove healthcare">
+            <div class="alcove-icon">🩺</div>
+            <h2 class="alcove-name">The Medical Alcove</h2>
+            <p class="alcove-desc">Clinical insights, systemic observations, and the poetry of medicine. The physician's lens on healing, bureaucracy, and human resilience.</p>
+            <div class="alcove-collection">
+                <div class="collection-label">Curated Selection</div>
+                <ul class="book-list">
+                    <li class="book-item"><span>The Emperor of All Maladies</span><span class="book-author">Siddhartha Mukherjee</span></li>
+                    <li class="book-item"><span>Being Mortal</span><span class="book-author">Atul Gawande</span></li>
+                    <li class="book-item"><span>The Body in Pain</span><span class="book-author">Elaine Scarry</span></li>
+                </ul>
+                <a href="#" class="recommend-btn" onclick="alert('Google Form coming soon')">Recommend a Book</a>
+            </div>
+        </article>
+        <article class="alcove neurodivergence">
+            <div class="alcove-icon">🧠</div>
+            <h2 class="alcove-name">The Cognitive Alcove</h2>
+            <p class="alcove-desc">AuDHD patterns, cognitive architectures, and different ways of knowing. The brain as ecosystem, not machine.</p>
+            <div class="alcove-collection">
+                <div class="collection-label">Curated Selection</div>
+                <ul class="book-list">
+                    <li class="book-item"><span>NeuroTribes</span><span class="book-author">Steve Silberman</span></li>
+                    <li class="book-item"><span>Divergent Mind</span><span class="book-author">Jenara Nerenberg</span></li>
+                    <li class="book-item"><span>Unmasking Autism</span><span class="book-author">Devon Price</span></li>
+                </ul>
+                <a href="#" class="recommend-btn" onclick="alert('Google Form coming soon')">Recommend a Book</a>
+            </div>
+        </article>
+        <article class="alcove material">
+            <div class="alcove-icon">👗</div>
+            <h2 class="alcove-name">The Material Alcove</h2>
+            <p class="alcove-desc">Fashion as language, objects as meaning, the curation of self. The philosophy of what we wear and why.</p>
+            <div class="alcove-collection">
+                <div class="collection-label">Curated Selection</div>
+                <ul class="book-list">
+                    <li class="book-item"><span>The Language of Clothes</span><span class="book-author">Alison Lurie</span></li>
+                    <li class="book-item"><span>Dress Codes</span><span class="book-author">Richard Thompson Ford</span></li>
+                    <li class="book-item"><span>The Substance of Style</span><span class="book-author">Virginia Postrel</span></li>
+                </ul>
+                <a href="#" class="recommend-btn" onclick="alert('Google Form coming soon')">Recommend a Book</a>
+            </div>
+        </article>
+        <article class="alcove diplomatic">
+            <div class="alcove-icon">📜</div>
+            <h2 class="alcove-name">The Diplomatic Alcove</h2>
+            <p class="alcove-desc">Systems thinking, power dynamics, and the architecture of change. The invisible structures that shape visible outcomes.</p>
+            <div class="alcove-collection">
+                <div class="collection-label">Curated Selection</div>
+                <ul class="book-list">
+                    <li class="book-item"><span>Thinking in Systems</span><span class="book-author">Donella Meadows</span></li>
+                    <li class="book-item"><span>The Art of Gathering</span><span class="book-author">Priya Parker</span></li>
+                    <li class="book-item"><span>Nonviolent Communication</span><span class="book-author">Marshall Rosenberg</span></li>
+                </ul>
+                <a href="#" class="recommend-btn" onclick="alert('Google Form coming soon')">Recommend a Book</a>
+            </div>
+        </article>
+    </main>
+    <section class="reading-nook">
+        <h3 class="nook-title">A Note on Curation</h3>
+        <p class="nook-text">"The best rooms have something to say about the people who live in them. These alcoves are not exhaustive—they are invitations. Each recommendation comes from someone who found themselves changed by the reading."</p>
+        <a href="#" class="recommend-btn" onclick="alert('Google Form coming soon')">Submit a Recommendation</a>
+    </section>
+</body>
+</html>
