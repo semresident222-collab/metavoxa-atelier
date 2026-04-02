@@ -3,88 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Lobby | MetaVoxa</title>
+    <title>Pattern Thoughts | The Study</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        :root { --parchment: #F5F1E8; --parchment-dark: #E8E0D0; --terracotta: #C65D3B; --burgundy: #4A1C2C; --burgundy-light: #6B2D42; --gold: #D4A574; --gold-dark: #B8935F; --ink: #2C2416; }
+        :root { --parchment: #F5F1E8; --parchment-dark: #E8E0D0; --terracotta: #C65D3B; --burgundy: #4A1C2C; --burgundy-light: #6B2D42; --gold: #D4A574; --gold-dark: #B8935F; --ink: #2C2416; --ink-light: #5C4D3C; --shadow: rgba(74, 28, 44, 0.15); }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: var(--parchment); color: var(--ink); min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; }
-        .entrance-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; display: flex; perspective: 2000px; pointer-events: none; }
-        .door { width: 50%; height: 100%; background: linear-gradient(135deg, var(--burgundy) 0%, var(--burgundy-light) 100%); position: relative; transform-style: preserve-3d; transition: transform 2s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: inset 0 0 100px rgba(0,0,0,0.5); }
-        .door-left { transform-origin: left center; border-right: 3px solid var(--gold-dark); }
-        .door-right { transform-origin: right center; border-left: 3px solid var(--gold-dark); }
-        .door-panel { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60%; height: 70%; border: 2px solid var(--gold); background: rgba(212, 165, 116, 0.1); display: flex; align-items: center; justify-content: center; }
-        .door-knob { position: absolute; top: 50%; width: 24px; height: 24px; background: radial-gradient(circle at 30% 30%, var(--gold), var(--gold-dark)); border-radius: 50%; box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
-        .door-left .door-knob { right: 20px; }
-        .door-right .door-knob { left: 20px; }
-        .door-text { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--gold); letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.8; text-align: center; }
-        .entrance-overlay.open .door-left { transform: rotateY(-105deg); }
-        .entrance-overlay.open .door-right { transform: rotateY(105deg); }
-        .entrance-overlay.fade-out { opacity: 0; transition: opacity 1s ease; }
-        .lobby-container { opacity: 0; transition: opacity 1s ease; max-width: 1200px; width: 100%; text-align: center; }
-        .lobby-container.visible { opacity: 1; }
-        .lobby-header { margin-bottom: 4rem; }
-        .lobby-title { font-family: 'Playfair Display', serif; font-size: 3.5rem; color: var(--burgundy); margin-bottom: 1rem; letter-spacing: 0.05em; }
-        .lobby-subtitle { font-size: 1rem; color: #5C4D3C; letter-spacing: 0.2em; text-transform: uppercase; max-width: 600px; margin: 0 auto; line-height: 1.8; }
-        .floor-plan { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: 3rem; }
-        .room-door { background: white; border-radius: 12px; padding: 3rem 2rem; border: 2px solid var(--parchment-dark); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; position: relative; overflow: hidden; text-decoration: none; color: inherit; display: flex; flex-direction: column; align-items: center; }
-        .room-door::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, var(--burgundy) 0%, var(--burgundy-light) 100%); opacity: 0; transition: opacity 0.4s ease; z-index: 0; }
-        .room-door:hover::before { opacity: 1; }
-        .room-door:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(74, 28, 44, 0.2); border-color: var(--burgundy); }
-        .room-door:hover .room-icon, .room-door:hover .room-name, .room-door:hover .room-desc { color: var(--gold); position: relative; z-index: 1; }
-        .room-icon { font-size: 3rem; margin-bottom: 1.5rem; transition: color 0.4s ease; }
-        .room-name { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--burgundy); margin-bottom: 1rem; transition: color 0.4s ease; position: relative; z-index: 1; }
-        .room-desc { font-size: 0.85rem; color: #5C4D3C; line-height: 1.6; transition: color 0.4s ease; position: relative; z-index: 1; }
-        .external-rooms { display: flex; justify-content: center; gap: 2rem; margin-top: 3rem; padding-top: 3rem; border-top: 1px solid var(--parchment-dark); }
-        .external-link { color: var(--terracotta); text-decoration: none; font-size: 0.9rem; letter-spacing: 0.1em; text-transform: uppercase; transition: color 0.3s ease; display: flex; align-items: center; gap: 0.5rem; }
-        .external-link:hover { color: #A84A2D; }
-        @media (max-width: 900px) { .floor-plan { grid-template-columns: 1fr; } .lobby-title { font-size: 2.5rem; } .external-rooms { flex-direction: column; align-items: center; } }
+        body { font-family: 'Inter', sans-serif; background: var(--parchment); color: var(--ink); min-height: 100vh; }
+        .nav-bar { background: var(--burgundy); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        .nav-left { display: flex; align-items: center; gap: 2rem; }
+        .home-link { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--gold); text-decoration: none; letter-spacing: 0.1em; }
+        .room-nav { display: flex; gap: 1.5rem; }
+        .room-link { color: var(--parchment); text-decoration: none; font-size: 0.85rem; opacity: 0.7; transition: opacity 0.3s ease; letter-spacing: 0.05em; }
+        .room-link:hover, .room-link.active { opacity: 1; color: var(--gold); }
+        .room-link.active { border-bottom: 1px solid var(--gold); }
+        .external-nav { display: flex; gap: 1rem; }
+        .external-link { color: var(--gold); text-decoration: none; font-size: 0.75rem; opacity: 0.6; transition: opacity 0.3s ease; }
+        .external-link:hover { opacity: 1; }
+        .room-content { max-width: 900px; margin: 0 auto; padding: 3rem 2rem; }
+        .room-header { text-align: center; margin-bottom: 3rem; }
+        .room-title { font-family: 'Playfair Display', serif; font-size: 2.5rem; color: var(--burgundy); margin-bottom: 0.5rem; }
+        .room-subtitle { font-size: 0.85rem; color: var(--ink-light); letter-spacing: 0.15em; text-transform: uppercase; }
+        .calendar-container { perspective: 1500px; margin-bottom: 3rem; }
+        .flip-card { background: white; border-radius: 12px; box-shadow: 0 20px 60px var(--shadow), 0 0 0 1px rgba(212, 165, 116, 0.3); transform-style: preserve-3d; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+        .flip-card.flipping { animation: cardFlip 0.6s ease-in-out; }
+        @keyframes cardFlip { 0% { transform: rotateY(0deg); } 50% { transform: rotateY(-15deg) scale(0.98); } 100% { transform: rotateY(0deg); } }
+        .card-header { background: linear-gradient(135deg, var(--burgundy) 0%, var(--burgundy-light) 100%); color: var(--gold); padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; border-radius: 12px 12px 0 0; }
+        .day-number { font-family: 'Playfair Display', serif; font-size: 3.5rem; font-weight: 700; letter-spacing: -0.05em; line-height: 1; }
+        .day-meta { text-align: right; }
+        .day-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.2em; opacity: 0.8; margin-bottom: 0.5rem; }
+        .debate-status { font-size: 0.75rem; padding: 0.35rem 0.75rem; background: rgba(212, 165, 116, 0.2); border-radius: 20px; display: inline-block; }
+        .debate-status.closed { background: rgba(198, 93, 59, 0.3); color: var(--terracotta); }
+        .card-body { padding: 2.5rem; }
+        .thought-title { font-family: 'Playfair Display', serif; font-size: 1.9rem; color: var(--burgundy); margin-bottom: 1.5rem; line-height: 1.3; font-weight: 600; }
+        .thought-content { font-size: 1.1rem; line-height: 1.9; color: var(--ink); margin-bottom: 2rem; }
+        .deeper-layer { background: linear-gradient(135deg, var(--parchment-dark) 0%, var(--parchment) 100%); padding: 1.5rem; border-left: 4px solid var(--terracotta); margin-top: 2rem; border-radius: 0 8px 8px 0; }
+        .deeper-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--terracotta); margin-bottom: 0.75rem; font-weight: 600; }
+        .deeper-content { font-size: 1rem; line-height: 1.7; color: var(--ink-light); font-style: italic; }
+        .card-controls { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 2rem; background: var(--parchment-dark); border-radius: 0 0 12px 12px; border-top: 1px solid rgba(212, 165, 116, 0.3); }
+        .nav-btn { background: var(--burgundy); color: var(--gold); border: none; padding: 0.75rem 1.5rem; font-family: 'Inter', sans-serif; font-size: 0.85rem; cursor: pointer; border-radius: 6px; transition: all 0.3s ease; font-weight: 500; }
+        .nav-btn:hover:not(:disabled) { background: var(--burgundy-light); transform: translateY(-2px); }
+        .nav-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .substack-link { color: var(--terracotta); text-decoration: none; font-size: 0.85rem; font-weight: 500; }
+        .substack-link:hover { color: #A84A2D; }
+        .archive-section { margin-top: 4rem; padding-top: 3rem; border-top: 1px solid var(--parchment-dark); }
+        .archive-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+        .archive-title { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--burgundy); display: flex; align-items: center; gap: 0.75rem; }
+        .torn-indicator { width: 12px; height: 12px; background: var(--terracotta); border-radius: 2px; transform: rotate(45deg); }
+        .archive-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 0.75rem; }
+        .archive-item { aspect-ratio: 1; background: white; border: 1px solid var(--parchment-dark); border-radius: 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease; }
+        .archive-item:hover { border-color: var(--gold); transform: translateY(-2px); }
+        .archive-item.active { background: var(--burgundy); border-color: var(--burgundy); }
+        .archive-number { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--burgundy); font-weight: 600; }
+        .archive-item.active .archive-number { color: var(--gold); }
+        .archive-status { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-light); margin-top: 0.25rem; }
+        .archive-item.active .archive-status { color: var(--parchment); opacity: 0.8; }
+        @media (max-width: 768px) { .nav-bar { flex-direction: column; gap: 1rem; padding: 1rem; } .room-title { font-size: 1.8rem; } .thought-title { font-size: 1.4rem; } .day-number { font-size: 2.5rem; } .card-controls { flex-direction: column; gap: 1rem; } }
     </style>
 </head>
 <body>
-    <div class="entrance-overlay" id="entrance">
-        <div class="door door-left">
-            <div class="door-panel"><div class="door-text">Meta<br>Voxa</div></div>
-            <div class="door-knob"></div>
+    <nav class="nav-bar">
+        <div class="nav-left">
+            <a href="index.html" class="home-link">MetaVoxa</a>
+            <div class="room-nav">
+                <a href="pattern-thoughts.html" class="room-link active">Pattern Thoughts</a>
+                <a href="reading-room.html" class="room-link">Reading Room</a>
+                <a href="star-month.html" class="room-link">Star of the Month</a>
+            </div>
         </div>
-        <div class="door door-right">
-            <div class="door-panel"><div class="door-text">Enter</div></div>
-            <div class="door-knob"></div>
+        <div class="external-nav">
+            <a href="https://metavoxa.substack.com" class="external-link" target="_blank">Substack ↗</a>
+            <a href="https://instagram.com/kwissbae" class="external-link" target="_blank">Instagram ↗</a>
         </div>
-    </div>
-    <div class="lobby-container" id="lobby">
-        <div class="lobby-header">
-            <h1 class="lobby-title">The House</h1>
-            <p class="lobby-subtitle">A sovereign ecosystem for the physician, the essayist, and the fashion curator. Each room contains a different aspect of the whole.</p>
+    </nav>
+    <main class="room-content">
+        <div class="room-header">
+            <h1 class="room-title">Pattern Thoughts</h1>
+            <p class="room-subtitle">001—360 • Thoughts for those still becoming</p>
         </div>
-        <div class="floor-plan">
-            <a href="pattern-thoughts.html" class="room-door">
-                <div class="room-icon">🗓️</div>
-                <div class="room-name">The Study</div>
-                <div class="room-desc">Pattern Thoughts<br>360 daily reflections<br>Process before essay</div>
-            </a>
-            <a href="reading-room.html" class="room-door">
-                <div class="room-icon">📚</div>
-                <div class="room-name">Reading Room</div>
-                <div class="room-desc">Four Themed Alcoves<br>Curated recommendations<br>Old money library</div>
-            </a>
-            <a href="star-month.html" class="room-door">
-                <div class="room-icon">✦</div>
-                <div class="room-name">Star of the Month</div>
-                <div class="room-desc">Hidden women made visible<br>Everyday sovereignty<br>Nominate a star</div>
-            </a>
+        <div class="calendar-container">
+            <div class="flip-card" id="flipCard">
+                <div class="card-header">
+                    <div class="day-number" id="dayNumber">001</div>
+                    <div class="day-meta">
+                        <div class="day-label">Pattern Thought</div>
+                        <div class="debate-status" id="debateStatus">Debate closes at midnight</div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h2 class="thought-title" id="thoughtTitle">The silence between words is where meaning lives</h2>
+                    <div class="thought-content" id="thoughtContent">We fill our days with noise—notifications, opinions, the endless scroll. But meaning doesn't arrive announced. It slips in during the pause. The breath between sentences. The moment before you respond. Today, notice where you rush to fill the quiet. What might be waiting there?</div>
+                    <div class="deeper-layer">
+                        <div class="deeper-label">Deeper Layer</div>
+                        <div class="deeper-content" id="deeperContent">The quietest people often have the loudest minds.</div>
+                    </div>
+                </div>
+                <div class="card-controls">
+                    <button class="nav-btn" id="prevBtn" onclick="navigateThought(-1)">← Previous</button>
+                    <a href="#" class="substack-link" id="substackLink" target="_blank">Join the debate on Substack →</a>
+                    <button class="nav-btn" id="nextBtn" onclick="navigateThought(1)">Next →</button>
+                </div>
+            </div>
         </div>
-        <div class="external-rooms">
-            <a href="https://metavoxa.substack.com" class="external-link" target="_blank">The Constellation ↗ Essays</a>
-            <a href="https://instagram.com/kwissbae" class="external-link" target="_blank">The Dressing Room ↗ Fashion</a>
+        <div class="archive-section">
+            <div class="archive-header">
+                <h3 class="archive-title"><span class="torn-indicator"></span>Torn Pages Archive</h3>
+            </div>
+            <div class="archive-grid" id="archiveGrid"></div>
         </div>
-    </div>
-    <script>
-        setTimeout(() => { document.getElementById('entrance').classList.add('open'); }, 500);
-        setTimeout(() => { document.getElementById('entrance').classList.add('fade-out'); }, 2500);
-        setTimeout(() => { document.getElementById('entrance').style.display = 'none'; document.getElementById('lobby').classList.add('visible'); }, 3500);
-    </script>
-</body>
-</html>
---------------------------------------------------------------------------------
+    </main>
 
