@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Star of the Month | MetaVoxa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root { --gallery-bg: #0d0d0f; --gallery-dark: #08080a; --gallery-accent: #1a1a1f; --spotlight: #f5f0e8; --spotlight-dim: #c9c4b8; --gold-bright: #e8d5a3; --gold: #c9a961; --rose: #c9a9a6; --rose-deep: #8b6b68; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Cormorant Garamond', serif; background: var(--gallery-bg); color: var(--spotlight); min-height: 100vh; background-image: radial-gradient(ellipse at 50% 0%, rgba(201, 169, 97, 0.15) 0%, transparent 60%), linear-gradient(to bottom, var(--gallery-bg) 0%, var(--gallery-dark) 100%); }
+        .nav-bar { background: var(--gallery-dark); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(201, 169, 97, 0.15); }
+        .nav-left { display: flex; align-items: center; gap: 2rem; }
+        .home-link { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--gold); text-decoration: none; letter-spacing: 0.1em; }
+        .room-nav { display: flex; gap: 1.5rem; }
+        .room-link { color: var(--spotlight-dim); text-decoration: none; font-size: 0.85rem; font-family: 'Inter', sans-serif; letter-spacing: 0.05em; transition: color 0.3s ease; }
+        .room-link:hover, .room-link.active { color: var(--gold); }
+        .room-link.active { border-bottom: 1px solid var(--gold); }
+        .external-nav { display: flex; gap: 1rem; }
+        .external-link { color: var(--gold); text-decoration: none; font-size: 0.75rem; font-family: 'Inter', sans-serif; opacity: 0.5; transition: opacity 0.3s ease; }
+        .external-link:hover { opacity: 1; }
+        .gallery-header { text-align: center; padding: 5rem 2rem 4rem; position: relative; }
+        .gallery-header::before { content: '✦'; position: absolute; top: 2.5rem; left: 50%; transform: translateX(-50%); color: var(--gold); font-size: 1.5rem; opacity: 0.6; animation: pulse 3s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.8; } }
+        .gallery-title { font-family: 'Playfair Display', serif; font-size: 3.5rem; color: var(--gold-bright); margin-bottom: 1rem; letter-spacing: 0.15em; font-weight: 500; text-shadow: 0 0 60px rgba(232, 213, 163, 0.3); }
+        .gallery-subtitle { font-size: 1.2rem; color: var(--spotlight-dim); font-style: italic; letter-spacing: 0.1em; max-width: 600px; margin: 0 auto; line-height: 1.6; }
+        .gallery-mission { margin-top: 2rem; padding: 1.5rem 2rem; border-top: 1px solid rgba(201, 169, 97, 0.2); border-bottom: 1px solid rgba(201, 169, 97, 0.2); display: inline-block; max-width: 700px; }
+        .mission-text { font-size: 1rem; color: var(--spotlight-dim); line-height: 1.8; font-style: italic; }
+        .star-gallery { max-width: 1200px; margin: 0 auto; padding: 2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 3rem; }
+        .star-spotlight { background: linear-gradient(135deg, var(--gallery-accent) 0%, var(--gallery-bg) 100%); border: 1px solid rgba(201, 169, 97, 0.2); border-radius: 2px; padding: 3rem; position: relative; overflow: hidden; transition: all 0.5s ease; }
+        .star-spotlight::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle at center, rgba(201, 169, 97, 0.1) 0%, transparent 70%); opacity: 0; transition: opacity 0.5s ease; }
+        .star-spotlight:hover::before { opacity: 1; }
+        .star-spotlight:hover { border-color: var(--gold); transform: translateY(-8px); box-shadow: 0 30px 60px rgba(0,0,0,0.5), 0 0 100px rgba(201, 169, 97, 0.1); }
+        .star-month-badge { position: absolute; top: 1.5rem; right: 1.5rem; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.3em; color: var(--gold); border: 1px solid var(--gold); padding: 0.4rem 0.8rem; opacity: 0.7; }
+        .star-name { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--gold-bright); margin-bottom: 0.5rem; position: relative; z-index: 1; }
+        .star-title { font-size: 0.9rem; color: var(--rose); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 1.5rem; position: relative; z-index: 1; }
+        .star-story { font-size: 1.1rem; line-height: 1.8; color: var(--spotlight-dim); margin-bottom: 2rem; position: relative; z-index: 1; }
+        .star-quote { border-left: 2px solid var(--rose-deep); padding-left: 1.5rem; margin: 1.5rem 0; font-style: italic; color: var(--spotlight); opacity: 0.9; }
+        .star-link { display: inline-block; color: var(--gold); text-decoration: none; font-size: 0.8rem; letter-spacing: 0.15em; text-transform: uppercase; border-bottom: 1px solid var(--gold); padding-bottom: 2px; transition: all 0.3s ease; position: relative; z-index: 1; font-family: 'Inter', sans-serif; }
+        .star-link:hover { color: var(--gold-bright); border-color: var(--gold-bright); }
+        .nomination-section { max-width: 800px; margin: 5rem auto; padding: 4rem 3rem; background: var(--gallery-accent); border: 1px solid rgba(201, 169, 97, 0.3); text-align: center; position: relative; }
+        .nomination-section::before, .nomination-section::after { content: '✦'; position: absolute; color: var(--gold); font-size: 1rem; opacity: 0.4; }
+        .nomination-section::before { top: 1.5rem; left: 1.5rem; }
+        .nomination-section::after { bottom: 1.5rem; right: 1.5rem; }
+        .nomination-title { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--gold-bright); margin-bottom: 1rem; }
+        .nomination-text { font-size: 1.1rem; color: var(--spotlight-dim); line-height: 1.7; margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto; }
+        .nomination-btn { display: inline-block; background: transparent; color: var(--gold); border: 2px solid var(--gold); padding: 1rem 2.5rem; text-decoration: none; font-size: 0.85rem; letter-spacing: 0.2em; text-transform: uppercase; transition: all 0.4s ease; font-family: 'Inter', sans-serif; font-weight: 500; }
+        .nomination-btn:hover { background: var(--gold); color: var(--gallery-dark); box-shadow: 0 0 40px rgba(201, 169, 97, 0.3); }
+        @media (max-width: 900px) { .star-gallery { grid-template-columns: 1fr; padding: 1rem; } .nav-bar { flex-direction: column; gap: 1rem; } .gallery-title { font-size: 2.2rem; } .star-spotlight { padding: 2rem; } }
+    </style>
+</head>
+<body>
+    <nav class="nav-bar">
+        <div class="nav-left">
+            <a href="index.html" class="home-link">MetaVoxa</a>
+            <div class="room-nav">
+                <a href="pattern-thoughts.html" class="room-link">Pattern Thoughts</a>
+                <a href="reading-room.html" class="room-link">Reading Room</a>
+                <a href="star-month.html" class="room-link active">Star of the Month</a>
+            </div>
+        </div>
+        <div class="external-nav">
+            <a href="https://metavoxa.substack.com" class="external-link" target="_blank">Substack ↗</a>
+            <a href="https://instagram.com/kwissbae" class="external-link" target="_blank">Instagram ↗</a>
+        </div>
+    </nav>
+    <header class="gallery-header">
+        <h1 class="gallery-title">Star of the Month</h1>
+        <p class="gallery-subtitle">Everyday women hidden by systems, made visible</p>
+        <div class="gallery-mission">
+            <p class="mission-text">"The systems that govern our lives were not built to see everyone. This gallery exists to illuminate the women working in the margins—the ones building, healing, and organizing without recognition."</p>
+        </div>
+    </header>
+    <main class="star-gallery">
+        <article class="star-spotlight">
+            <span class="star-month-badge">January 2026</span>
+            <h2 class="star-name">Maria Chen</h2>
+            <p class="star-title">Night-Shift Nurse • Protocol Architect</p>
+            <p class="star-story">A night-shift nurse who redesigned the handoff protocol for her entire floor after noticing patterns in patient outcomes that administration had missed. Her system is now being piloted across three hospitals.</p>
+            <blockquote class="star-quote">"The data was always there. Someone just had to be awake enough to see it."</blockquote>
+            <a href="#" class="star-link" onclick="alert('Full story on Substack - coming soon')">Read Her Story →</a>
+        </article>
+        <article class="star-spotlight">
+            <span class="star-month-badge">December 2025</span>
+            <h2 class="star-name">Amara Okafor</h2>
+            <p class="star-title">Community Organizer • Systems Builder</p>
+            <p class="star-story">Built a mutual aid network for neurodivergent mothers in her city, creating infrastructure where the medical system provided only diagnosis. 400 families served in two years, zero grant funding.</p>
+            <blockquote class="star-quote">"We didn't wait for permission. We built what we needed and invited others in."</blockquote>
+            <a href="#" class="star-link" onclick="alert('Full story on Substack - coming soon')">Read Her Story →</a>
+        </article>
+        <article class="star-spotlight">
+            <span class="star-month-badge">November 2025</span>
+            <h2 class="star-name">Sofia Reyes</h2>
+            <p class="star-title">Textile Worker • Documentary Photographer</p>
+            <p class="star-story">A textile worker who documented supply chain ethics through her own photography, changing how her factory's buyers understood 'transparency.' Her images are now used in ethical sourcing training.</p>
+            <blockquote class="star-quote">"The camera sees what the report hides. I just pointed it at the truth."</blockquote>
+            <a href="#" class="star-link" onclick="alert('Full story on Substack - coming soon')">Read Her Story →</a>
+        </article>
+    </main>
+    <section class="nomination-section">
+        <h3 class="nomination-title">Know a Hidden Star?</h3>
+        <p class="nomination-text">We feature women whose work is systematically overlooked—the ones building in the margins, healing without titles, organizing without platforms. Tell us who we should see.</p>
+        <a href="#" class="nomination-btn" onclick="alert('Nomination form via Google Forms - coming soon')">Nominate a Star</a>
+    </section>
+</body>
+</html>
