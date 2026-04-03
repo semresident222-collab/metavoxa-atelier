@@ -9,20 +9,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@300;400&display=swap" rel="stylesheet">
     <style>
         :root {
-            --burgundy-deep: #4A0404;
-            --burgundy-rich: #6B0F1A;
-            --burgundy-ghost: rgba(74, 4, 4, 0.3);
-            --gold-antique: #D4AF37;
+            --ink-navy: #0A0F1F;
+            --ink-deep: #0F1419;
+            --cover-plum: #2E2133;
+            --cover-shadow: #1A1520;
+            --paper-cream: #F3EEE4;
+            --paper-warm: #EDE6D8;
+            --paper-aged: #E8E0D0;
+            --ink-text: #26222A;
+            --ink-soft: #3A3540;
+            --gold-antique: #C9A961;
             --gold-deep: #B8941F;
-            --gold-soft: #C9A961;
-            --terracotta: #C65D3B;
-            --ivory-warm: #F5F0E8;
-            --ivory-aged: #E8E0D0;
-            --ivory-paper: #FAF8F3;
-            --navy-deep: #0A0F1F;
-            --navy-warm: #0F1419;
-            --ink-dark: #1A1A1A;
-            --ink-brown: #2C2416;
+            --gold-brass: #8B7355;
+            --gold-dark: #6B5344;
+            --burgundy-rich: #6B0F1A;
+            --burgundy-ghost: rgba(107, 15, 26, 0.25);
         }
 
         * {
@@ -35,10 +36,10 @@
             font-family: 'Cormorant Garamond', serif;
             min-height: 100vh;
             overflow-x: hidden;
-            background: linear-gradient(180deg, var(--navy-deep) 0%, #0F0F14 100%);
-            color: var(--ink-dark);
+            background: var(--ink-navy);
+            color: var(--ink-text);
             opacity: 0;
-            animation: fadeInRoom 3s ease-out forwards;
+            animation: fadeInRoom 2.5s ease-out forwards;
         }
 
         @keyframes fadeInRoom {
@@ -46,7 +47,7 @@
             100% { opacity: 1; }
         }
 
-        /* Grain Texture */
+        /* Subtle grain overlay */
         .grain-overlay {
             position: fixed;
             top: 0;
@@ -55,8 +56,8 @@
             height: 100%;
             pointer-events: none;
             z-index: 1000;
-            opacity: 0.03;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.025;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
 
         /* Exit Door */
@@ -81,7 +82,7 @@
             border: 1px solid var(--gold-antique);
             border-radius: 14px 14px 2px 2px;
             position: relative;
-            background: linear-gradient(to bottom, rgba(212, 175, 55, 0.1), transparent);
+            background: linear-gradient(to bottom, rgba(201, 169, 97, 0.1), transparent);
         }
 
         .door-icon::after {
@@ -159,18 +160,18 @@
             color: var(--gold-antique);
             margin-bottom: 15px;
             letter-spacing: 0.1em;
-            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+            border-bottom: 1px solid rgba(201, 169, 97, 0.3);
             padding-bottom: 10px;
         }
 
         .key-menu a {
             display: block;
-            color: var(--ivory-aged);
+            color: var(--paper-aged);
             text-decoration: none;
             padding: 8px 0;
             font-size: 0.9rem;
             transition: all 0.3s ease;
-            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+            border-bottom: 1px solid rgba(201, 169, 97, 0.1);
         }
 
         .key-menu a:hover {
@@ -180,91 +181,116 @@
 
         /* Main Container */
         .pattern-container {
-            max-width: 700px;
+            max-width: 720px;
             margin: 0 auto;
-            padding: 60px 20px 120px;
+            padding: 80px 20px 140px;
             position: relative;
             z-index: 50;
         }
 
-        /* 3D Calendar with Spiral Holes */
+        /* Calendar Base - Slimmer frame */
         .calendar-wrapper {
-            perspective: 1200px;
-            margin-bottom: 40px;
+            perspective: 1400px;
+            margin-bottom: 50px;
+            filter: drop-shadow(0 40px 80px rgba(0, 0, 0, 0.6));
         }
 
         .calendar-base {
-            background: linear-gradient(180deg, var(--burgundy-deep) 0%, var(--burgundy-rich) 100%);
-            border-radius: 12px 12px 4px 4px;
-            padding: 25px 20px 20px;
+            background: linear-gradient(180deg, var(--cover-plum) 0%, var(--cover-shadow) 100%);
+            border-radius: 8px 8px 6px 6px;
+            padding: 45px 18px 18px;
             box-shadow: 
-                0 30px 80px rgba(0, 0, 0, 0.5),
-                0 10px 30px rgba(74, 4, 4, 0.3),
-                inset 0 2px 0 rgba(255, 255, 255, 0.1);
+                0 25px 60px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
             position: relative;
         }
 
-        /* Spiral Holes */
-        .spiral-holes {
+        /* Spiral Binding - 6 dark brass coils */
+        .spiral-binding {
+            position: absolute;
+            top: -18px;
+            left: 50%;
+            transform: translateX(-50%);
             display: flex;
-            justify-content: space-around;
-            margin-bottom: 15px;
-            padding: 0 20px;
+            gap: 85px;
+            z-index: 10;
         }
 
-        .spiral-hole {
-            width: 14px;
-            height: 14px;
-            background: var(--navy-deep);
-            border-radius: 50%;
-            box-shadow: 
-                inset 0 2px 4px rgba(0, 0, 0, 0.5),
-                0 1px 0 rgba(255, 255, 255, 0.1);
+        .spiral-coil {
             position: relative;
+            width: 24px;
+            height: 36px;
         }
 
-        .spiral-hole::after {
+        /* Coil shadow */
+        .spiral-coil::before {
             content: '';
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 6px;
-            height: 6px;
-            background: var(--gold-antique);
+            top: 4px;
+            left: 2px;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
             border-radius: 50%;
-            opacity: 0.6;
+            filter: blur(3px);
+            z-index: -1;
         }
 
-        /* Calendar Header Info */
+        /* The coil itself - stacked loops */
+        .coil-stack {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .coil-loop {
+            position: absolute;
+            width: 22px;
+            height: 8px;
+            border: 2px solid var(--gold-brass);
+            border-radius: 50%;
+            background: linear-gradient(180deg, var(--gold-dark) 0%, var(--gold-brass) 50%, var(--gold-dark) 100%);
+            box-shadow: 
+                inset 0 1px 1px rgba(255, 255, 255, 0.2),
+                0 2px 3px rgba(0, 0, 0, 0.4);
+        }
+
+        .coil-loop:nth-child(1) { top: 0; }
+        .coil-loop:nth-child(2) { top: 5px; }
+        .coil-loop:nth-child(3) { top: 10px; }
+        .coil-loop:nth-child(4) { top: 15px; }
+        .coil-loop:nth-child(5) { top: 20px; }
+        .coil-loop:nth-child(6) { top: 25px; border-color: var(--gold-dark); }
+
+        /* Header Info */
         .calendar-header-info {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
-            padding: 0 10px;
+            margin-bottom: 12px;
+            padding: 0 15px;
         }
 
         .pattern-number-display {
             font-family: 'Cinzel', serif;
-            font-size: 2rem;
+            font-size: 1.8rem;
             color: var(--gold-antique);
-            letter-spacing: 0.1em;
+            letter-spacing: 0.15em;
             font-weight: 400;
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
 
         .year-display {
             font-family: 'Cinzel', serif;
-            font-size: 0.75rem;
-            color: var(--gold-soft);
+            font-size: 0.7rem;
+            color: var(--gold-brass);
             letter-spacing: 0.15em;
             text-transform: uppercase;
             text-align: right;
         }
 
         .year-display .year-name {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: var(--gold-antique);
             display: block;
             margin-top: 3px;
@@ -287,19 +313,20 @@
             100% { transform: rotateX(0deg); }
         }
 
-        /* Calendar Page */
+        /* Calendar Page - Paper with grain */
         .calendar-page {
-            background: linear-gradient(135deg, var(--ivory-paper) 0%, #F5F0E8 100%);
+            background: linear-gradient(180deg, var(--paper-cream) 0%, var(--paper-warm) 100%);
             border-radius: 3px;
-            padding: 40px 35px;
+            padding: 45px 40px;
             box-shadow: 
-                0 4px 6px rgba(0, 0, 0, 0.1),
-                inset 0 0 60px rgba(139, 90, 43, 0.02);
+                0 2px 4px rgba(0, 0, 0, 0.1),
+                inset 0 0 80px rgba(139, 115, 85, 0.03);
             position: relative;
-            min-height: 380px;
+            min-height: 400px;
+            overflow: hidden;
         }
 
-        /* Page texture */
+        /* Paper grain texture */
         .calendar-page::before {
             content: '';
             position: absolute;
@@ -307,9 +334,93 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='paper'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.04' numOctaves='5'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23paper)' opacity='0.03'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='paperGrain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.03' numOctaves='5'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23paperGrain)' opacity='0.04'/%3E%3C/svg%3E");
             pointer-events: none;
             border-radius: 3px;
+            opacity: 0.6;
+        }
+
+        /* Very faint fiber lines */
+        .calendar-page::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 2px,
+                rgba(139, 115, 85, 0.015) 2px,
+                rgba(139, 115, 85, 0.015) 3px
+            );
+            pointer-events: none;
+        }
+
+        /* Page Curl - Physical corner fold */
+        .page-curl {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 85px;
+            height: 85px;
+            pointer-events: none;
+            z-index: 20;
+        }
+
+        /* Curl shadow underneath */
+        .page-curl::before {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            width: 75px;
+            height: 75px;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 0 0 3px 0;
+            filter: blur(8px);
+            transform: rotate(-5deg);
+        }
+
+        /* The curled page itself */
+        .curl-fold {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--paper-warm) 0%, var(--paper-aged) 50%, #D4C8B8 100%);
+            border-radius: 0 0 3px 0;
+            box-shadow: 
+                -3px -3px 8px rgba(0, 0, 0, 0.15),
+                inset 2px 2px 4px rgba(255, 255, 255, 0.3);
+            overflow: hidden;
+        }
+
+        /* Curl highlight on fold edge */
+        .curl-fold::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+            transform: rotate(-45deg);
+            transform-origin: top left;
+        }
+
+        /* Curl curve shadow */
+        .curl-fold::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, transparent 40%, rgba(0, 0, 0, 0.08) 100%);
+            border-radius: 0 0 3px 0;
         }
 
         /* Ghost Connections */
@@ -332,7 +443,7 @@
         .ghost-line {
             position: absolute;
             height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(74, 4, 4, 0.15), transparent);
+            background: linear-gradient(90deg, transparent, var(--burgundy-ghost), transparent);
         }
 
         /* Pattern Content */
@@ -344,14 +455,16 @@
 
         .pattern-title {
             font-family: 'Playfair Display', serif;
-            font-size: clamp(1.4rem, 3.5vw, 1.9rem);
-            line-height: 1.5;
-            margin-bottom: 35px;
-            color: var(--ink-dark);
+            font-size: clamp(1.3rem, 3.2vw, 1.7rem);
+            line-height: 1.6;
+            margin-bottom: 40px;
+            color: var(--ink-text);
             min-height: 100px;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-weight: 400;
+            letter-spacing: -0.01em;
         }
 
         .cursor {
@@ -375,43 +488,43 @@
 
         .pattern-body {
             font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(1.05rem, 2.2vw, 1.2rem);
-            line-height: 1.9;
-            color: var(--ink-dark);
-            opacity: 0.9;
-            margin-bottom: 40px;
-            min-height: 120px;
+            font-size: clamp(1rem, 2.2vw, 1.15rem);
+            line-height: 1.95;
+            color: var(--ink-text);
+            opacity: 0.92;
+            margin-bottom: 45px;
+            min-height: 130px;
         }
 
-        /* Deeper Layer - Ghost Burgundy */
+        /* Deeper Layer */
         .deeper-layer {
             font-family: 'Cormorant Garamond', serif;
             font-style: italic;
-            font-size: 0.95rem;
-            line-height: 1.7;
+            font-size: 0.9rem;
+            line-height: 1.75;
             color: var(--burgundy-ghost);
             text-align: center;
-            max-width: 450px;
+            max-width: 420px;
             margin: 0 auto;
-            padding: 15px 20px;
-            border-top: 1px solid rgba(74, 4, 4, 0.1);
+            padding: 18px 25px;
+            border-top: 1px solid rgba(107, 15, 26, 0.12);
             transition: all 0.4s ease;
             cursor: help;
         }
 
         .deeper-layer:hover {
-            color: var(--burgundy-deep);
+            color: var(--burgundy-rich);
             font-weight: 500;
-            background: rgba(74, 4, 4, 0.03);
+            background: rgba(107, 15, 26, 0.04);
         }
 
         .deeper-label {
             font-family: 'Cinzel', serif;
-            font-size: 0.6rem;
+            font-size: 0.55rem;
             text-transform: uppercase;
-            letter-spacing: 0.2em;
+            letter-spacing: 0.25em;
             color: var(--burgundy-ghost);
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             display: block;
             transition: color 0.4s ease;
         }
@@ -420,52 +533,62 @@
             color: var(--burgundy-rich);
         }
 
-        /* Expand Button */
-        .expand-section {
-            margin-top: 25px;
+        /* Substack Connection */
+        .substack-connection {
+            margin-top: 30px;
             text-align: center;
             opacity: 0;
             transform: translateY(10px);
             transition: all 0.6s ease;
         }
 
-        .expand-section.visible {
+        .substack-connection.visible {
             opacity: 1;
             transform: translateY(0);
         }
 
-        .expand-btn {
-            display: inline-block;
-            padding: 10px 25px;
-            border: 1px solid var(--burgundy-rich);
-            color: var(--burgundy-deep);
+        .substack-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 28px;
+            border: 1px solid var(--gold-brass);
+            color: var(--ink-text);
             text-decoration: none;
             font-family: 'Cinzel', serif;
-            font-size: 0.7rem;
-            letter-spacing: 0.12em;
+            font-size: 0.65rem;
+            letter-spacing: 0.14em;
             text-transform: uppercase;
             transition: all 0.4s ease;
-            background: transparent;
+            background: rgba(201, 169, 97, 0.05);
+            border-radius: 2px;
         }
 
-        .expand-btn:hover {
-            background: var(--burgundy-deep);
-            color: var(--ivory-warm);
+        .substack-link:hover {
+            background: var(--gold-antique);
+            color: var(--ink-navy);
+            border-color: var(--gold-antique);
+        }
+
+        .substack-icon {
+            width: 14px;
+            height: 14px;
+            fill: currentColor;
         }
 
         /* Navigation */
         .pattern-nav {
             display: flex;
             justify-content: center;
-            gap: 20px;
-            margin-top: 30px;
+            gap: 25px;
+            margin-top: 35px;
         }
 
         .nav-btn {
-            width: 45px;
-            height: 45px;
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            background: rgba(10, 15, 31, 0.5);
+            width: 48px;
+            height: 48px;
+            border: 1px solid rgba(201, 169, 97, 0.25);
+            background: rgba(10, 15, 31, 0.4);
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -476,12 +599,13 @@
 
         .nav-btn:hover {
             border-color: var(--gold-antique);
-            background: rgba(212, 175, 55, 0.1);
+            background: rgba(201, 169, 97, 0.1);
+            transform: scale(1.05);
         }
 
         .nav-btn svg {
-            width: 18px;
-            height: 18px;
+            width: 20px;
+            height: 20px;
             stroke: var(--gold-antique);
             stroke-width: 1.5;
             fill: none;
@@ -489,21 +613,21 @@
 
         /* Archive Section */
         .archive-section {
-            margin-top: 50px;
-            padding-top: 30px;
-            border-top: 1px solid rgba(212, 175, 55, 0.15);
+            margin-top: 60px;
+            padding-top: 35px;
+            border-top: 1px solid rgba(201, 169, 97, 0.12);
         }
 
         .archive-header {
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
         }
 
         .archive-header h3 {
             font-family: 'Cinzel', serif;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--gold-antique);
-            letter-spacing: 0.15em;
+            letter-spacing: 0.18em;
             text-transform: uppercase;
         }
 
@@ -511,57 +635,57 @@
         .year-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
+            gap: 18px;
+            margin-bottom: 25px;
         }
 
         .year-item {
-            background: rgba(10, 15, 31, 0.6);
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            padding: 20px;
+            background: rgba(10, 15, 31, 0.5);
+            border: 1px solid rgba(201, 169, 97, 0.15);
+            padding: 22px;
             text-align: center;
             cursor: pointer;
             transition: all 0.4s ease;
-            border-radius: 4px;
+            border-radius: 3px;
         }
 
         .year-item:hover {
             border-color: var(--gold-antique);
-            background: rgba(212, 175, 55, 0.1);
+            background: rgba(201, 169, 97, 0.08);
             transform: translateY(-2px);
         }
 
         .year-item.active {
-            background: rgba(212, 175, 55, 0.15);
+            background: rgba(201, 169, 97, 0.12);
             border-color: var(--gold-antique);
         }
 
         .year-item .year-num {
             font-family: 'Cinzel', serif;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             color: var(--gold-antique);
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
         }
 
         .year-item .year-name {
             font-family: 'Cormorant Garamond', serif;
-            font-size: 0.85rem;
-            color: var(--ivory-aged);
+            font-size: 0.8rem;
+            color: var(--paper-aged);
             font-style: italic;
         }
 
-        /* Days Grid (hidden by default) */
+        /* Days Grid */
         .days-grid {
             display: none;
-            grid-template-columns: repeat(auto-fill, minmax(55px, 1fr));
-            gap: 8px;
-            max-height: 250px;
+            grid-template-columns: repeat(auto-fill, minmax(52px, 1fr));
+            gap: 6px;
+            max-height: 220px;
             overflow-y: auto;
-            padding: 15px;
-            background: rgba(10, 15, 31, 0.4);
-            border-radius: 4px;
-            border: 1px solid rgba(212, 175, 55, 0.1);
+            padding: 18px;
+            background: rgba(10, 15, 31, 0.3);
+            border-radius: 3px;
+            border: 1px solid rgba(201, 169, 97, 0.08);
         }
 
         .days-grid.active {
@@ -570,64 +694,71 @@
 
         .day-item {
             aspect-ratio: 1;
-            border: 1px solid rgba(212, 175, 55, 0.15);
+            border: 1px solid rgba(201, 169, 97, 0.12);
             display: flex;
             align-items: center;
             justify-content: center;
             font-family: 'Cinzel', serif;
-            font-size: 0.65rem;
-            color: var(--ivory-aged);
+            font-size: 0.6rem;
+            color: var(--paper-aged);
             cursor: pointer;
             transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 2px;
         }
 
         .day-item:hover {
             border-color: var(--gold-antique);
-            background: rgba(212, 175, 55, 0.1);
+            background: rgba(201, 169, 97, 0.08);
         }
 
         .day-item.today {
             background: var(--gold-antique);
-            color: var(--navy-deep);
+            color: var(--ink-navy);
             border-color: var(--gold-antique);
             font-weight: 600;
         }
 
         .day-item.selected {
-            background: rgba(212, 175, 55, 0.25);
+            background: rgba(201, 169, 97, 0.2);
             border-color: var(--gold-antique);
         }
 
         /* Giscus Container */
         .giscus-container {
-            margin-top: 40px;
-            padding: 25px;
-            background: rgba(10, 15, 31, 0.4);
+            margin-top: 50px;
+            padding: 30px;
+            background: rgba(10, 15, 31, 0.25);
             border-radius: 4px;
-            border: 1px solid rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(201, 169, 97, 0.08);
         }
 
         .giscus-header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         .giscus-header h4 {
             font-family: 'Cinzel', serif;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: var(--gold-antique);
-            letter-spacing: 0.1em;
+            letter-spacing: 0.12em;
             text-transform: uppercase;
         }
 
-        .giscus-closed {
+        .giscus-archived {
             text-align: center;
-            padding: 25px;
+            padding: 30px;
             font-style: italic;
-            color: var(--gold-soft);
+            color: var(--gold-brass);
             opacity: 0.7;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        .giscus-archived strong {
+            color: var(--gold-antique);
+            font-weight: 400;
         }
 
         /* Today Marker */
@@ -636,42 +767,59 @@
             top: 30px;
             right: 30px;
             background: var(--gold-antique);
-            color: var(--navy-deep);
-            padding: 10px 20px;
+            color: var(--ink-navy);
+            padding: 10px 22px;
             border-radius: 20px;
             font-family: 'Cinzel', serif;
-            font-size: 0.65rem;
-            letter-spacing: 0.1em;
+            font-size: 0.6rem;
+            letter-spacing: 0.12em;
             text-transform: uppercase;
             z-index: 150;
-            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+            box-shadow: 0 4px 15px rgba(201, 169, 97, 0.25);
         }
 
         /* Responsive */
         @media (max-width: 768px) {
             .calendar-base {
-                padding: 20px 15px 15px;
+                padding: 40px 15px 15px;
             }
 
             .calendar-page {
-                padding: 30px 25px;
-                min-height: 320px;
+                padding: 35px 28px;
+                min-height: 360px;
             }
 
-            .spiral-holes {
-                padding: 0 15px;
+            .spiral-binding {
+                gap: 55px;
+                top: -15px;
             }
 
-            .spiral-hole {
-                width: 12px;
-                height: 12px;
+            .spiral-coil {
+                width: 20px;
+                height: 30px;
+            }
+
+            .coil-loop {
+                width: 18px;
+                height: 6px;
             }
 
             .year-grid {
                 grid-template-columns: 1fr;
             }
+
+            .page-curl {
+                width: 65px;
+                height: 65px;
+            }
+
+            .curl-fold {
+                width: 60px;
+                height: 60px;
+            }
         }
     </style>
+<base target="_blank">
 <base target="_blank">
 </head>
 <body>
@@ -709,13 +857,68 @@
         <!-- 3D Calendar -->
         <div class="calendar-wrapper">
             <div class="calendar-base">
-                <!-- Spiral Holes -->
-                <div class="spiral-holes">
-                    <div class="spiral-hole"></div>
-                    <div class="spiral-hole"></div>
-                    <div class="spiral-hole"></div>
-                    <div class="spiral-hole"></div>
-                    <div class="spiral-hole"></div>
+                <!-- Spiral Binding - 6 coils -->
+                <div class="spiral-binding">
+                    <div class="spiral-coil">
+                        <div class="coil-stack">
+                            <div class="coil-loop"></div>
+                            <div class="coil-loop"></div>
+                            <div class="coil-loop"></div>
+                            <div class="coil-loop"></div>
+                            <div class="coil-loop"></div>
+                            <div class="coil-loop"></div>
+                        </div>
+                    </div>
+                    <div class="spiral-coil">
+                        <div class="coil-stack">
+                            <div class="coil-loop"></div>
+                            <div class="coil-loop"></div>
+                            <div class="coil-loop"></div>
+                            <div class="coil-loop"></div>
+                            <div class="coil-loop"></div>
+                            <div class="coil-loop"></div>
+                        </div>
+                    </div>
+                    <div class="spiral-coil">
+                        <div class="coil-stack">
+                            <div class="coil-loop"></div>
+                            <div class="coil-loop"></div>
+                            <div class="coil-loop"></div>
+                            <div class="coil-loop"></div>
+                            <div class="coil-loop"></div>
+                            <div class="coil-loop"></div>
+                        </div>
+                    </div>
+                    <div class="spiral-coil">
+                        <div class="coil-stack">
+                            <div class="coil-loop"></div>
+                            <div class="coil-loop"></div>
+                            <div class="coil-loop"></div>
+                            <div class="coil-loop"></div>
+                            <div class="coil-loop"></div>
+                            <div class="coil-loop"></div>
+                        </div>
+                    </div>
+                    <div class="spiral-coil">
+                        <div class="coil-stack">
+                            <div class="coil-loop"></div>
+                            <div class="coil-loop"></div>
+                            <div class="coil-loop"></div>
+                            <div class="coil-loop"></div>
+                            <div class="coil-loop"></div>
+                            <div class="coil-loop"></div>
+                        </div>
+                    </div>
+                    <div class="spiral-coil">
+                        <div class="coil-stack">
+                            <div class="coil-loop"></div>
+                            <div class="coil-loop"></div>
+                            <div class="coil-loop"></div>
+                            <div class="coil-loop"></div>
+                            <div class="coil-loop"></div>
+                            <div class="coil-loop"></div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Header Info -->
@@ -732,6 +935,11 @@
                     <div class="calendar-page" id="calendarPage">
                         <div class="ghost-connections" id="ghostConnections"></div>
 
+                        <!-- Page Curl -->
+                        <div class="page-curl">
+                            <div class="curl-fold"></div>
+                        </div>
+
                         <div class="pattern-content">
                             <h2 class="pattern-title" id="patternTitle">
                                 <span id="titleText"></span><span class="cursor hidden" id="cursor"></span>
@@ -743,8 +951,14 @@
                             </div>
                         </div>
 
-                        <div class="expand-section" id="expandSection">
-                            <a href="#" class="expand-btn" id="expandBtn" target="_blank">Expand Thought</a>
+                        <!-- Substack Connection -->
+                        <div class="substack-connection" id="substackSection">
+                            <a href="https://substack.com/@metavoxa" class="substack-link" id="substackBtn" target="_blank">
+                                <svg class="substack-icon" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M22.539 8.242H1.46V5.61h21.08v2.633zM1.46 10.812v11.19l10.054 5.013 10.053-5.013V10.811H1.46zm18.14 9.59l-8.086 4.037-8.086-4.037v-7.876h16.172v7.876z"/>
+                                </svg>
+                                Continue on Substack
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -794,7 +1008,7 @@
         <!-- Giscus Discussion -->
         <div class="giscus-container" id="giscusContainer">
             <div class="giscus-header">
-                <h4>Today's Reflection</h4>
+                <h4 id="giscusTitle">Today's Reflection</h4>
             </div>
             <div id="giscus"></div>
         </div>
@@ -809,7 +1023,7 @@
                 body: "We fill our days with noise—notifications, opinions, the endless scroll. But meaning doesn't arrive announced. It slips in during the pause. The breath between sentences. The moment before you respond. Today, notice where you rush to fill the quiet. What might be waiting there?",
                 deeper: "The quietest people often have the loudest minds.",
                 connections: ["015", "042", "089"],
-                substackUrl: ""
+                substackUrl: "https://substack.com/@metavoxa"
             },
             {
                 number: "002",
@@ -833,7 +1047,7 @@
                 body: "We believe we're searching for truth. But mostly, we're searching for confirmation. The mind is a pattern-matching machine, and it will find what it's programmed to find. Ask better questions.",
                 deeper: "The quality of your life is the quality of your questions.",
                 connections: ["012", "028", "067"],
-                substackUrl: ""
+                substackUrl: "https://substack.com/@metavoxa"
             },
             {
                 number: "005",
@@ -1045,7 +1259,7 @@
             bodyEl.style.opacity = '0';
             bodyEl.style.transition = 'opacity 1.2s ease';
             await sleep(300);
-            bodyEl.style.opacity = '0.9';
+            bodyEl.style.opacity = '0.92';
             await sleep(1200);
 
             // Step 6: Hide cursor permanently
@@ -1055,10 +1269,15 @@
             document.getElementById('deeperText').textContent = pattern.deeper;
             await sleep(400);
 
-            // Show expand button if applicable
+            // Show substack link if applicable
+            const substackSection = document.getElementById('substackSection');
+            const substackBtn = document.getElementById('substackBtn');
+
             if (pattern.substackUrl) {
-                document.getElementById('expandBtn').href = pattern.substackUrl;
-                document.getElementById('expandSection').classList.add('visible');
+                substackBtn.href = pattern.substackUrl;
+                substackSection.classList.add('visible');
+            } else {
+                substackSection.classList.remove('visible');
             }
         }
 
@@ -1093,7 +1312,7 @@
             // Reset visibility
             document.getElementById('yearName').style.opacity = '0';
             document.getElementById('patternBody').style.opacity = '0';
-            document.getElementById('expandSection').classList.remove('visible');
+            document.getElementById('substackSection').classList.remove('visible');
 
             await sleep(400);
 
@@ -1104,7 +1323,7 @@
             renderGhostConnections(pattern.connections);
 
             // Update Giscus
-            updateGiscus(pattern.number, isToday, todayIndex);
+            updateGiscus(pattern.number, isToday, todayIndex, index);
 
             // Update archive
             updateArchiveSelection(index);
@@ -1114,14 +1333,15 @@
             selectedYear = getYearFromIndex(index);
         }
 
-        // Update Giscus
-        function updateGiscus(patternNum, isToday, todayIndex) {
+        // Update Giscus - Live only for today, archived for past
+        function updateGiscus(patternNum, isToday, todayIndex, currentIdx) {
             const container = document.getElementById('giscus');
-            const header = document.querySelector('.giscus-header h4');
+            const header = document.getElementById('giscusTitle');
 
             container.innerHTML = '';
 
             if (isToday) {
+                // TODAY - Live discussion
                 header.textContent = "Today's Reflection";
 
                 const script = document.createElement('script');
@@ -1142,20 +1362,44 @@
                 script.async = true;
 
                 container.appendChild(script);
-            } else if (currentIndex < todayIndex) {
-                header.textContent = "Reflection Closed";
+            } else if (currentIdx < todayIndex) {
+                // PAST - Archived (view only, reactions only)
+                header.textContent = "Archived Reflection";
                 container.innerHTML = `
-                    <div class="giscus-closed">
-                        This pattern thought's discussion period has ended.<br>
-                        You may still react, but new replies are closed.
+                    <div class="giscus-archived">
+                        <strong>This pattern thought's discussion period has ended.</strong><br><br>
+                        The conversation is preserved in the archive.<br>
+                        You may view all previous comments and reactions,<br>
+                        but new replies are closed.
                     </div>
                 `;
+
+                // Load giscus in reactions-only mode for archive viewing
+                const script = document.createElement('script');
+                script.src = "https://giscus.app/client.js";
+                script.setAttribute('data-repo', 'semresident222-collab/metavoxa-study-wing');
+                script.setAttribute('data-repo-id', 'R_kgDOR3nrxA');
+                script.setAttribute('data-category', 'Pattern Thoughts');
+                script.setAttribute('data-category-id', 'DIC_kwDOR3nrxM4C554W');
+                script.setAttribute('data-mapping', 'specific');
+                script.setAttribute('data-term', `pattern-thought-${patternNum}`);
+                script.setAttribute('data-strict', '0');
+                script.setAttribute('data-reactions-enabled', '1');
+                script.setAttribute('data-emit-metadata', '0');
+                script.setAttribute('data-input-position', 'bottom');
+                script.setAttribute('data-theme', 'preferred_color_scheme');
+                script.setAttribute('data-lang', 'en');
+                script.setAttribute('crossorigin', 'anonymous');
+                script.async = true;
+
+                container.appendChild(script);
             } else {
+                // FUTURE - Not yet revealed
                 header.textContent = "Future Pattern";
                 container.innerHTML = `
-                    <div class="giscus-closed">
+                    <div class="giscus-archived">
                         This pattern thought has not yet been revealed.<br>
-                        Return on its designated day to participate.
+                        Return on its designated day to participate in the discussion.
                     </div>
                 `;
             }
