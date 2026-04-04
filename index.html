@@ -8,11 +8,7 @@
     <style>
         :root {
             --bg-color: #030303;
-            --gold: rgba(212, 175, 55, 0.6);
-            --blue: rgba(100, 149, 237, 0.5);
-            --warm: rgba(255, 140, 0, 0.4);
-            --luminous: rgba(255, 255, 255, 0.3);
-            --transition-slow: 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-speed: 1.2s;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
@@ -24,290 +20,268 @@
             font-family: 'Playfair Display', serif;
             color: #fff;
             overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
 
-        /* Initial Darkness */
-        #atrium-container {
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            transition: opacity 4s ease-in-out;
+        /* The Main Scene */
+        #atrium-scene {
             position: relative;
+            width: 100vw;
+            height: 100vh;
+            background: url('atrium.jpg') no-repeat center center;
+            background-size: cover;
+            opacity: 0; /* Starts in darkness */
+            transition: opacity 5s ease-in-out, transform 8s ease-out;
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
-        canvas {
+        /* Neural Light Overlay */
+        #neuralCanvas {
             position: absolute;
             top: 0;
             left: 0;
-            z-index: 1;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
             pointer-events: none;
+            mix-blend-mode: screen;
         }
 
-        /* Central Anchor */
-        .center-mark {
-            position: relative;
-            z-index: 10;
+        /* Central Logo/Mark */
+        .floor-mark {
+            position: absolute;
+            bottom: 22%; /* Positioned over the floor glow in your photo */
             text-align: center;
+            z-index: 5;
             pointer-events: none;
         }
 
         .metavoxa-text {
-            font-size: 2.5rem;
-            letter-spacing: 0.5rem;
-            font-weight: 300;
-            opacity: 0.4;
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
-            transition: opacity 2s;
+            font-size: 3.5rem;
+            letter-spacing: 0.8rem;
+            font-weight: 400;
+            opacity: 0.6;
+            color: #e0e0e0;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.4);
+            filter: blur(1px);
         }
 
-        .instruction-line {
-            position: absolute;
-            bottom: -60px;
+        .initial-instruction {
+            position: fixed;
+            top: 50%;
             left: 50%;
-            transform: translateX(-50%);
-            width: 300px;
+            transform: translate(-50%, -50%);
             font-style: italic;
-            font-size: 0.9rem;
+            font-size: 1.2rem;
+            letter-spacing: 0.1rem;
+            color: rgba(255,255,255,0.4);
             opacity: 0;
-            transition: opacity 2s;
-            color: rgba(255, 255, 255, 0.5);
+            z-index: 100;
+            pointer-events: none;
+            transition: opacity 2s ease;
         }
 
-        /* Spatial Zones */
+        /* Interactive Zones (Hotspots) */
         .zone {
             position: absolute;
-            z-index: 15;
-            width: 300px;
-            height: 300px;
+            z-index: 10;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            transition: all 1s ease;
+        }
+
+        /* Hotspot Mapping based on your photo */
+        .study { left: 22%; top: 48%; width: 18%; height: 30%; }
+        .observatory { right: 22%; top: 52%; width: 15%; height: 25%; }
+        .salon { right: 5%; bottom: 15%; width: 15%; height: 60%; }
+        .glam { left: 5%; bottom: 15%; width: 20%; height: 40%; }
+
+        /* Label styling */
+        .zone-label {
+            opacity: 0;
             text-align: center;
-            transition: var(--transition-slow);
+            transition: opacity 0.8s ease;
+            pointer-events: none;
+            text-shadow: 0 0 15px rgba(0,0,0,0.9);
         }
 
-        /* Positioning */
-        .study { left: 10%; top: 50%; transform: translateY(-50%); }
-        .observatory { right: 10%; top: 50%; transform: translateY(-50%); }
-        .salon { right: 20%; bottom: 10%; }
-        .glam { left: 20%; bottom: 10%; }
-
-        /* Visual Elements for Wings */
-        .wing-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            filter: blur(15px);
-            opacity: 0.2;
-            transition: var(--transition-slow);
-            margin-bottom: 20px;
+        .poetic-line { 
+            font-style: italic; 
+            font-size: 1rem; 
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 8px;
         }
 
-        .study .wing-icon { background: var(--gold); box-shadow: 0 0 40px var(--gold); }
-        .observatory .wing-icon { background: var(--blue); box-shadow: 0 0 40px var(--blue); }
-        .salon .wing-icon { background: var(--warm); box-shadow: 0 0 40px var(--warm); border-radius: 50% 50% 0 0; }
-        .glam .wing-icon { background: var(--luminous); box-shadow: 0 0 40px var(--luminous); transform: rotate(45deg); }
+        .wing-title { 
+            font-size: 1.3rem; 
+            letter-spacing: 0.3rem; 
+            text-transform: uppercase;
+            font-weight: 300;
+        }
 
-        .zone-text { opacity: 0; transition: opacity 1s; pointer-events: none; }
-        .poetic-line { font-style: italic; font-size: 1rem; margin-bottom: 5px; color: rgba(255,255,255,0.7); }
-        .wing-name { font-size: 1.2rem; letter-spacing: 0.2rem; text-transform: uppercase; }
-
-        /* Hover States */
-        .zone:hover .wing-icon { opacity: 0.8; filter: blur(5px); transform: scale(1.1); }
+        /* Hover Interactions */
         .zone:hover { cursor: pointer; }
+        .zone:hover .zone-label { opacity: 1; }
 
-        /* Custom Cursor */
+        /* Custom Soft Cursor */
         #cursor {
             position: fixed;
-            width: 8px;
-            height: 8px;
-            background: #fff;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.5);
             border-radius: 50%;
             pointer-events: none;
-            z-index: 100;
-            mix-blend-mode: difference;
-            transition: transform 0.2s;
+            z-index: 1000;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s ease-out, width 0.3s, height 0.3s;
+            backdrop-filter: blur(2px);
         }
 
-        /* Transitions */
-        .transition-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #fff;
-            opacity: 0;
-            z-index: 200;
-            pointer-events: none;
-            transition: opacity 2s ease-in;
+        /* Transition to next page */
+        .fade-out {
+            opacity: 0 !important;
+            transform: scale(1.1) !important;
+            transition: opacity 2s ease, transform 3s ease !important;
         }
+
     </style>
 </head>
 <body>
 
     <div id="cursor"></div>
-    <div class="transition-overlay" id="overlay"></div>
+    <div class="initial-instruction" id="intro-text">Begin where you are pulled.</div>
 
-    <div id="atrium-container">
+    <main id="atrium-scene">
         <canvas id="neuralCanvas"></canvas>
 
-        <div class="center-mark">
-            <div class="metavoxa-text">MetaVoxa</div>
-            <div class="instruction-line" id="intro-text">Begin where you are pulled.</div>
+        <div class="floor-mark">
+            <h1 class="metavoxa-text">MetaVoxa</h1>
         </div>
 
-        <div class="zone study" onclick="transitionTo('study-wing.html')">
-            <div class="wing-icon"></div>
-            <div class="zone-text">
+        <div class="zone study" onclick="navigateTo('study-wing.html')">
+            <div class="zone-label">
                 <div class="poetic-line">“Where patterns become visible”</div>
-                <div class="wing-name">Study Wing</div>
+                <div class="wing-title">Study Wing</div>
             </div>
         </div>
 
-        <div class="zone observatory" onclick="transitionTo('observatory.html')">
-            <div class="wing-icon"></div>
-            <div class="zone-text">
+        <div class="zone observatory" onclick="navigateTo('observatory.html')">
+            <div class="zone-label">
                 <div class="poetic-line">“Where distance creates clarity”</div>
-                <div class="wing-name">Observatory</div>
+                <div class="wing-title">Observatory</div>
             </div>
         </div>
 
-        <div class="zone salon" onclick="transitionTo('salon.html')">
-            <div class="wing-icon"></div>
-            <div class="zone-text">
+        <div class="zone salon" onclick="navigateTo('salon.html')">
+            <div class="zone-label">
                 <div class="poetic-line">“Where the coven gathers”</div>
-                <div class="wing-name">Salon</div>
+                <div class="wing-title">Salon</div>
             </div>
         </div>
 
-        <div class="zone glam" onclick="transitionTo('glam-wing.html')">
-            <div class="wing-icon"></div>
-            <div class="zone-text">
+        <div class="zone glam" onclick="navigateTo('glam-wing.html')">
+            <div class="zone-label">
                 <div class="poetic-line">“Where dressing is a discipline”</div>
-                <div class="wing-name">Glam Wing</div>
+                <div class="wing-title">Glam Wing</div>
             </div>
         </div>
-    </div>
+    </main>
 
     <script>
-        const container = document.getElementById('atrium-container');
-        const introText = document.getElementById('intro-text');
+        const scene = document.getElementById('atrium-scene');
+        const intro = document.getElementById('intro-text');
         const cursor = document.getElementById('cursor');
 
-        // 1. Initial Fade In
+        // 1. Scene Entrance (Fade from Black)
         window.onload = () => {
             setTimeout(() => {
-                container.style.opacity = '1';
-            }, 500);
+                scene.style.opacity = "1";
+            }, 1000);
 
             setTimeout(() => {
-                introText.style.opacity = '1';
-                setTimeout(() => { introText.style.opacity = '0'; }, 4000);
-            }, 3000);
+                intro.style.opacity = "1";
+                setTimeout(() => { intro.style.opacity = "0"; }, 4000);
+            }, 3500);
         };
 
-        // 2. Custom Cursor Follow
-        document.addEventListener('mousemove', (e) => {
+        // 2. Cursor movement
+        document.addEventListener('mousemove', e => {
             cursor.style.left = e.clientX + 'px';
             cursor.style.top = e.clientY + 'px';
         });
 
-        // 3. Hover Interaction Sequence
-        document.querySelectorAll('.zone').forEach(zone => {
-            const poetic = zone.querySelector('.poetic-line');
-            const name = zone.querySelector('.wing-name');
-            const textGroup = zone.querySelector('.zone-text');
-
-            zone.addEventListener('mouseenter', () => {
-                textGroup.style.opacity = '1';
-                poetic.style.opacity = '0';
-                name.style.opacity = '0';
-                
-                // Sequence
-                setTimeout(() => { poetic.style.opacity = '1'; }, 200);
-                setTimeout(() => { name.style.opacity = '1'; }, 1200);
-            });
-
-            zone.addEventListener('mouseleave', () => {
-                textGroup.style.opacity = '0';
-            });
-        });
-
-        // 4. Neural Light Currents (Canvas)
+        // 3. Neural Current Simulation (Faint lines)
         const canvas = document.getElementById('neuralCanvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
 
-        function resize() {
+        function initCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
         }
-        window.addEventListener('resize', resize);
-        resize();
 
-        class Particle {
+        class NeuralPulse {
             constructor() {
-                this.reset();
-            }
-            reset() {
                 this.x = Math.random() * canvas.width;
                 this.y = Math.random() * canvas.height;
-                this.vx = (Math.random() - 0.5) * 0.5;
-                this.vy = (Math.random() - 0.5) * 0.5;
-                this.life = Math.random() * 100;
-                this.opacity = 0;
+                this.size = Math.random() * 2 + 1;
+                this.speedX = Math.random() * 0.5 - 0.25;
+                this.speedY = Math.random() * 0.2 - 0.1;
+                this.opacity = Math.random() * 0.5;
             }
             update() {
-                this.x += this.vx;
-                this.y += this.vy;
-                this.life -= 0.1;
-                if (this.life < 20) this.opacity -= 0.01;
-                else if (this.opacity < 0.15) this.opacity += 0.005;
-
-                if (this.life <= 0) this.reset();
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if(this.x > canvas.width) this.x = 0;
+                if(this.opacity < 0.1) this.opacity += 0.01;
             }
             draw() {
                 ctx.beginPath();
-                ctx.strokeStyle = `rgba(200, 230, 255, ${this.opacity})`;
-                ctx.lineWidth = 0.5;
                 ctx.moveTo(this.x, this.y);
-                ctx.lineTo(this.x + 20, this.y + 5); // Slight wisp shape
+                ctx.lineTo(this.x + 40, this.y + (Math.sin(this.x/50)*5));
+                ctx.strokeStyle = `rgba(200, 220, 255, ${this.opacity * 0.2})`;
                 ctx.stroke();
             }
         }
 
-        for (let i = 0; i < 40; i++) particles.push(new Particle());
+        for (let i = 0; i < 30; i++) particles.push(new NeuralPulse());
 
         function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => {
-                p.update();
-                p.draw();
-            });
+            particles.forEach(p => { p.update(); p.draw(); });
             requestAnimationFrame(animate);
         }
+
+        window.addEventListener('resize', initCanvas);
+        initCanvas();
         animate();
 
-        // 5. Immersive Transition
-        function transitionTo(url) {
-            const overlay = document.getElementById('overlay');
-            container.style.transform = "scale(1.2)";
-            container.style.filter = "blur(10px)";
-            container.style.opacity = "0";
-            overlay.style.opacity = "1";
-            
+        // 4. Navigation Transition
+        function navigateTo(url) {
+            scene.classList.add('fade-out');
             setTimeout(() => {
                 window.location.href = url;
             }, 2000);
         }
+
+        // 5. Hover Feedback for Cursor
+        document.querySelectorAll('.zone').forEach(z => {
+            z.addEventListener('mouseenter', () => {
+                cursor.style.width = '60px';
+                cursor.style.height = '60px';
+                cursor.style.background = 'rgba(255,255,255,0.1)';
+            });
+            z.addEventListener('mouseleave', () => {
+                cursor.style.width = '20px';
+                cursor.style.height = '20px';
+                cursor.style.background = 'rgba(255,255,255,0.3)';
+            });
+        });
+
     </script>
 </body>
 </html>
