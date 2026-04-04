@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MetaVoxa | The Atrium</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     
     <style>
         * {
@@ -18,60 +16,244 @@
         body {
             background: #000;
             overflow: hidden;
+            height: 100vh;
             font-family: 'Cormorant Garamond', serif;
         }
 
-        #canvas-container {
+        #void {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 1;
+            background: #000;
+            z-index: 1000;
+            animation: emergence 4s ease-out forwards;
+            animation-delay: 0.5s;
         }
 
-        #ui-layer {
-            position: fixed;
-            top: 0;
-            left: 0;
+        @keyframes emergence {
+            0% { opacity: 1; }
+            100% { opacity: 0; pointer-events: none; }
+        }
+
+        #atrium {
+            position: relative;
             width: 100%;
             height: 100%;
-            z-index: 10;
-            pointer-events: none;
-        }
-
-        #center-glow {
-            position: absolute;
-            bottom: 15%;
-            left: 50%;
-            transform: translateX(-50%);
-            font-family: 'Cinzel', serif;
-            font-size: 3rem;
-            letter-spacing: 0.4em;
-            color: rgba(200,190,180,0.3);
-            text-shadow: 
-                0 0 30px rgba(200,190,180,0.2),
-                0 0 60px rgba(200,190,180,0.1);
-            pointer-events: none;
             opacity: 0;
-            animation: center-fade 4s ease-out forwards;
-            animation-delay: 3s;
+            animation: fade-in 3s ease-out forwards;
+            animation-delay: 1s;
         }
 
-        @keyframes center-fade {
+        @keyframes fade-in {
             to { opacity: 1; }
         }
 
-        .zone-label {
+        /* The photograph */
+        #base-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.9) contrast(1.1);
+        }
+
+        /* Canvas overlay for effects */
+        #effects-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+            mix-blend-mode: screen;
+        }
+
+        /* Interactive zones */
+        .zone {
+            position: absolute;
+            z-index: 10;
+            cursor: pointer;
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Study Wing - Left arch */
+        .zone-study {
+            left: 15%;
+            top: 25%;
+            width: 25%;
+            height: 50%;
+        }
+
+        /* Observatory - Right arch */
+        .zone-observatory {
+            right: 12%;
+            top: 25%;
+            width: 28%;
+            height: 50%;
+        }
+
+        /* Glam Wing - Front left map */
+        .zone-glam {
+            left: 3%;
+            bottom: 12%;
+            width: 20%;
+            height: 40%;
+        }
+
+        /* Salon - Front right curtain */
+        .zone-salon {
+            right: 0%;
+            bottom: 8%;
+            width: 22%;
+            height: 55%;
+        }
+
+        /* Zone glow overlays */
+        .zone::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease;
+            pointer-events: none;
+        }
+
+        .zone-study::before {
+            background: radial-gradient(ellipse at 40% 60%, 
+                rgba(255,160,60,0.4) 0%, 
+                rgba(255,140,40,0.2) 30%,
+                transparent 60%);
+            filter: blur(20px);
+        }
+
+        .zone-observatory::before {
+            background: radial-gradient(ellipse at 60% 50%, 
+                rgba(100,180,255,0.35) 0%, 
+                rgba(80,160,240,0.15) 40%,
+                transparent 70%);
+            filter: blur(25px);
+        }
+
+        .zone-glam::before {
+            background: radial-gradient(ellipse at 30% 70%, 
+                rgba(255,200,100,0.4) 0%, 
+                rgba(255,180,80,0.2) 40%,
+                transparent 60%);
+            filter: blur(15px);
+        }
+
+        .zone-salon::before {
+            background: radial-gradient(ellipse at 70% 40%, 
+                rgba(255,160,80,0.35) 0%, 
+                rgba(200,120,60,0.15) 50%,
+                transparent 70%);
+            filter: blur(30px);
+        }
+
+        .zone:hover::before {
+            opacity: 1;
+        }
+
+        /* Floating candles container */
+        #candles-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 6;
+        }
+
+        .candle {
+            position: absolute;
+            width: 8px;
+            height: 24px;
+            background: linear-gradient(to bottom, #f5f5dc 0%, #e8e4c9 100%);
+            border-radius: 2px;
+            opacity: 0.6;
+            transition: all 0.6s ease;
+        }
+
+        .candle::before {
+            content: '';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 12px;
+            background: radial-gradient(ellipse at center, 
+                rgba(255,200,100,0.9) 0%, 
+                rgba(255,100,50,0.6) 40%,
+                transparent 70%);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+            filter: blur(2px);
+            animation: flame-flicker 0.1s infinite alternate;
+        }
+
+        .candle.lit::before {
+            opacity: 1;
+        }
+
+        @keyframes flame-flicker {
+            0% { transform: translateX(-50%) scale(1) rotate(-2deg); }
+            100% { transform: translateX(-50%) scale(1.1) rotate(2deg); }
+        }
+
+        .candle::after {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 40px;
+            background: radial-gradient(circle, 
+                rgba(255,160,60,0.3) 0%, 
+                transparent 70%);
+            opacity: 0;
+            transition: opacity 0.8s ease;
+            pointer-events: none;
+        }
+
+        .candle.lit::after {
+            opacity: 1;
+            animation: glow-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes glow-pulse {
+            0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.3; }
+            50% { transform: translateX(-50%) scale(1.3); opacity: 0.5; }
+        }
+
+        /* Zone text */
+        .zone-text {
             position: absolute;
             text-align: center;
             pointer-events: none;
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(30px);
             transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 280px;
+            left: 50%;
+            top: 50%;
+            margin-left: -140px;
+            margin-top: -40px;
+            z-index: 20;
         }
 
-        .zone-label.visible {
+        .zone:hover .zone-text {
             opacity: 1;
             transform: translateY(0);
         }
@@ -80,43 +262,92 @@
             font-family: 'Cormorant Garamond', serif;
             font-size: 1.1rem;
             font-style: italic;
-            color: rgba(245,245,220,0.9);
-            letter-spacing: 0.1em;
-            margin-bottom: 0.5rem;
+            color: rgba(255,255,240,0.95);
+            letter-spacing: 0.12em;
+            margin-bottom: 0.8rem;
             text-shadow: 0 2px 20px rgba(0,0,0,0.9);
+            opacity: 0;
+            animation: text-reveal 0.6s ease 0.2s forwards;
         }
 
         .zone-name {
             font-family: 'Cinzel', serif;
             font-size: 1.2rem;
-            letter-spacing: 0.3em;
+            letter-spacing: 0.35em;
             text-transform: uppercase;
-            color: #f5f5dc;
-            text-shadow: 0 2px 30px rgba(0,0,0,1);
+            color: #fff8e7;
+            text-shadow: 0 2px 30px rgba(0,0,0,1), 0 0 40px rgba(255,255,255,0.1);
+            opacity: 0;
+            animation: text-reveal 0.6s ease 0.5s forwards;
         }
 
-        #label-study { left: 15%; top: 35%; }
-        #label-observatory { right: 15%; top: 35%; }
-        #label-glam { left: 8%; bottom: 25%; }
-        #label-salon { right: 8%; bottom: 25%; }
+        @keyframes text-reveal {
+            to { opacity: 1; }
+        }
 
+        /* Map levitation effect */
+        .zone-glam .levitation-indicator {
+            position: absolute;
+            left: 25%;
+            top: 45%;
+            width: 50%;
+            height: 30%;
+            background: radial-gradient(ellipse at center, 
+                rgba(255,200,100,0.2) 0%, 
+                transparent 70%);
+            opacity: 0;
+            transition: all 0.8s ease;
+            transform: translateY(0);
+            filter: blur(10px);
+        }
+
+        .zone-glam:hover .levitation-indicator {
+            opacity: 1;
+            transform: translateY(-15px);
+        }
+
+        /* Curtain breathing effect */
+        .zone-salon .curtain-breath {
+            position: absolute;
+            right: 0;
+            top: 10%;
+            width: 60%;
+            height: 80%;
+            background: linear-gradient(to left, 
+                rgba(139,69,19,0.3) 0%, 
+                transparent 100%);
+            opacity: 0;
+            transition: all 1.2s ease;
+            transform: scaleX(1);
+            filter: blur(8px);
+        }
+
+        .zone-salon:hover .curtain-breath {
+            opacity: 1;
+            transform: scaleX(1.15);
+        }
+
+        /* Center guidance */
         #guidance {
             position: absolute;
-            bottom: 8%;
+            bottom: 6%;
             left: 50%;
             transform: translateX(-50%);
             font-family: 'Cormorant Garamond', serif;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             font-style: italic;
-            color: rgba(245,245,220,0.4);
-            letter-spacing: 0.2em;
+            color: rgba(245,245,220,0.5);
+            letter-spacing: 0.25em;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.8);
             opacity: 0;
+            z-index: 15;
+            pointer-events: none;
             transition: opacity 3s ease;
         }
 
         #guidance.visible {
             opacity: 0.6;
-            animation: breathe 4s ease-in-out infinite;
+            animation: breathe 5s ease-in-out infinite;
         }
 
         @keyframes breathe {
@@ -124,6 +355,7 @@
             50% { opacity: 0.7; }
         }
 
+        /* Transition */
         #transition {
             position: fixed;
             top: 0;
@@ -142,519 +374,276 @@
             pointer-events: all;
         }
 
-        #loading {
-            position: fixed;
+        /* Parallax container */
+        #parallax-container {
+            position: absolute;
+            top: -5%;
+            left: -5%;
+            width: 110%;
+            height: 110%;
+            transition: transform 0.3s ease-out;
+        }
+
+        /* Neural displacement overlay */
+        #neural-overlay {
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: #000;
-            z-index: 1000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: rgba(200,190,180,0.5);
-            font-family: 'Cinzel', serif;
-            letter-spacing: 0.3em;
-            font-size: 1.2rem;
-            transition: opacity 2s ease;
+            pointer-events: none;
+            z-index: 4;
+            opacity: 0.4;
+            mix-blend-mode: overlay;
+            background: 
+                radial-gradient(circle at 30% 40%, rgba(200,200,220,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 70% 60%, rgba(220,210,200,0.1) 0%, transparent 50%);
+            filter: blur(40px);
+            animation: neural-drift 20s ease-in-out infinite;
         }
 
-        #loading.hidden {
-            opacity: 0;
-            pointer-events: none;
+        @keyframes neural-drift {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(2%, -1%) scale(1.02); }
+            66% { transform: translate(-1%, 2%) scale(0.98); }
+        }
+
+        @media (max-width: 768px) {
+            .zone-text { transform: scale(0.85); width: 240px; margin-left: -120px; }
+            .zone-poetic { font-size: 0.95rem; }
+            .zone-name { font-size: 1rem; letter-spacing: 0.2em; }
+            #guidance { font-size: 1rem; bottom: 4%; }
+            #center-glow { font-size: 2rem; }
         }
     </style>
 </head>
 <body>
 
-    <div id="loading">AWAKENING</div>
-    
+    <div id="void"></div>
     <div id="transition"></div>
-    
-    <div id="canvas-container"></div>
-    
-    <div id="ui-layer">
-        <div id="center-glow">MetaVoxa</div>
-        
-        <div class="zone-label" id="label-study">
-            <div class="zone-poetic">Where patterns become visible</div>
-            <div class="zone-name">Study Wing</div>
+
+    <div id="atrium">
+        <div id="parallax-container">
+            <img id="base-image" src="IMG_7289.jpg" alt="The Atrium">
         </div>
         
-        <div class="zone-label" id="label-observatory">
-            <div class="zone-poetic">Where distance creates clarity</div>
-            <div class="zone-name">Observatory</div>
+        <div id="neural-overlay"></div>
+        <canvas id="effects-canvas"></canvas>
+        <div id="candles-container"></div>
+
+        <!-- Study Wing -->
+        <div class="zone zone-study" data-target="study-wing.html">
+            <div class="zone-text">
+                <div class="zone-poetic">Where patterns become visible</div>
+                <div class="zone-name">Study Wing</div>
+            </div>
         </div>
-        
-        <div class="zone-label" id="label-glam">
-            <div class="zone-poetic">Where dressing is a discipline</div>
-            <div class="zone-name">Glam Wing</div>
+
+        <!-- Observatory -->
+        <div class="zone zone-observatory" data-target="observatory.html">
+            <div class="zone-text">
+                <div class="zone-poetic">Where distance creates clarity</div>
+                <div class="zone-name">Observatory</div>
+            </div>
         </div>
-        
-        <div class="zone-label" id="label-salon">
-            <div class="zone-poetic">Where the coven gathers</div>
-            <div class="zone-name">Salon</div>
+
+        <!-- Glam Wing -->
+        <div class="zone zone-glam" data-target="glam-wing.html">
+            <div class="levitation-indicator"></div>
+            <div class="zone-text">
+                <div class="zone-poetic">Where dressing is a discipline</div>
+                <div class="zone-name">Glam Wing</div>
+            </div>
         </div>
-        
+
+        <!-- Salon -->
+        <div class="zone zone-salon" data-target="salon.html">
+            <div class="curtain-breath"></div>
+            <div class="zone-text">
+                <div class="zone-poetic">Where the coven gathers</div>
+                <div class="zone-name">Salon</div>
+            </div>
+        </div>
+
         <div id="guidance">Begin where you are pulled.</div>
     </div>
 
     <script>
-        // Three.js Scene Setup
-        const scene = new THREE.Scene();
-        scene.fog = new THREE.FogExp2(0x0a0a0c, 0.02);
-        
-        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(0, 1.6, 8);
-        
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        renderer.shadowMap.enabled = true;
-        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        renderer.toneMappingExposure = 1.2;
-        document.getElementById('canvas-container').appendChild(renderer.domElement);
+        // Create floating candles
+        const candlesContainer = document.getElementById('candles-container');
+        const candles = [];
+        const numCandles = 5;
 
-        // Lighting
-        const ambientLight = new THREE.AmbientLight(0x1a1a2e, 0.3);
-        scene.add(ambientLight);
-
-        const centerLight = new THREE.PointLight(0xd4af37, 0.5, 20);
-        centerLight.position.set(0, 0.5, 0);
-        scene.add(centerLight);
-
-        const studyLight = new THREE.PointLight(0xffaa55, 0.8, 15);
-        studyLight.position.set(-4, 2, 2);
-        studyLight.castShadow = true;
-        scene.add(studyLight);
-
-        const observatoryLight = new THREE.PointLight(0x6699ff, 0.6, 15);
-        observatoryLight.position.set(4, 2, 2);
-        scene.add(observatoryLight);
-
-        // Materials
-        const stoneMaterial = new THREE.MeshStandardMaterial({
-            color: 0x6f686a,
-            roughness: 0.9,
-            metalness: 0.1
-        });
-
-        const marbleMaterial = new THREE.MeshStandardMaterial({
-            color: 0x8a8587,
-            roughness: 0.2,
-            metalness: 0.1
-        });
-
-        const goldMaterial = new THREE.MeshStandardMaterial({
-            color: 0xd4af37,
-            roughness: 0.3,
-            metalness: 0.8,
-            emissive: 0x221100,
-            emissiveIntensity: 0.2
-        });
-
-        const woodMaterial = new THREE.MeshStandardMaterial({
-            color: 0x4a3728,
-            roughness: 0.8
-        });
-
-        const curtainMaterial = new THREE.MeshStandardMaterial({
-            color: 0x8b4513,
-            roughness: 0.9,
-            side: THREE.DoubleSide
-        });
-
-        // Floor
-        const floorGeometry = new THREE.PlaneGeometry(30, 30, 64, 64);
-        const floorPos = floorGeometry.attributes.position;
-        for (let i = 0; i < floorPos.count; i++) {
-            const x = floorPos.getX(i);
-            const y = floorPos.getY(i);
-            const z = Math.sin(x * 0.5) * Math.cos(y * 0.5) * 0.05;
-            floorPos.setZ(i, z);
-        }
-        floorGeometry.computeVertexNormals();
-        
-        const floor = new THREE.Mesh(floorGeometry, marbleMaterial);
-        floor.rotation.x = -Math.PI / 2;
-        floor.receiveShadow = true;
-        scene.add(floor);
-
-        // MetaVoxa floor glow
-        const floorGlowGeometry = new THREE.CircleGeometry(2, 32);
-        const floorGlowMaterial = new THREE.MeshBasicMaterial({
-            color: 0xd4af37,
-            transparent: true,
-            opacity: 0.15
-        });
-        const floorGlow = new THREE.Mesh(floorGlowGeometry, floorGlowMaterial);
-        floorGlow.rotation.x = -Math.PI / 2;
-        floorGlow.position.y = 0.01;
-        scene.add(floorGlow);
-
-        // Architecture
-        function createArch(x, z, scale, rotation = 0) {
-            const group = new THREE.Group();
+        for (let i = 0; i < numCandles; i++) {
+            const candle = document.createElement('div');
+            candle.className = 'candle';
             
-            const colGeometry = new THREE.BoxGeometry(0.4, 6, 0.4);
-            const leftCol = new THREE.Mesh(colGeometry, stoneMaterial);
-            leftCol.position.set(-1.5, 3, 0);
-            leftCol.castShadow = true;
+            // Position in study wing area with variation
+            const baseX = 18 + Math.random() * 12;
+            const baseY = 35 + Math.random() * 25;
             
-            const rightCol = new THREE.Mesh(colGeometry, stoneMaterial);
-            rightCol.position.set(1.5, 3, 0);
-            rightCol.castShadow = true;
+            candle.style.left = baseX + '%';
+            candle.style.top = baseY + '%';
+            candle.style.animationDelay = Math.random() * 5 + 's';
             
-            const archGeometry = new THREE.TorusGeometry(1.5, 0.2, 8, 20, Math.PI);
-            const archTop = new THREE.Mesh(archGeometry, stoneMaterial);
-            archTop.position.set(0, 6, 0);
-            archTop.castShadow = true;
+            candlesContainer.appendChild(candle);
             
-            group.add(leftCol, rightCol, archTop);
-            group.position.set(x, 0, z);
-            group.scale.set(scale, scale, scale);
-            group.rotation.y = rotation;
-            
-            return group;
+            candles.push({
+                element: candle,
+                baseX: baseX,
+                baseY: baseY,
+                phase: Math.random() * Math.PI * 2,
+                speed: 0.0003 + Math.random() * 0.0002,
+                floatRange: 8 + Math.random() * 6
+            });
         }
 
-        for (let i = 0; i < 5; i++) {
-            const z = -i * 4;
-            const scale = 1 - i * 0.15;
-            const arch = createArch(0, z, scale);
-            scene.add(arch);
+        // Animate candles floating
+        let time = 0;
+        function animateCandles() {
+            time += 1;
+            candles.forEach(candle => {
+                const floatY = Math.sin(time * candle.speed + candle.phase) * candle.floatRange;
+                const driftX = Math.cos(time * candle.speed * 0.7 + candle.phase) * 3;
+                
+                candle.element.style.transform = `translate(${driftX}px, ${floatY}px)`;
+            });
+            requestAnimationFrame(animateCandles);
+        }
+        animateCandles();
+
+        // Canvas effects for particles and light beams
+        const canvas = document.getElementById('effects-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // Dust particles
+        const particles = [];
+        for (let i = 0; i < 50; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                vx: (Math.random() - 0.5) * 0.3,
+                vy: (Math.random() - 0.5) * 0.3,
+                size: Math.random() * 2,
+                alpha: Math.random() * 0.5
+            });
         }
 
-        const leftArch = createArch(-4, 0, 1.2, Math.PI / 6);
-        scene.add(leftArch);
-        
-        const rightArch = createArch(4, 0, 1.2, -Math.PI / 6);
-        scene.add(rightArch);
-
-        // Study Wing
-        const studyGroup = new THREE.Group();
-        studyGroup.position.set(-4, 0, 2);
-        studyGroup.rotation.y = Math.PI / 6;
-
-        const deskGeometry = new THREE.BoxGeometry(1.5, 0.8, 0.8);
-        const desk = new THREE.Mesh(deskGeometry, woodMaterial);
-        desk.position.set(0, 0.4, 0);
-        desk.castShadow = true;
-        studyGroup.add(desk);
-
-        const deskTopGeometry = new THREE.BoxGeometry(1.6, 0.05, 0.9);
-        const deskTop = new THREE.Mesh(deskTopGeometry, woodMaterial);
-        deskTop.position.set(0, 0.85, 0);
-        studyGroup.add(deskTop);
-
-        const lampBaseGeometry = new THREE.CylinderGeometry(0.1, 0.15, 0.1, 16);
-        const lampBase = new THREE.Mesh(lampBaseGeometry, goldMaterial);
-        lampBase.position.set(0.4, 0.9, 0.2);
-        studyGroup.add(lampBase);
-
-        const lampStemGeometry = new THREE.CylinderGeometry(0.02, 0.02, 0.4, 8);
-        const lampStem = new THREE.Mesh(lampStemGeometry, goldMaterial);
-        lampStem.position.set(0.4, 1.1, 0.2);
-        studyGroup.add(lampStem);
-
-        const lampShadeGeometry = new THREE.ConeGeometry(0.2, 0.25, 16, 1, true);
-        const lampShade = new THREE.Mesh(lampShadeGeometry, new THREE.MeshBasicMaterial({
-            color: 0xffeebb,
-            transparent: true,
-            opacity: 0.8,
-            side: THREE.DoubleSide
-        }));
-        lampShade.position.set(0.4, 1.25, 0.2);
-        studyGroup.add(lampShade);
-
-        const shelfGeometry = new THREE.BoxGeometry(0.3, 2, 1.5);
-        const shelf = new THREE.Mesh(shelfGeometry, woodMaterial);
-        shelf.position.set(-1, 1, -0.5);
-        studyGroup.add(shelf);
-
-        scene.add(studyGroup);
-
-        // Observatory
-        const observatoryGroup = new THREE.Group();
-        observatoryGroup.position.set(4, 0, 2);
-        observatoryGroup.rotation.y = -Math.PI / 6;
-
-        const controlDeskGeometry = new THREE.BoxGeometry(2, 0.9, 0.6);
-        const controlDesk = new THREE.Mesh(controlDeskGeometry, new THREE.MeshStandardMaterial({
-            color: 0x2a2a35,
-            roughness: 0.4,
-            metalness: 0.6
-        }));
-        controlDesk.position.set(0, 0.45, 0);
-        observatoryGroup.add(controlDesk);
-
+        // Light beams
+        const beams = [];
         for (let i = 0; i < 3; i++) {
-            const panelGeometry = new THREE.CircleGeometry(0.25, 32);
-            const panel = new THREE.Mesh(panelGeometry, new THREE.MeshBasicMaterial({
-                color: 0x87ceeb,
-                transparent: true,
-                opacity: 0.6
-            }));
-            panel.position.set(-0.6 + i * 0.6, 0.95, 0.31);
-            panel.rotation.x = -Math.PI / 2;
-            observatoryGroup.add(panel);
-            
-            const panelLight = new THREE.PointLight(0x87ceeb, 0.3, 2);
-            panelLight.position.set(-0.6 + i * 0.6, 1.2, 0.5);
-            observatoryGroup.add(panelLight);
+            beams.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height * 0.5,
+                width: 50 + Math.random() * 100,
+                angle: Math.random() * Math.PI,
+                speed: 0.001 + Math.random() * 0.002,
+                phase: Math.random() * Math.PI * 2
+            });
         }
 
-        scene.add(observatoryGroup);
+        let frameCount = 0;
+        function drawEffects() {
+            frameCount++;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw dust
+            particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                
+                if (p.x < 0) p.x = canvas.width;
+                if (p.x > canvas.width) p.x = 0;
+                if (p.y < 0) p.y = canvas.height;
+                if (p.y > canvas.height) p.y = 0;
+                
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(220, 210, 200, ${p.alpha * 0.3})`;
+                ctx.fill();
+            });
+            
+            // Draw subtle light beams
+            beams.forEach(beam => {
+                const opacity = 0.03 + Math.sin(frameCount * beam.speed + beam.phase) * 0.02;
+                const gradient = ctx.createLinearGradient(
+                    beam.x, beam.y,
+                    beam.x + Math.cos(beam.angle) * 200,
+                    beam.y + Math.sin(beam.angle) * 200
+                );
+                gradient.addColorStop(0, `rgba(200, 200, 220, ${opacity})`);
+                gradient.addColorStop(0.5, `rgba(220, 210, 200, ${opacity * 0.5})`);
+                gradient.addColorStop(1, 'transparent');
+                
+                ctx.beginPath();
+                ctx.moveTo(beam.x, beam.y);
+                ctx.lineTo(
+                    beam.x + Math.cos(beam.angle + 0.1) * 300,
+                    beam.y + Math.sin(beam.angle + 0.1) * 300
+                );
+                ctx.lineTo(
+                    beam.x + Math.cos(beam.angle - 0.1) * 300,
+                    beam.y + Math.sin(beam.angle - 0.1) * 300
+                );
+                ctx.closePath();
+                ctx.fillStyle = gradient;
+                ctx.fill();
+            });
+            
+            requestAnimationFrame(drawEffects);
+        }
+        drawEffects();
 
-        // Glam Wing
-        const glamGroup = new THREE.Group();
-        glamGroup.position.set(-2, 0, 4);
-        glamGroup.rotation.y = Math.PI / 4;
-
-        const pedestalGeometry = new THREE.CylinderGeometry(0.3, 0.4, 1, 8);
-        const pedestal = new THREE.Mesh(pedestalGeometry, marbleMaterial);
-        pedestal.position.set(0, 0.5, 0);
-        pedestal.castShadow = true;
-        glamGroup.add(pedestal);
-
-        const mapGeometry = new THREE.BoxGeometry(0.8, 0.02, 0.6);
-        const mapMaterial = new THREE.MeshStandardMaterial({
-            color: 0xf5f5dc,
-            roughness: 0.9
-        });
-        const map = new THREE.Mesh(mapGeometry, mapMaterial);
-        map.position.set(0, 1.05, 0);
-        map.rotation.x = 0.2;
-        glamGroup.add(map);
-
-        const mapLight = new THREE.PointLight(0xffd700, 0.4, 3);
-        mapLight.position.set(0, 0.8, 0);
-        glamGroup.add(mapLight);
-
-        scene.add(glamGroup);
-
-        // Salon
-        const salonGroup = new THREE.Group();
-        salonGroup.position.set(2.5, 0, 3.5);
-        salonGroup.rotation.y = -Math.PI / 3;
-
-        const curtainGeometry = new THREE.PlaneGeometry(1.2, 3, 10, 10);
-        const curtainLeft = new THREE.Mesh(curtainGeometry, curtainMaterial);
-        curtainLeft.position.set(-0.8, 1.5, 0);
-        curtainLeft.rotation.y = 0.3;
+        // Zone interactions
+        const zones = document.querySelectorAll('.zone');
+        const studyZone = document.querySelector('.zone-study');
         
-        const curtainPos = curtainGeometry.attributes.position;
-        for (let i = 0; i < curtainPos.count; i++) {
-            const x = curtainPos.getX(i);
-            const z = Math.sin(x * 3) * 0.1;
-            curtainPos.setZ(i, z);
-        }
-        curtainGeometry.computeVertexNormals();
-        salonGroup.add(curtainLeft);
-
-        const curtainRight = curtainLeft.clone();
-        curtainRight.position.set(0.8, 1.5, 0);
-        curtainRight.rotation.y = -0.3;
-        curtainRight.scale.x = -1;
-        salonGroup.add(curtainRight);
-
-        const salonLight = new THREE.PointLight(0xffaa55, 0.5, 5);
-        salonLight.position.set(0, 1.5, 1);
-        salonGroup.add(salonLight);
-
-        scene.add(salonGroup);
-
-        // Neural Currents - Particles
-        const particlesGeometry = new THREE.BufferGeometry();
-        const particlesCount = 200;
-        const posArray = new Float32Array(particlesCount * 3);
-        const velocityArray = [];
-
-        for (let i = 0; i < particlesCount; i++) {
-            posArray[i * 3] = (Math.random() - 0.5) * 15;
-            posArray[i * 3 + 1] = Math.random() * 5 + 1;
-            posArray[i * 3 + 2] = (Math.random() - 0.5) * 15;
+        zones.forEach(zone => {
+            zone.addEventListener('mouseenter', function() {
+                const target = this.getAttribute('data-target');
+                
+                // Light candles if study wing
+                if (this.classList.contains('zone-study')) {
+                    candles.forEach(c => c.element.classList.add('lit'));
+                }
+            });
             
-            velocityArray.push({
-                x: (Math.random() - 0.5) * 0.01,
-                y: (Math.random() - 0.5) * 0.005,
-                z: (Math.random() - 0.5) * 0.01
-            });
-        }
-
-        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-
-        const particlesMaterial = new THREE.PointsMaterial({
-            size: 0.05,
-            color: 0xc8c8dc,
-            transparent: true,
-            opacity: 0.6,
-            blending: THREE.AdditiveBlending
-        });
-
-        const particles = new THREE.Points(particlesGeometry, particlesMaterial);
-        scene.add(particles);
-
-        // Light streams
-        const streamCurves = [];
-        for (let i = 0; i < 5; i++) {
-            const points = [];
-            for (let j = 0; j < 20; j++) {
-                points.push(new THREE.Vector3(
-                    (Math.random() - 0.5) * 10,
-                    2 + Math.random() * 3,
-                    (Math.random() - 0.5) * 10
-                ));
-            }
-            const curve = new THREE.CatmullRomCurve3(points);
-            const tubeGeometry = new THREE.TubeGeometry(curve, 20, 0.02, 8, false);
-            const tubeMaterial = new THREE.MeshBasicMaterial({
-                color: 0xdcd2c8,
-                transparent: true,
-                opacity: 0.2
-            });
-            const tube = new THREE.Mesh(tubeGeometry, tubeMaterial);
-            scene.add(tube);
-            streamCurves.push({ mesh: tube, curve: curve, offset: Math.random() * 100 });
-        }
-
-        // Interaction
-        const raycaster = new THREE.Raycaster();
-        const mouse = new THREE.Vector2();
-        let hoveredZone = null;
-
-        const zones = {
-            study: { 
-                position: new THREE.Vector3(-4, 1, 2), 
-                radius: 2, 
-                element: document.getElementById('label-study'),
-                target: 'study-wing.html'
-            },
-            observatory: { 
-                position: new THREE.Vector3(4, 1, 2), 
-                radius: 2, 
-                element: document.getElementById('label-observatory'),
-                target: 'observatory.html'
-            },
-            glam: { 
-                position: new THREE.Vector3(-2, 1, 4), 
-                radius: 1.5, 
-                element: document.getElementById('label-glam'),
-                target: 'glam-wing.html'
-            },
-            salon: { 
-                position: new THREE.Vector3(2.5, 1, 3.5), 
-                radius: 1.5, 
-                element: document.getElementById('label-salon'),
-                target: 'salon.html'
-            }
-        };
-
-        function onMouseMove(event) {
-            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-            gsap.to(camera.position, {
-                x: mouse.x * 0.3,
-                y: 1.6 + mouse.y * 0.1,
-                duration: 1,
-                ease: "power2.out"
-            });
-
-            let foundZone = null;
-            for (const [key, zone] of Object.entries(zones)) {
-                const distance = camera.position.distanceTo(zone.position);
-                if (distance < zone.radius + 2) {
-                    const screenPos = zone.position.clone().project(camera);
-                    const screenX = (screenPos.x + 1) / 2 * window.innerWidth;
-                    const screenY = (-screenPos.y + 1) / 2 * window.innerHeight;
-                    
-                    const mouseDistance = Math.sqrt(
-                        Math.pow(event.clientX - screenX, 2) + 
-                        Math.pow(event.clientY - screenY, 2)
-                    );
-                    
-                    if (mouseDistance < 150) {
-                        foundZone = key;
-                    }
+            zone.addEventListener('mouseleave', function() {
+                // Extinguish candles
+                if (this.classList.contains('zone-study')) {
+                    candles.forEach(c => c.element.classList.remove('lit'));
                 }
-            }
-
-            if (foundZone !== hoveredZone) {
-                if (hoveredZone) {
-                    zones[hoveredZone].element.classList.remove('visible');
-                    document.body.style.cursor = 'default';
-                }
-                
-                if (foundZone) {
-                    zones[foundZone].element.classList.add('visible');
-                    document.body.style.cursor = 'pointer';
-                }
-                
-                hoveredZone = foundZone;
-            }
-        }
-
-        function onClick(event) {
-            if (hoveredZone) {
-                const zone = zones[hoveredZone];
+            });
+            
+            zone.addEventListener('click', function() {
+                const target = this.getAttribute('data-target');
                 document.getElementById('transition').classList.add('active');
                 setTimeout(() => {
-                    window.location.href = zone.target;
+                    window.location.href = target;
                 }, 1500);
-            }
-        }
-
-        window.addEventListener('mousemove', onMouseMove);
-        window.addEventListener('click', onClick);
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
+            });
         });
 
-        // Animation loop
-        const clock = new THREE.Clock();
+        // Parallax effect
+        const parallaxContainer = document.getElementById('parallax-container');
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth - 0.5) * 20;
+            const y = (e.clientY / window.innerHeight - 0.5) * 20;
+            
+            parallaxContainer.style.transform = `translate(${-x}px, ${-y}px)`;
+        });
 
-        function animate() {
-            requestAnimationFrame(animate);
-            const time = clock.getElapsedTime();
-
-            const positions = particles.geometry.attributes.position.array;
-            for (let i = 0; i < particlesCount; i++) {
-                positions[i * 3] += velocityArray[i].x + Math.sin(time * 0.5 + i) * 0.002;
-                positions[i * 3 + 1] += velocityArray[i].y + Math.cos(time * 0.3 + i) * 0.001;
-                positions[i * 3 + 2] += velocityArray[i].z;
-
-                if (positions[i * 3 + 1] > 6) positions[i * 3 + 1] = 1;
-                if (positions[i * 3 + 1] < 1) positions[i * 3 + 1] = 6;
-            }
-            particles.geometry.attributes.position.needsUpdate = true;
-
-            streamCurves.forEach((stream, i) => {
-                stream.mesh.rotation.y = Math.sin(time * 0.1 + stream.offset) * 0.1;
-                stream.mesh.material.opacity = 0.15 + Math.sin(time * 0.5 + stream.offset) * 0.1;
-            });
-
-            floorGlowMaterial.opacity = 0.1 + Math.sin(time * 0.8) * 0.05;
-            curtainLeft.rotation.z = Math.sin(time * 0.5) * 0.02;
-            curtainRight.rotation.z = Math.cos(time * 0.4) * 0.02;
-            studyLight.intensity = 0.8 + Math.sin(time * 10) * 0.02 + Math.random() * 0.02;
-
-            renderer.render(scene, camera);
-        }
-
-        setTimeout(() => {
-            document.getElementById('loading').classList.add('hidden');
-        }, 2000);
-
+        // Guidance timer
         setTimeout(() => {
             document.getElementById('guidance').classList.add('visible');
         }, 8000);
-
-        animate();
     </script>
 
 </body>
