@@ -473,13 +473,119 @@
             pointer-events: all;
         }
 
+        /* Touch feedback for zones */
+        .zone.touch-active::before {
+            opacity: 1;
+        }
+
+        .zone.touch-active .zone-text {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ==================== MOBILE FIXES ==================== */
         @media (max-width: 768px) {
-            .zone-text { transform: scale(0.8); width: 260px; margin-left: -130px; }
-            .zone-poetic { font-size: 1rem; }
-            .zone-name { font-size: 1.1rem; letter-spacing: 0.25em; }
-            #intro-metavoxa { font-size: 2.5rem; letter-spacing: 0.4em; }
-            #intro-guidance { font-size: 1.1rem; }
-            .candle { transform: scale(0.8); }
+            
+            /* ===== TEXT SCALING ===== */
+            #intro-metavoxa { 
+                font-size: 2rem; 
+                letter-spacing: 0.3em; 
+                width: 90%;
+                text-align: center;
+            }
+            
+            #intro-guidance { 
+                font-size: 1rem; 
+                letter-spacing: 0.2em;
+                width: 80%;
+                text-align: center;
+                line-height: 1.4;
+            }
+            
+            /* ===== ZONE FIXES - Make them tappable ===== */
+            .zone {
+                min-width: 120px;
+                min-height: 80px;
+            }
+            
+            .zone-study {
+                left: 10%;
+                top: 20%;
+                width: 35%;
+                height: 30%;
+            }
+            
+            .zone-observatory {
+                right: 8%;
+                top: 20%;
+                width: 38%;
+                height: 30%;
+            }
+            
+            .zone-glam {
+                left: 5%;
+                bottom: 15%;
+                width: 30%;
+                height: 25%;
+            }
+            
+            .zone-salon {
+                right: 5%;
+                bottom: 10%;
+                width: 35%;
+                height: 30%;
+            }
+            
+            /* Zone text - always visible on mobile (no hover) */
+            .zone-text {
+                transform: scale(0.75) translateY(0);
+                opacity: 0.85;
+                width: 200px;
+                margin-left: -100px;
+                margin-top: -30px;
+                pointer-events: none;
+            }
+            
+            .zone-poetic { 
+                font-size: 0.9rem; 
+                letter-spacing: 0.08em;
+                text-shadow: 0 2px 15px rgba(0,0,0,0.9);
+            }
+            
+            .zone-name { 
+                font-size: 1rem; 
+                letter-spacing: 0.2em; 
+            }
+            
+            /* ===== CANDLES - Smaller, fewer ===== */
+            .candle { 
+                transform: scale(0.6); 
+                pointer-events: none;
+            }
+            
+            /* Hide some candles on small screens */
+            .candle:nth-child(n+5) {
+                display: none;
+            }
+            
+            /* ===== PARALLAX - Disable on touch devices ===== */
+            #parallax-container {
+                transform: none !important;
+                transition: none;
+            }
+            
+            /* ===== BODY - Prevent scroll issues ===== */
+            body {
+                overflow-x: hidden;
+                overflow-y: auto;
+                height: 100vh;
+                height: 100dvh;
+            }
+            
+            #atrium {
+                min-height: 100vh;
+                min-height: 100dvh;
+            }
         }
     </style>
 </head>
@@ -641,7 +747,6 @@
             canvas.height = window.innerHeight;
         }
         resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
 
         const particles = [];
         for (let i = 0; i < 80; i++) {
@@ -716,6 +821,43 @@
             const y = (e.clientY / window.innerHeight - 0.5) * 15;
             
             parallaxContainer.style.transform = `translate(${-x}px, ${-y}px)`;
+        });
+
+        // ==================== MOBILE FIXES ====================
+        
+        // Check if touch device
+        const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
+
+        if (isTouchDevice) {
+            // Auto-light candles on mobile after intro (since hover doesn't exist)
+            setTimeout(() => {
+                candles.forEach(c => c.element.classList.add('lit'));
+            }, 14000);
+            
+            // Add touch feedback for zones
+            zones.forEach(zone => {
+                zone.addEventListener('touchstart', function(e) {
+                    this.classList.add('touch-active');
+                });
+                
+                zone.addEventListener('touchend', function() {
+                    this.classList.remove('touch-active');
+                });
+            });
+        }
+
+        // Better canvas resize for mobile orientation changes
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                resizeCanvas();
+                // Reposition particles to new dimensions
+                particles.forEach(p => {
+                    if (p.x > canvas.width) p.x = canvas.width - 10;
+                    if (p.y > canvas.height) p.y = canvas.height - 10;
+                });
+            }, 250);
         });
     </script>
 
