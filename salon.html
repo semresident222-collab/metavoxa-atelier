@@ -854,28 +854,28 @@
   <div class="curtain-title">The Salon</div>
   <div class="curtain-subtitle">A living room where presence matters more than performance. How do you arrive today?</div>
   <div class="category-grid">
-    <div class="category-card" data-category="reader" onclick="selectCategory('reader')">
+    <div class="category-card" data-category="reader">
       <span class="cat-icon">📖</span>
       <div class="cat-name">Reader</div>
       <div class="cat-desc">Quiet, observant, absorbing</div>
     </div>
-    <div class="category-card" data-category="writer" onclick="selectCategory('writer')">
+    <div class="category-card" data-category="writer">
       <span class="cat-icon">✍️</span>
       <div class="cat-name">Writer</div>
       <div class="cat-desc">Constructing, offering, questioning</div>
     </div>
-    <div class="category-card" data-category="researcher" onclick="selectCategory('researcher')">
+    <div class="category-card" data-category="researcher">
       <span class="cat-icon">🔬</span>
       <div class="cat-name">Researcher</div>
       <div class="cat-desc">Digging, connecting, citing</div>
     </div>
-    <div class="category-card" data-category="explorer" onclick="selectCategory('explorer')">
+    <div class="category-card" data-category="explorer">
       <span class="cat-icon">🧭</span>
       <div class="cat-name">Explorer</div>
       <div class="cat-desc">Wandering, sensing, wondering</div>
     </div>
   </div>
-  <button class="enter-btn" id="enter-btn" onclick="enterSalon()">Enter</button>
+  <button class="enter-btn" id="enter-btn">Enter</button>
 </div>
 
 <!-- ════════════════════════════════════════
@@ -888,7 +888,7 @@
   <source src="https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3?filename=fireplace-123120.mp3" type="audio/mpeg">
 </audio>
 
-<button id="audio-toggle" onclick="toggleAudio()" class="muted" title="Toggle ambient sound">🔇</button>
+<button id="audio-toggle" class="muted" title="Toggle ambient sound">🔇</button>
 
 <!-- ════════════════════════════════════════
      PRESENCE BAR
@@ -904,7 +904,7 @@
      MODERATOR PANEL
      ════════════════════════════════════════ -->
 <div id="mod-panel">
-  <button class="mod-btn" onclick="clearAllMessages()">Clear Room</button>
+  <button class="mod-btn" id="clear-btn">Clear Room</button>
 </div>
 
 <!-- ════════════════════════════════════════
@@ -975,59 +975,28 @@
      CHAT INTERFACE
      ════════════════════════════════════════ -->
 <div id="chat-interface">
-  <input type="text" id="chat-input" placeholder="Speak into the room..." maxlength="200" onkeypress="if(event.key==='Enter')sendMessage()">
-  <button id="send-btn" onclick="sendMessage()">Send</button>
+  <input type="text" id="chat-input" placeholder="Speak into the room..." maxlength="200">
+  <button id="send-btn">Send</button>
 </div>
 
 <!-- ════════════════════════════════════════
      FIREBASE & LOGIC
      ════════════════════════════════════════ -->
 <script type="module">
-  // ════════════════════════════════════════
-  // FIREBASE SETUP INSTRUCTIONS
-  // ════════════════════════════════════════
-  // 1. Go to https://console.firebase.google.com
-  // 2. Click "Create Project" → name it "metavoxa-salon"
-  // 3. Click the </> icon to add a Web App
-  // 4. Copy the firebaseConfig object below
-  // 5. Go to Build → Realtime Database → Create Database
-  // 6. Choose "Start in test mode" (we'll secure it after)
-  // 7. Copy your database URL
-  // 8. Replace the config below with yours
-  // 9. Go to Rules tab, paste these rules:
-  //    {
-  //      "rules": {
-  //        "salon": {
-  //          ".read": true,
-  //          ".write": true,
-  //          "messages": {
-  //            "$msg": {
-  //              ".validate": "newData.hasChildren(['text','category','timestamp']) && newData.child('text').val().length <= 200"
-  //            }
-  //          }
-  //        }
-  //      }
-  //    }
-  // 10. For moderation: add your email as a custom claim
-  //     or use a simple password check (implemented below)
-  // ════════════════════════════════════════
-
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getDatabase, ref, push, onChildAdded, onValue, remove, set, onDisconnect } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-  // REPLACE THIS WITH YOUR FIREBASE CONFIG
   const firebaseConfig = {
-  apiKey: "AIzaSyBuWE_e-B_XOzmhCq2mUh7mbptA86NotAI",
-  authDomain: "metavoxa-salon.firebaseapp.com",
-  projectId: "metavoxa-salon",
-databaseURL: "https://metavoxa-salon-default-rtdb.europe-west1.firebasedatabase.app",
-storageBucket: ...
-  messagingSenderId: "871949825358",
-  appId: "1:871949825358:web:43a23cfe53128813339a1f",
-  measurementId: "G-ZM710BHDXV"
-};
+    apiKey: "AIzaSyBuWE_e-B_XOz...",
+    authDomain: "metavoxa-salon.firebaseapp.com",
+    databaseURL: "https://metavoxa-salon-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "metavoxa-salon",
+    storageBucket: "metavoxa-salon.firebasestorage.app",
+    messagingSenderId: "871949825358",
+    appId: "1:871949825358:web:43a23cfe53128813339a1f",
+    measurementId: "G-ZM710BHDXV"
+  };
 
-  // Initialize Firebase (will work once config is replaced)
   let app, db, messagesRef, presenceRef, myPresenceRef;
   let firebaseReady = false;
 
@@ -1037,8 +1006,9 @@ storageBucket: ...
     messagesRef = ref(db, 'salon/messages');
     presenceRef = ref(db, 'salon/presence');
     firebaseReady = true;
+    console.log('Firebase connected successfully');
   } catch (e) {
-    console.log('Firebase not configured yet — running in demo mode');
+    console.log('Firebase not configured yet — running in demo mode', e);
     firebaseReady = false;
   }
 
@@ -1055,7 +1025,7 @@ storageBucket: ...
     explorer: '#e8dcc8'
   };
 
-  // Weekly prompts (rotates — you change this manually or automate later)
+  // Weekly prompts
   const prompts = [
     "What are you carrying that you haven't set down yet?",
     "Tell us about a door you walked through without knowing where it led.",
@@ -1063,43 +1033,45 @@ storageBucket: ...
     "Describe the silence that taught you something.",
     "What are you researching without knowing it?"
   ];
-
-  // Set weekly prompt (changes based on week number)
   const weekNum = Math.floor(Date.now() / (7 * 24 * 60 * 60 * 1000));
   document.getElementById('weekly-prompt').textContent = '"' + prompts[weekNum % prompts.length] + '"';
 
   // ════════════════════════════════════════
-  // CATEGORY SELECTION
+  // CATEGORY SELECTION (using event listeners)
   // ════════════════════════════════════════
-  window.selectCategory = function(cat) {
-    myCategory = cat;
-    document.querySelectorAll('.category-card').forEach(c => c.classList.remove('selected'));
-    document.querySelector(`[data-category="${cat}"]`).classList.add('selected');
-    document.getElementById('enter-btn').classList.add('visible');
-  };
+  document.querySelectorAll('.category-card').forEach(card => {
+    card.addEventListener('click', function() {
+      const cat = this.dataset.category;
+      myCategory = cat;
+      document.querySelectorAll('.category-card').forEach(c => c.classList.remove('selected'));
+      this.classList.add('selected');
+      document.getElementById('enter-btn').classList.add('visible');
+      console.log('Selected category:', cat);
+    });
+  });
 
   // ════════════════════════════════════════
   // ENTER SALON
   // ════════════════════════════════════════
-  window.enterSalon = function() {
-    if (!myCategory) return;
+  document.getElementById('enter-btn').addEventListener('click', function() {
+    if (!myCategory) {
+      console.log('No category selected');
+      return;
+    }
+    console.log('Entering salon as:', myCategory);
 
-    // Lift curtain
     document.getElementById('curtain-overlay').classList.add('lifted');
 
-    // Hide scroll hint after 5 seconds
     setTimeout(() => {
       document.getElementById('scroll-hint').style.opacity = '0';
     }, 5000);
 
-    // Center scroll on hearth
     setTimeout(() => {
       const container = document.getElementById('salon-container');
       const room = document.getElementById('salon-room');
       container.scrollLeft = (room.offsetWidth - container.offsetWidth) / 2;
     }, 100);
 
-    // Setup Firebase presence
     if (firebaseReady) {
       myPresenceRef = push(presenceRef);
       set(myPresenceRef, {
@@ -1108,7 +1080,6 @@ storageBucket: ...
       });
       onDisconnect(myPresenceRef).remove();
 
-      // Listen for messages
       onChildAdded(messagesRef, (snapshot) => {
         const msg = snapshot.val();
         if (msg && msg.text) {
@@ -1116,7 +1087,6 @@ storageBucket: ...
         }
       });
 
-      // Listen for presence counts
       onValue(presenceRef, (snapshot) => {
         const data = snapshot.val() || {};
         const counts = { reader: 0, writer: 0, researcher: 0, explorer: 0 };
@@ -1127,24 +1097,21 @@ storageBucket: ...
         document.getElementById('count-writer').textContent = counts.writer;
         document.getElementById('count-researcher').textContent = counts.researcher;
         document.getElementById('count-explorer').textContent = counts.explorer;
-
-        // Render presence dots
         renderPresenceDots(data);
       });
     }
 
-    // Demo mode: show some sample messages
     if (!firebaseReady) {
       setTimeout(() => showMessage("The rain makes everything feel closer somehow.", "reader", Date.now()), 2000);
       setTimeout(() => showMessage("I've been thinking about that door metaphor all week.", "writer", Date.now()), 5000);
       setTimeout(() => showMessage("Has anyone read the new Lancet piece on neurodivergent women?", "researcher", Date.now()), 8000);
     }
-  };
+  });
 
   // ════════════════════════════════════════
   // SEND MESSAGE
   // ════════════════════════════════════════
-  window.sendMessage = function() {
+  function sendMessage() {
     const input = document.getElementById('chat-input');
     const text = input.value.trim();
     if (!text || !myCategory) return;
@@ -1160,10 +1127,15 @@ storageBucket: ...
     }
 
     input.value = '';
-  };
+  }
+
+  document.getElementById('send-btn').addEventListener('click', sendMessage);
+  document.getElementById('chat-input').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') sendMessage();
+  });
 
   // ════════════════════════════════════════
-  // SHOW MESSAGE (floating bubble)
+  // SHOW MESSAGE
   // ════════════════════════════════════════
   function showMessage(text, category, timestamp) {
     const stream = document.getElementById('message-stream');
@@ -1172,12 +1144,10 @@ storageBucket: ...
     bubble.innerHTML = `<span class="msg-category" style="background:${categoryColors[category]}"></span><span class="msg-text">${escapeHtml(text)}</span>`;
     stream.appendChild(bubble);
 
-    // Remove after animation
     setTimeout(() => {
       if (bubble.parentNode) bubble.remove();
     }, 20000);
 
-    // Limit bubbles
     while (stream.children.length > 6) {
       stream.removeChild(stream.firstChild);
     }
@@ -1219,7 +1189,7 @@ storageBucket: ...
   // AUDIO
   // ════════════════════════════════════════
   let audioEnabled = false;
-  window.toggleAudio = function() {
+  document.getElementById('audio-toggle').addEventListener('click', function() {
     const rain = document.getElementById('rain-audio');
     const fire = document.getElementById('fire-audio');
     const btn = document.getElementById('audio-toggle');
@@ -1241,7 +1211,7 @@ storageBucket: ...
       btn.classList.add('muted');
       audioEnabled = false;
     }
-  };
+  });
 
   // ════════════════════════════════════════
   // RAIN EFFECT
@@ -1249,7 +1219,6 @@ storageBucket: ...
   function createRain() {
     const container = document.getElementById('rain-container');
     const dropCount = 40;
-
     for (let i = 0; i < dropCount; i++) {
       const drop = document.createElement('div');
       drop.className = 'raindrop';
@@ -1266,7 +1235,6 @@ storageBucket: ...
   // ════════════════════════════════════════
   // MODERATOR MODE
   // ════════════════════════════════════════
-  // Type "metavoxa" in chat to unlock moderator panel
   document.getElementById('chat-input').addEventListener('input', function(e) {
     if (e.target.value.toLowerCase() === 'metavoxa') {
       isModerator = true;
@@ -1276,28 +1244,16 @@ storageBucket: ...
     }
   });
 
-  window.clearAllMessages = function() {
+  document.getElementById('clear-btn').addEventListener('click', function() {
     if (!isModerator) return;
     if (firebaseReady && confirm('Clear all messages from the room?')) {
       remove(messagesRef);
     }
     document.getElementById('message-stream').innerHTML = '';
-  };
-
-  // ════════════════════════════════════════
-  // SCROLL BEHAVIOR (Desktop centering)
-  // ════════════════════════════════════════
-  const container = document.getElementById('salon-container');
-  let isScrolling = false;
-
-  container.addEventListener('scroll', () => {
-    isScrolling = true;
-    clearTimeout(window.scrollTimeout);
-    window.scrollTimeout = setTimeout(() => { isScrolling = false; }, 150);
   });
 
   // ════════════════════════════════════════
-  // DEMO PRESENCE COUNTS (when Firebase off)
+  // DEMO PRESENCE COUNTS
   // ════════════════════════════════════════
   if (!firebaseReady) {
     document.getElementById('count-reader').textContent = '2';
