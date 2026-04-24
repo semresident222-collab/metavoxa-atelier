@@ -2,10 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>MetaVoxa | The Atrium</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -13,853 +12,311 @@
             box-sizing: border-box;
         }
 
-        body {
-            background: #000;
+        html, body {
+            width: 100%;
+            height: 100%;
             overflow: hidden;
-            height: 100vh;
-            font-family: 'Cormorant Garamond', serif;
+            background: #0a0a0f;
+            font-family: 'Crimson Text', Georgia, serif;
         }
 
-        /* Intro sequence container */
-        #intro-sequence {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 10000;
-            pointer-events: none;
-        }
-
-        /* Darkness to dim to bright */
-        #light-curtain {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #000;
-            animation: light-rise 12s ease-out forwards;
-        }
-
-        @keyframes light-rise {
-            0% { background: #000; opacity: 1; }
-            30% { background: #0a0a0c; opacity: 0.95; }
-            60% { background: #1a1a1e; opacity: 0.7; }
-            85% { background: #2a2a30; opacity: 0.3; }
-            100% { background: #000; opacity: 0; }
-        }
-
-        /* MetaVoxa text - appears at 5s, fades by 10s */
-        #intro-metavoxa {
-            position: absolute;
-            bottom: 50%;
-            left: 50%;
-            transform: translate(-50%, 50%);
-            font-family: 'Cinzel', serif;
-            font-size: 4rem;
-            letter-spacing: 0.6em;
-            color: rgba(220,210,200,0);
-            text-shadow: 
-                0 0 60px rgba(220,210,200,0),
-                0 0 120px rgba(220,210,200,0);
-            opacity: 0;
-            animation: metavoxa-appear 8s ease-out forwards;
-            animation-delay: 5s;
-        }
-
-        @keyframes metavoxa-appear {
-            0% { 
-                opacity: 0; 
-                color: rgba(220,210,200,0);
-                text-shadow: 0 0 60px rgba(220,210,200,0), 0 0 120px rgba(220,210,200,0);
-            }
-            20% { 
-                opacity: 1; 
-                color: rgba(220,210,200,0.9);
-                text-shadow: 0 0 60px rgba(220,210,200,0.3), 0 0 120px rgba(220,210,200,0.15);
-            }
-            60% { 
-                opacity: 1; 
-                color: rgba(220,210,200,0.9);
-                text-shadow: 0 0 60px rgba(220,210,200,0.3), 0 0 120px rgba(220,210,200,0.15);
-            }
-            100% { 
-                opacity: 0; 
-                color: rgba(220,210,200,0);
-                text-shadow: 0 0 60px rgba(220,210,200,0), 0 0 120px rgba(220,210,200,0);
-            }
-        }
-
-        /* Guidance text - appears at 8s, fades by 12s */
-        #intro-guidance {
-            position: absolute;
-            bottom: 35%;
-            left: 50%;
-            transform: translateX(-50%);
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.4rem;
-            font-style: italic;
-            color: rgba(245,245,220,0);
-            letter-spacing: 0.3em;
-            opacity: 0;
-            animation: guidance-appear 6s ease-out forwards;
-            animation-delay: 8s;
-        }
-
-        @keyframes guidance-appear {
-            0% { opacity: 0; color: rgba(245,245,220,0); }
-            30% { opacity: 1; color: rgba(245,245,220,0.7); }
-            70% { opacity: 1; color: rgba(245,245,220,0.7); }
-            100% { opacity: 0; color: rgba(245,245,220,0); }
-        }
-
-        /* Main atrium - appears fully at 12s */
-        #atrium {
+        #atrium-container {
             position: relative;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            animation: atrium-emerge 3s ease-out forwards;
-            animation-delay: 11s;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
         }
 
-        @keyframes atrium-emerge {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
-        }
-
-        /* Parallax container */
-        #parallax-container {
-            position: absolute;
-            top: -5%;
-            left: -5%;
-            width: 110%;
-            height: 110%;
-            transition: transform 0.3s ease-out;
-        }
-
-        /* The photograph */
-        #base-image {
+        /* === BACKGROUND IMAGE === */
+        #atrium-bg {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            filter: brightness(0.9) contrast(1.05);
+            background-image: url('atrium-photo.jpg');
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            z-index: 1;
         }
 
-        /* Animated neural swirls */
-        #swirls {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 3;
-            mix-blend-mode: screen;
-            opacity: 0;
-            animation: swirls-fade 2s ease-out forwards;
-            animation-delay: 12s;
-        }
-
-        @keyframes swirls-fade {
-            to { opacity: 0.6; }
-        }
-
-        /* Canvas for particles */
-        #effects-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 5;
-            opacity: 0;
-            animation: effects-fade 2s ease-out forwards;
-            animation-delay: 13s;
-        }
-
-        @keyframes effects-fade {
-            to { opacity: 1; }
-        }
-
-        /* Floating candles */
-        #candles-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 6;
-            opacity: 0;
-            animation: candles-fade 2s ease-out forwards;
-            animation-delay: 13s;
-        }
-
-        @keyframes candles-fade {
-            to { opacity: 1; }
-        }
-
+        /* === FLOATING CANDLES === */
         .candle {
             position: absolute;
-            width: 10px;
-            height: 30px;
-            background: linear-gradient(to bottom, #f5f5dc 0%, #e0dcc0 50%, #c8c4b0 100%);
-            border-radius: 3px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-            transition: all 0.8s ease;
+            width: 8px;
+            height: 24px;
+            background: linear-gradient(to top, #8B4513 0%, #D2691E 40%, #FFD700 70%, #FFF8DC 100%);
+            border-radius: 4px 4px 2px 2px;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.4), 0 0 40px rgba(255, 165, 0, 0.2);
+            animation: float 6s ease-in-out infinite;
+            z-index: 2;
         }
 
         .candle::before {
             content: '';
             position: absolute;
-            top: -4px;
+            top: -8px;
             left: 50%;
             transform: translateX(-50%);
-            width: 2px;
-            height: 4px;
-            background: #333;
+            width: 4px;
+            height: 8px;
+            background: radial-gradient(ellipse at center, #FFF 0%, #FFD700 50%, transparent 100%);
+            border-radius: 50%;
+            animation: flicker 2s ease-in-out infinite alternate;
         }
 
-        .candle .flame {
-            position: absolute;
-            top: -18px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 10px;
-            height: 16px;
-            background: radial-gradient(ellipse at center, 
-                #fff8e7 0%, 
-                #ffcc66 20%,
-                #ff8833 50%,
-                #ff4422 80%,
-                transparent 100%);
-            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-            opacity: 0;
-            transition: opacity 0.6s ease;
-            filter: blur(1px);
-            animation: flicker 0.12s infinite alternate;
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
         }
 
         @keyframes flicker {
-            0% { transform: translateX(-50%) scale(1) rotate(-3deg) skewX(-2deg); }
-            100% { transform: translateX(-50%) scale(1.15) rotate(3deg) skewX(2deg); }
+            0% { opacity: 0.8; transform: translateX(-50%) scale(1); }
+            100% { opacity: 1; transform: translateX(-50%) scale(1.1); }
         }
 
-        .candle .glow {
+        /* === DUST PARTICLES === */
+        .particle {
             position: absolute;
-            top: -35px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 60px;
-            background: radial-gradient(circle, 
-                rgba(255,160,60,0.4) 0%, 
-                rgba(255,120,40,0.2) 40%,
-                transparent 70%);
-            opacity: 0;
-            transition: opacity 0.8s ease;
-            pointer-events: none;
-            animation: glow-pulse 1.5s ease-in-out infinite;
+            width: 2px;
+            height: 2px;
+            background: rgba(232, 220, 200, 0.6);
+            border-radius: 50%;
+            animation: drift 10s linear infinite;
+            z-index: 2;
         }
 
-        @keyframes glow-pulse {
-            0%, 100% { transform: translateX(-50%) scale(1); opacity: 0; }
-            50% { transform: translateX(-50%) scale(1.2); opacity: 0.6; }
+        @keyframes drift {
+            0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-10vh) translateX(20px); opacity: 0; }
         }
 
-        .candle.lit .flame {
-            opacity: 1;
-        }
-
-        .candle.lit .glow {
-            opacity: 0.6;
-        }
-
-        /* Interactive zones */
-        .zone {
+        /* === TEXT CONTENT === */
+        #atrium-content {
             position: absolute;
-            z-index: 10;
-            cursor: pointer;
-        }
-
-        .zone-study {
-            left: 15%;
-            top: 25%;
-            width: 25%;
-            height: 50%;
-        }
-
-        .zone-observatory {
-            right: 12%;
-            top: 25%;
-            width: 28%;
-            height: 50%;
-        }
-
-        .zone-glam {
-            left: 3%;
-            bottom: 12%;
-            width: 20%;
-            height: 40%;
-        }
-
-        .zone-salon {
-            right: 0%;
-            bottom: 8%;
-            width: 22%;
-            height: 55%;
-        }
-
-        /* Zone glow overlays */
-        .zone::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            transition: opacity 1.2s ease;
-            pointer-events: none;
-        }
-
-        .zone-study::before {
-            background: radial-gradient(ellipse at 40% 60%, 
-                rgba(255,160,60,0.5) 0%, 
-                rgba(255,140,40,0.25) 30%,
-                transparent 60%);
-            filter: blur(30px);
-        }
-
-        .zone-observatory::before {
-            background: radial-gradient(ellipse at 60% 50%, 
-                rgba(100,180,255,0.4) 0%, 
-                rgba(80,160,240,0.2) 40%,
-                transparent 70%);
-            filter: blur(35px);
-        }
-
-        .zone-glam::before {
-            background: radial-gradient(ellipse at 30% 70%, 
-                rgba(255,200,100,0.45) 0%, 
-                rgba(255,180,80,0.25) 40%,
-                transparent 60%);
-            filter: blur(20px);
-        }
-
-        .zone-salon::before {
-            background: radial-gradient(ellipse at 70% 40%, 
-                rgba(255,160,80,0.4) 0%, 
-                rgba(200,120,60,0.2) 50%,
-                transparent 70%);
-            filter: blur(40px);
-        }
-
-        .zone:hover::before {
-            opacity: 1;
-        }
-
-        /* Zone text */
-        .zone-text {
-            position: absolute;
-            text-align: center;
-            pointer-events: none;
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-            width: 300px;
-            left: 50%;
             top: 50%;
-            margin-left: -150px;
-            margin-top: -40px;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 85%;
+            max-width: 600px;
+            text-align: center;
+            color: #e8dcc8;
+            z-index: 3;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
-        .zone:hover .zone-text {
-            opacity: 1;
-            transform: translateY(0);
+        #atrium-content h1 {
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            font-weight: 600;
+            margin: 0 0 20px 0;
+            line-height: 1.3;
+            text-shadow: 0 2px 15px rgba(0,0,0,0.9), 0 0 30px rgba(0,0,0,0.5);
+            letter-spacing: 0.02em;
         }
 
-        .zone-poetic {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.15rem;
+        #atrium-content .subtitle {
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
             font-style: italic;
-            color: rgba(255,255,245,0.95);
-            letter-spacing: 0.12em;
-            margin-bottom: 0.8rem;
-            text-shadow: 0 2px 20px rgba(0,0,0,0.95);
-            opacity: 0;
-            animation: text-reveal 0.8s ease 0.3s forwards;
+            line-height: 1.6;
+            margin: 0 0 15px 0;
+            text-shadow: 0 1px 8px rgba(0,0,0,0.9);
+            opacity: 0.9;
         }
 
-        .zone-name {
-            font-family: 'Cinzel', serif;
-            font-size: 1.3rem;
-            letter-spacing: 0.35em;
-            text-transform: uppercase;
-            color: #fff8e7;
-            text-shadow: 0 2px 30px rgba(0,0,0,1), 0 0 50px rgba(255,255,255,0.15);
-            opacity: 0;
-            animation: text-reveal 0.8s ease 0.6s forwards;
+        #atrium-content .body-text {
+            font-size: clamp(0.85rem, 2vw, 1rem);
+            line-height: 1.7;
+            margin: 0;
+            text-shadow: 0 1px 6px rgba(0,0,0,0.9);
+            opacity: 0.85;
         }
 
-        @keyframes text-reveal {
-            to { opacity: 1; }
-        }
-
-        /* Map levitation */
-        .zone-glam .levitation-glow {
+        /* === INTRO SEQUENCE === */
+        #intro-overlay {
             position: absolute;
-            left: 20%;
-            top: 40%;
-            width: 60%;
-            height: 35%;
-            background: radial-gradient(ellipse at center, 
-                rgba(255,200,100,0.3) 0%, 
-                transparent 70%);
-            opacity: 0;
-            transition: all 1s ease;
-            transform: translateY(0);
-            filter: blur(15px);
-        }
-
-        .zone-glam:hover .levitation-glow {
-            opacity: 1;
-            transform: translateY(-20px);
-        }
-
-        /* Curtain breath */
-        .zone-salon .curtain-breath {
-            position: absolute;
-            right: 0;
-            top: 10%;
-            width: 70%;
-            height: 80%;
-            background: linear-gradient(to left, 
-                rgba(139,69,19,0.4) 0%, 
-                transparent 100%);
-            opacity: 0;
-            transition: all 1.5s ease;
-            transform: scaleX(1) skewX(0deg);
-            filter: blur(10px);
-        }
-
-        .zone-salon:hover .curtain-breath {
-            opacity: 1;
-            transform: scaleX(1.2) skewX(-5deg);
-        }
-
-        /* Transition overlay */
-        #transition {
-            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             background: #000;
-            z-index: 1000;
-            opacity: 0;
+            z-index: 10;
+            animation: introFade 5s ease-out forwards;
             pointer-events: none;
-            transition: opacity 2s ease;
         }
 
-        #transition.active {
-            opacity: 1;
-            pointer-events: all;
+        @keyframes introFade {
+            0% { opacity: 1; }
+            30% { opacity: 0.8; }
+            60% { opacity: 0.4; }
+            100% { opacity: 0; }
         }
 
-        /* Touch feedback for zones */
-        .zone.touch-active::before {
-            opacity: 1;
+        /* === GO BACK BUTTON === */
+        #back-to-lobby {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 4;
+            padding: 12px 28px;
+            background: rgba(10, 10, 15, 0.6);
+            border: 1px solid rgba(232, 220, 200, 0.25);
+            color: #e8dcc8;
+            font-family: inherit;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            transition: all 0.4s ease;
+            text-decoration: none;
+            display: inline-block;
         }
 
-        .zone.touch-active .zone-text {
-            opacity: 1;
-            transform: translateY(0);
+        #back-to-lobby:hover {
+            background: rgba(232, 220, 200, 0.08);
+            border-color: rgba(232, 220, 200, 0.5);
+            letter-spacing: 0.08em;
         }
 
-        /* ==================== MOBILE FIXES ==================== */
+        /* ============================================
+           MOBILE FIXES
+           ============================================ */
         @media (max-width: 768px) {
-            
-            /* ===== TEXT SCALING ===== */
-            #intro-metavoxa { 
-                font-size: 2rem; 
-                letter-spacing: 0.3em; 
+            #atrium-bg {
+                /* Show full image on mobile */
+                background-size: contain;
+                background-position: center center;
+                background-color: #0a0a0f;
+            }
+
+            #atrium-content {
                 width: 90%;
-                text-align: center;
+                padding: 15px;
+                /* Lower position so text doesn't overlap image focal point */
+                top: 58%;
             }
-            
-            #intro-guidance { 
-                font-size: 1rem; 
-                letter-spacing: 0.2em;
-                width: 80%;
-                text-align: center;
-                line-height: 1.4;
+
+            #atrium-content h1 {
+                font-size: 1.3rem;
+                margin-bottom: 15px;
             }
-            
-            /* ===== ZONE FIXES - Make them tappable ===== */
-            .zone {
-                min-width: 120px;
-                min-height: 80px;
+
+            #atrium-content .subtitle {
+                font-size: 0.85rem;
             }
-            
-            .zone-study {
-                left: 10%;
-                top: 20%;
-                width: 35%;
-                height: 30%;
+
+            #atrium-content .body-text {
+                font-size: 0.8rem;
+                line-height: 1.6;
             }
-            
-            .zone-observatory {
-                right: 8%;
-                top: 20%;
-                width: 38%;
-                height: 30%;
+
+            #back-to-lobby {
+                bottom: 20px;
+                padding: 10px 22px;
+                font-size: 0.75rem;
             }
-            
-            .zone-glam {
-                left: 5%;
-                bottom: 15%;
-                width: 30%;
-                height: 25%;
+
+            /* Reduce candle intensity on small screens */
+            .candle {
+                opacity: 0.7;
             }
-            
-            .zone-salon {
-                right: 5%;
-                bottom: 10%;
-                width: 35%;
-                height: 30%;
+        }
+
+        @media (max-width: 480px) {
+            #atrium-content {
+                width: 92%;
+                top: 62%;
             }
-            
-            /* Zone text - always visible on mobile (no hover) */
-            .zone-text {
-                transform: scale(0.75) translateY(0);
-                opacity: 0.85;
-                width: 200px;
-                margin-left: -100px;
-                margin-top: -30px;
-                pointer-events: none;
+
+            #atrium-content h1 {
+                font-size: 1.15rem;
             }
-            
-            .zone-poetic { 
-                font-size: 0.9rem; 
-                letter-spacing: 0.08em;
-                text-shadow: 0 2px 15px rgba(0,0,0,0.9);
+
+            #atrium-content .subtitle {
+                font-size: 0.8rem;
             }
-            
-            .zone-name { 
-                font-size: 1rem; 
-                letter-spacing: 0.2em; 
+
+            #atrium-content .body-text {
+                font-size: 0.75rem;
             }
-            
-            /* ===== CANDLES - Smaller, fewer ===== */
-            .candle { 
-                transform: scale(0.6); 
-                pointer-events: none;
+        }
+
+        /* Landscape phones */
+        @media (max-height: 500px) and (orientation: landscape) {
+            #atrium-content {
+                top: 50%;
             }
-            
-            /* Hide some candles on small screens */
-            .candle:nth-child(n+5) {
-                display: none;
-            }
-            
-            /* ===== PARALLAX - Disable on touch devices ===== */
-            #parallax-container {
-                transform: none !important;
-                transition: none;
-            }
-            
-            /* ===== BODY - Prevent scroll issues ===== */
-            body {
-                overflow-x: hidden;
-                overflow-y: auto;
-                height: 100vh;
-                height: 100dvh;
-            }
-            
-            #atrium {
-                min-height: 100vh;
-                min-height: 100dvh;
+
+            #atrium-content h1 {
+                font-size: 1.2rem;
             }
         }
     </style>
+<base target="_blank">
 </head>
 <body>
+    <div id="atrium-container">
+        <!-- Intro fade from dark -->
+        <div id="intro-overlay"></div>
 
-    <!-- Intro sequence -->
-    <div id="intro-sequence">
-        <div id="light-curtain"></div>
-        <div id="intro-metavoxa">MetaVoxa</div>
-        <div id="intro-guidance">Begin where you are pulled.</div>
-    </div>
+        <!-- Background -->
+        <div id="atrium-bg"></div>
 
-    <div id="transition"></div>
+        <!-- Floating candles (generated by JS) -->
+        <div id="candles-layer"></div>
 
-    <div id="atrium">
-        <div id="parallax-container">
-            <img id="base-image" src="IMG_7289.jpg" alt="The Atrium">
-        </div>
-        
-        <svg id="swirls" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
-            <defs>
-                <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-                    <feGaussianBlur stdDeviation="4" result="blur"/>
-                    <feMerge>
-                        <feMergeNode in="blur"/>
-                        <feMergeNode in="SourceGraphic"/>
-                    </feMerge>
-                </filter>
-                <linearGradient id="stream1" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" style="stop-color:rgba(220,210,200,0);stop-opacity:0" />
-                    <stop offset="50%" style="stop-color:rgba(230,220,210,0.5);stop-opacity:1" />
-                    <stop offset="100%" style="stop-color:rgba(220,210,200,0);stop-opacity:0" />
-                </linearGradient>
-            </defs>
-            
-            <path d="M0,400 Q400,300 800,450 T1600,350 T1920,400" 
-                  stroke="url(#stream1)" stroke-width="2" fill="none" filter="url(#glow)" opacity="0.5">
-                <animate attributeName="d" 
-                    dur="15s" 
-                    values="M0,400 Q400,300 800,450 T1600,350 T1920,400;M0,380 Q400,350 800,420 T1600,380 T1920,380;M0,400 Q400,300 800,450 T1600,350 T1920,400"
-                    repeatCount="indefinite"/>
-            </path>
-            
-            <path d="M0,500 Q500,400 1000,500 T1920,450" 
-                  stroke="url(#stream1)" stroke-width="1.5" fill="none" filter="url(#glow)" opacity="0.4">
-                <animate attributeName="d" 
-                    dur="20s" 
-                    values="M0,500 Q500,400 1000,500 T1920,450;M0,480 Q500,450 1000,480 T1920,480;M0,500 Q500,400 1000,500 T1920,450"
-                    repeatCount="indefinite"/>
-            </path>
-            
-            <path d="M200,300 Q600,200 1000,350 T1800,300" 
-                  stroke="url(#stream1)" stroke-width="2" fill="none" filter="url(#glow)" opacity="0.45">
-                <animate attributeName="d" 
-                    dur="18s" 
-                    values="M200,300 Q600,200 1000,350 T1800,300;M200,320 Q600,280 1000,320 T1800,320;M200,300 Q600,200 1000,350 T1800,300"
-                    repeatCount="indefinite"/>
-            </path>
-            
-            <path d="M100,600 Q500,500 900,600 T1700,550" 
-                  stroke="url(#stream1)" stroke-width="1" fill="none" filter="url(#glow)" opacity="0.35">
-                <animate attributeName="d" 
-                    dur="22s" 
-                    values="M100,600 Q500,500 900,600 T1700,550;M100,580 Q500,550 900,580 T1700,580;M100,600 Q500,500 900,600 T1700,550"
-                    repeatCount="indefinite"/>
-            </path>
-        </svg>
+        <!-- Dust particles (generated by JS) -->
+        <div id="particles-layer"></div>
 
-        <canvas id="effects-canvas"></canvas>
-        
-        <div id="candles-container"></div>
-
-        <div class="zone zone-study" data-target="study-wing.html">
-            <div class="zone-text">
-                <div class="zone-poetic">Where patterns become visible</div>
-                <div class="zone-name">Study Wing</div>
-            </div>
+        <!-- Content -->
+        <div id="atrium-content">
+            <h1>The Atrium</h1>
+            <p class="subtitle">A calm, sacred digital environment</p>
+            <p class="body-text">
+                Where thought breathes before it becomes word.
+                Light your candle. The house is open.
+            </p>
         </div>
 
-        <div class="zone zone-observatory" data-target="observatory.html">
-            <div class="zone-text">
-                <div class="zone-poetic">Where distance creates clarity</div>
-                <div class="zone-name">Observatory</div>
-            </div>
-        </div>
-
-        <div class="zone zone-glam" data-target="glam-wing.html">
-            <div class="levitation-glow"></div>
-            <div class="zone-text">
-                <div class="zone-poetic">Where dressing is a discipline</div>
-                <div class="zone-name">Glam Wing</div>
-            </div>
-        </div>
-
-        <div class="zone zone-salon" data-target="salon.html">
-            <div class="curtain-breath"></div>
-            <div class="zone-text">
-                <div class="zone-poetic">Where the coven gathers</div>
-                <div class="zone-name">Salon</div>
-            </div>
-        </div>
+        <!-- Navigation -->
+        <a href="index.html" id="back-to-lobby">← Return to Lobby</a>
     </div>
 
     <script>
-        const candlesContainer = document.getElementById('candles-container');
-        const candles = [];
-        const numCandles = 6;
+        // Generate floating candles
+        const candlesLayer = document.getElementById('candles-layer');
+        const candleCount = window.innerWidth < 768 ? 5 : 12;
 
-        for (let i = 0; i < numCandles; i++) {
+        for (let i = 0; i < candleCount; i++) {
             const candle = document.createElement('div');
             candle.className = 'candle';
-            
-            const flame = document.createElement('div');
-            flame.className = 'flame';
-            candle.appendChild(flame);
-            
-            const glow = document.createElement('div');
-            glow.className = 'glow';
-            candle.appendChild(glow);
-            
-            const baseX = 16 + Math.random() * 14;
-            const baseY = 30 + Math.random() * 30;
-            
-            candle.style.left = baseX + '%';
-            candle.style.top = baseY + '%';
-            
-            candlesContainer.appendChild(candle);
-            
-            candles.push({
-                element: candle,
-                baseX: baseX,
-                baseY: baseY,
-                phase: Math.random() * Math.PI * 2,
-                speed: 0.0004 + Math.random() * 0.0003,
-                floatRange: 10 + Math.random() * 8,
-                driftRange: 4 + Math.random() * 3
-            });
+            candle.style.left = Math.random() * 100 + '%';
+            candle.style.top = (30 + Math.random() * 50) + '%';
+            candle.style.animationDelay = Math.random() * 6 + 's';
+            candle.style.animationDuration = (5 + Math.random() * 4) + 's';
+            candlesLayer.appendChild(candle);
         }
 
-        let time = 0;
-        function animateCandles() {
-            time += 1;
-            candles.forEach(candle => {
-                const floatY = Math.sin(time * candle.speed + candle.phase) * candle.floatRange;
-                const driftX = Math.cos(time * candle.speed * 0.6 + candle.phase) * candle.driftRange;
-                const rotate = Math.sin(time * candle.speed * 0.3) * 3;
-                
-                candle.element.style.transform = `translate(${driftX}px, ${floatY}px) rotate(${rotate}deg)`;
-            });
-            requestAnimationFrame(animateCandles);
+        // Generate dust particles
+        const particlesLayer = document.getElementById('particles-layer');
+        const particleCount = window.innerWidth < 768 ? 8 : 20;
+
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 10 + 's';
+            particle.style.animationDuration = (8 + Math.random() * 6) + 's';
+            particlesLayer.appendChild(particle);
         }
-        animateCandles();
-
-        const canvas = document.getElementById('effects-canvas');
-        const ctx = canvas.getContext('2d');
-        
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        resizeCanvas();
-
-        const particles = [];
-        for (let i = 0; i < 80; i++) {
-            particles.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                vx: (Math.random() - 0.5) * 0.4,
-                vy: (Math.random() - 0.5) * 0.4 - 0.1,
-                size: Math.random() * 2.5 + 0.5,
-                alpha: Math.random() * 0.6 + 0.2,
-                twinkle: Math.random() * Math.PI * 2
-            });
-        }
-
-        function drawEffects() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            particles.forEach(p => {
-                p.x += p.vx;
-                p.y += p.vy;
-                p.twinkle += 0.02;
-                
-                if (p.x < 0) p.x = canvas.width;
-                if (p.x > canvas.width) p.x = 0;
-                if (p.y < 0) p.y = canvas.height;
-                if (p.y > canvas.height) p.y = 0;
-                
-                const twinkleAlpha = p.alpha * (0.7 + Math.sin(p.twinkle) * 0.3);
-                
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(230, 220, 210, ${twinkleAlpha * 0.4})`;
-                ctx.fill();
-                
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.size * 3, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(230, 220, 210, ${twinkleAlpha * 0.1})`;
-                ctx.fill();
-            });
-            
-            requestAnimationFrame(drawEffects);
-        }
-        drawEffects();
-
-        const zones = document.querySelectorAll('.zone');
-        
-        zones.forEach(zone => {
-            zone.addEventListener('mouseenter', function() {
-                if (this.classList.contains('zone-study')) {
-                    candles.forEach(c => c.element.classList.add('lit'));
-                }
-            });
-            
-            zone.addEventListener('mouseleave', function() {
-                if (this.classList.contains('zone-study')) {
-                    candles.forEach(c => c.element.classList.remove('lit'));
-                }
-            });
-            
-            zone.addEventListener('click', function() {
-                const target = this.getAttribute('data-target');
-                document.getElementById('transition').classList.add('active');
-                setTimeout(() => {
-                    window.location.href = target;
-                }, 1500);
-            });
-        });
-
-        const parallaxContainer = document.getElementById('parallax-container');
-        document.addEventListener('mousemove', (e) => {
-            const x = (e.clientX / window.innerWidth - 0.5) * 15;
-            const y = (e.clientY / window.innerHeight - 0.5) * 15;
-            
-            parallaxContainer.style.transform = `translate(${-x}px, ${-y}px)`;
-        });
-
-        // ==================== MOBILE FIXES ====================
-        
-        // Check if touch device
-        const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
-
-        if (isTouchDevice) {
-            // Auto-light candles on mobile after intro (since hover doesn't exist)
-            setTimeout(() => {
-                candles.forEach(c => c.element.classList.add('lit'));
-            }, 14000);
-            
-            // Add touch feedback for zones
-            zones.forEach(zone => {
-                zone.addEventListener('touchstart', function(e) {
-                    this.classList.add('touch-active');
-                });
-                
-                zone.addEventListener('touchend', function() {
-                    this.classList.remove('touch-active');
-                });
-            });
-        }
-
-        // Better canvas resize for mobile orientation changes
-        let resizeTimeout;
-        window.addEventListener('resize', () => {
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(() => {
-                resizeCanvas();
-                // Reposition particles to new dimensions
-                particles.forEach(p => {
-                    if (p.x > canvas.width) p.x = canvas.width - 10;
-                    if (p.y > canvas.height) p.y = canvas.height - 10;
-                });
-            }, 250);
-        });
     </script>
-
 </body>
 </html>
