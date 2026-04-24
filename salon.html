@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Salon — MetaVoxa</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --navy: #0a0a0f;
+    --navy-light: #12121a;
+    --gold: #D4AF37;
+    --gold-dim: #8a7020;
+    --cream: #e8dcc8;
+    --cream-dim: #a89e8a;
+    --burgundy: #2C0A0A;
+    --teal: #0a3a3a;
+    --warm-white: #f5f0e8;
+    --shadow: rgba(0,0,0,0.7);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Cormorant Garamond', serif;
+    background: var(--navy);
+    color: var(--cream);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ════════════════════════════════════════
+     CURTAIN OVERLAY — Category Selection
+     ════════════════════════════════════════ */
+  #curtain-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: var(--navy);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: transform 1.8s cubic-bezier(0.65, 0, 0.35, 1), opacity 1.2s ease 0.6s;
+  }
+
+  #curtain-overlay.lifted {
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .curtain-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    color: var(--gold);
+    letter-spacing: 0.15em;
+    margin-bottom: 0.5em;
+    text-align: center;
+  }
+
+  .curtain-subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(1rem, 2vw, 1.4rem);
+    color: var(--cream-dim);
+    margin-bottom: 3em;
+    text-align: center;
+    max-width: 500px;
+    padding: 0 1em;
+  }
+
+  .category-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5em;
+    max-width: 500px;
+    width: 90%;
+  }
+
+  .category-card {
+    background: var(--navy-light);
+    border: 1px solid rgba(212,175,55,0.15);
+    border-radius: 8px;
+    padding: 2em 1.5em;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .category-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
+  .category-card[data-category="reader"]::before { background: radial-gradient(circle at center, rgba(44,10,10,0.4), transparent 70%); }
+  .category-card[data-category="writer"]::before { background: radial-gradient(circle at center, rgba(212,175,55,0.15), transparent 70%); }
+  .category-card[data-category="researcher"]::before { background: radial-gradient(circle at center, rgba(10,58,58,0.4), transparent 70%); }
+  .category-card[data-category="explorer"]::before { background: radial-gradient(circle at center, rgba(232,220,200,0.15), transparent 70%); }
+
+  .category-card:hover::before, .category-card.selected::before { opacity: 1; }
+
+  .category-card:hover {
+    border-color: var(--gold);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+  }
+
+  .category-card.selected {
+    border-color: var(--gold);
+    transform: scale(1.03);
+  }
+
+  .cat-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5em;
+    display: block;
+  }
+
+  .cat-name {
+    font-family: 'Cinzel', serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--cream);
+    margin-bottom: 0.3em;
+  }
+
+  .cat-desc {
+    font-style: italic;
+    font-size: 0.85rem;
+    color: var(--cream-dim);
+  }
+
+  .enter-btn {
+    margin-top: 2.5em;
+    padding: 1em 3em;
+    font-family: 'Cinzel', serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    background: transparent;
+    color: var(--gold);
+    border: 1px solid var(--gold);
+    border-radius: 4px;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.6s ease;
+    pointer-events: none;
+  }
+
+  .enter-btn.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: all;
+  }
+
+  .enter-btn:hover {
+    background: var(--gold);
+    color: var(--navy);
+  }
+
+  /* ════════════════════════════════════════
+     AUDIO CONTROLS
+     ════════════════════════════════════════ */
+  #audio-toggle {
+    position: fixed;
+    bottom: 1.5em;
+    right: 1.5em;
+    z-index: 500;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(10,10,15,0.8);
+    border: 1px solid rgba(212,175,55,0.3);
+    color: var(--gold);
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+  }
+
+  #audio-toggle:hover { border-color: var(--gold); }
+  #audio-toggle.muted { opacity: 0.5; }
+
+  /* ════════════════════════════════════════
+     MAIN SALON — 360° Horizontal Room
+     ════════════════════════════════════════ */
+  #salon-container {
+    position: fixed;
+    inset: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  #salon-container::-webkit-scrollbar { display: none; }
+
+  #salon-room {
+    width: 300vw;
+    height: 100vh;
+    min-width: 1200px;
+    position: relative;
+    background: var(--navy);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Wall texture */
+  .wall-texture {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(18,18,26,0.8) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 30%, rgba(44,10,10,0.2) 0%, transparent 40%),
+      linear-gradient(180deg, var(--navy) 0%, var(--navy-light) 100%);
+    opacity: 0.9;
+  }
+
+  /* Floor */
+  .floor {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 25vh;
+    background:
+      linear-gradient(180deg, transparent 0%, rgba(8,8,12,0.9) 20%, var(--navy) 100%);
+  }
+
+  /* Rug pattern */
+  .rug {
+    position: absolute;
+    bottom: 8vh;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40vw;
+    min-width: 500px;
+    height: 18vh;
+    background:
+      radial-gradient(ellipse at center, rgba(212,175,55,0.08) 0%, transparent 70%),
+      repeating-linear-gradient(90deg, transparent, transparent 20px, rgba(212,175,55,0.03) 20px, rgba(212,175,55,0.03) 21px);
+    border-radius: 50% 50% 0 0;
+    opacity: 0.6;
+  }
+
+  /* ════════════════════════════════════════
+     FURNITURE ZONES
+     ════════════════════════════════════════ */
+
+  /* Left Sofa — Reader zone */
+  .sofa-left {
+    position: absolute;
+    left: 8vw;
+    bottom: 18vh;
+    width: 22vw;
+    min-width: 280px;
+    height: 18vh;
+    min-height: 140px;
+    background: linear-gradient(180deg, rgba(20,20,30,0.9) 0%, rgba(10,10,15,0.95) 100%);
+    border-radius: 20px 20px 8px 8px;
+    border: 1px solid rgba(212,175,55,0.1);
+    box-shadow:
+      0 20px 60px rgba(0,0,0,0.6),
+      inset 0 1px 0 rgba(255,255,255,0.03);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding-bottom: 1.5em;
+  }
+
+  .sofa-left::after {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 10%;
+    right: 10%;
+    height: 12px;
+    background: linear-gradient(180deg, rgba(30,30,45,0.8), rgba(20,20,30,0.9));
+    border-radius: 10px;
+    border: 1px solid rgba(212,175,55,0.08);
+  }
+
+  .zone-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--cream-dim);
+    opacity: 0.6;
+    margin-bottom: 0.5em;
+  }
+
+  /* Right Sofa — Writer zone */
+  .sofa-right {
+    position: absolute;
+    right: 8vw;
+    bottom: 18vh;
+    width: 22vw;
+    min-width: 280px;
+    height: 18vh;
+    min-height: 140px;
+    background: linear-gradient(180deg, rgba(20,20,30,0.9) 0%, rgba(10,10,15,0.95) 100%);
+    border-radius: 20px 20px 8px 8px;
+    border: 1px solid rgba(212,175,55,0.1);
+    box-shadow:
+      0 20px 60px rgba(0,0,0,0.6),
+      inset 0 1px 0 rgba(255,255,255,0.03);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding-bottom: 1.5em;
+  }
+
+  .sofa-right::after {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 10%;
+    right: 10%;
+    height: 12px;
+    background: linear-gradient(180deg, rgba(30,30,45,0.8), rgba(20,20,30,0.9));
+    border-radius: 10px;
+    border: 1px solid rgba(212,175,55,0.08);
+  }
+
+  /* Floor seating — Explorer zone */
+  .floor-seating {
+    position: absolute;
+    right: 35vw;
+    bottom: 10vh;
+    width: 12vw;
+    min-width: 150px;
+    height: 8vh;
+    min-height: 60px;
+    background: radial-gradient(ellipse at center, rgba(212,175,55,0.06) 0%, transparent 70%);
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Window — Rain view */
+  .window-frame {
+    position: absolute;
+    left: 5vw;
+    top: 12vh;
+    width: 18vw;
+    min-width: 200px;
+    height: 28vh;
+    min-height: 200px;
+    background: linear-gradient(180deg, rgba(8,12,20,0.9) 0%, rgba(5,8,15,0.95) 100%);
+    border: 3px solid rgba(212,175,55,0.2);
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow:
+      0 0 40px rgba(0,0,0,0.5),
+      inset 0 0 30px rgba(0,0,0,0.4);
+  }
+
+  .window-pane {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgba(15,20,35,0.8) 0%, rgba(8,12,25,0.9) 100%);
+  }
+
+  /* Rain effect */
+  .rain-container {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .raindrop {
+    position: absolute;
+    width: 1px;
+    background: linear-gradient(180deg, transparent, rgba(200,210,230,0.3), transparent);
+    animation: fall linear infinite;
+  }
+
+  @keyframes fall {
+    0% { transform: translateY(-100%); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(100vh); opacity: 0; }
+  }
+
+  /* Window crossbars */
+  .window-frame::before,
+  .window-frame::after {
+    content: '';
+    position: absolute;
+    background: rgba(212,175,55,0.15);
+    z-index: 2;
+  }
+
+  .window-frame::before {
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    transform: translateX(-50%);
+  }
+
+  .window-frame::after {
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    transform: translateY(-50%);
+  }
+
+  /* ════════════════════════════════════════
+     HEARTH — Center Table & Weekly Prompt
+     ════════════════════════════════════════ */
+  .hearth {
+    position: absolute;
+    left: 50%;
+    bottom: 22vh;
+    transform: translateX(-50%);
+    width: 28vw;
+    min-width: 350px;
+    max-width: 500px;
+    text-align: center;
+    z-index: 10;
+  }
+
+  .hearth-table {
+    width: 100%;
+    height: 12vh;
+    min-height: 80px;
+    background: linear-gradient(180deg, rgba(25,20,15,0.9) 0%, rgba(15,12,10,0.95) 100%);
+    border-radius: 8px;
+    border: 1px solid rgba(212,175,55,0.15);
+    box-shadow:
+      0 15px 50px rgba(0,0,0,0.5),
+      inset 0 1px 0 rgba(255,255,255,0.02);
+    position: relative;
+    margin-bottom: 1.5em;
+  }
+
+  /* Fire glow under table */
+  .hearth-table::before {
+    content: '';
+    position: absolute;
+    bottom: -20px;
+    left: 20%;
+    right: 20%;
+    height: 40px;
+    background: radial-gradient(ellipse at center, rgba(212,175,55,0.15) 0%, transparent 70%);
+    filter: blur(15px);
+    animation: firePulse 4s ease-in-out infinite;
+  }
+
+  @keyframes firePulse {
+    0%, 100% { opacity: 0.6; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.1); }
+  }
+
+  .hearth-prompt {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(0.95rem, 1.5vw, 1.2rem);
+    color: var(--cream);
+    line-height: 1.6;
+    padding: 0 1em;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+  }
+
+  .hearth-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    margin-bottom: 1em;
+  }
+
+  /* ════════════════════════════════════════
+     FLOATING CANDLES
+     ════════════════════════════════════════ */
+  .candle {
+    position: absolute;
+    width: 8px;
+    height: 24px;
+    background: linear-gradient(180deg, var(--warm-white) 0%, var(--cream) 100%);
+    border-radius: 2px;
+    box-shadow:
+      0 0 20px rgba(212,175,55,0.3),
+      0 0 60px rgba(212,175,55,0.1);
+    animation: candleFloat 6s ease-in-out infinite;
+  }
+
+  .candle::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 6px;
+    background: radial-gradient(ellipse at center, #fff 0%, var(--gold) 50%, transparent 70%);
+    border-radius: 50%;
+    animation: flameFlicker 2s ease-in-out infinite;
+  }
+
+  @keyframes candleFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+  }
+
+  @keyframes flameFlicker {
+    0%, 100% { opacity: 1; transform: translateX(-50%) scale(1); }
+    50% { opacity: 0.8; transform: translateX(-50%) scale(1.2); }
+  }
+
+  /* ════════════════════════════════════════
+     PRESENCE INDICATORS — Category Auras
+     ════════════════════════════════════════ */
+  .presence-dot {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    transition: all 0.8s ease;
+    z-index: 50;
+  }
+
+  .presence-dot.reader {
+    background: var(--burgundy);
+    box-shadow: 0 0 15px rgba(44,10,10,0.6), 0 0 30px rgba(44,10,10,0.3);
+  }
+
+  .presence-dot.writer {
+    background: var(--gold);
+    box-shadow: 0 0 15px rgba(212,175,55,0.5), 0 0 30px rgba(212,175,55,0.2);
+  }
+
+  .presence-dot.researcher {
+    background: var(--teal);
+    box-shadow: 0 0 15px rgba(10,58,58,0.6), 0 0 30px rgba(10,58,58,0.3);
+  }
+
+  .presence-dot.explorer {
+    background: var(--cream);
+    box-shadow: 0 0 15px rgba(232,220,200,0.4), 0 0 30px rgba(232,220,200,0.2);
+  }
+
+  .presence-dot.speaking {
+    animation: auraPulse 1s ease-in-out;
+  }
+
+  @keyframes auraPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(2); opacity: 0.7; }
+    100% { transform: scale(1); }
+  }
+
+  /* ════════════════════════════════════════
+     MESSAGE STREAM — Floating Hearth Log
+     ════════════════════════════════════════ */
+  #message-stream {
+    position: absolute;
+    left: 50%;
+    bottom: 38vh;
+    transform: translateX(-50%);
+    width: 35vw;
+    min-width: 300px;
+    max-width: 500px;
+    height: 30vh;
+    pointer-events: none;
+    z-index: 20;
+    overflow: hidden;
+  }
+
+  .message-bubble {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 90%;
+    padding: 0.8em 1.2em;
+    background: rgba(10,10,15,0.85);
+    border: 1px solid rgba(212,175,55,0.1);
+    border-radius: 12px;
+    font-size: clamp(0.85rem, 1.2vw, 1rem);
+    color: var(--cream);
+    line-height: 1.5;
+    backdrop-filter: blur(10px);
+    animation: messageFloat 20s linear forwards;
+    text-align: center;
+  }
+
+  .message-bubble .msg-category {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    margin-right: 0.5em;
+    vertical-align: middle;
+  }
+
+  .message-bubble .msg-text {
+    font-style: italic;
+  }
+
+  @keyframes messageFloat {
+    0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+    5% { opacity: 1; transform: translateX(-50%) translateY(0); }
+    85% { opacity: 1; }
+    100% { opacity: 0; transform: translateX(-50%) translateY(-25vh); }
+  }
+
+  /* ════════════════════════════════════════
+     CHAT INPUT
+     ════════════════════════════════════════ */
+  #chat-interface {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: linear-gradient(180deg, transparent 0%, rgba(10,10,15,0.95) 30%);
+    padding: 2em 1em 1.5em;
+    display: flex;
+    justify-content: center;
+    gap: 0.8em;
+  }
+
+  #chat-input {
+    width: 50vw;
+    min-width: 250px;
+    max-width: 500px;
+    padding: 0.9em 1.2em;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    color: var(--cream);
+    background: rgba(20,20,30,0.8);
+    border: 1px solid rgba(212,175,55,0.2);
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.3s ease;
+    backdrop-filter: blur(10px);
+  }
+
+  #chat-input::placeholder {
+    color: var(--cream-dim);
+    font-style: italic;
+  }
+
+  #chat-input:focus {
+    border-color: var(--gold);
+  }
+
+  #send-btn {
+    padding: 0.9em 1.5em;
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    background: rgba(20,20,30,0.8);
+    border: 1px solid rgba(212,175,55,0.3);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+  }
+
+  #send-btn:hover {
+    background: var(--gold);
+    color: var(--navy);
+    border-color: var(--gold);
+  }
+
+  /* ════════════════════════════════════════
+     SCROLL HINT (Mobile)
+     ════════════════════════════════════════ */
+  .scroll-hint {
+    position: fixed;
+    bottom: 6em;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 50;
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--cream-dim);
+    opacity: 0.5;
+    animation: hintPulse 3s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  @keyframes hintPulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.6; }
+  }
+
+  /* ════════════════════════════════════════
+     PRESENCE COUNTER
+     ════════════════════════════════════════ */
+  #presence-bar {
+    position: fixed;
+    top: 1.5em;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 50;
+    display: flex;
+    gap: 1.5em;
+    align-items: center;
+    background: rgba(10,10,15,0.7);
+    border: 1px solid rgba(212,175,55,0.1);
+    border-radius: 30px;
+    padding: 0.6em 1.5em;
+    backdrop-filter: blur(10px);
+  }
+
+  .presence-count {
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    color: var(--cream-dim);
+  }
+
+  .presence-count .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+
+  .presence-count .dot.reader { background: var(--burgundy); }
+  .presence-count .dot.writer { background: var(--gold); }
+  .presence-count .dot.researcher { background: var(--teal); }
+  .presence-count .dot.explorer { background: var(--cream); }
+
+  /* ════════════════════════════════════════
+     MODERATOR CONTROLS (Hidden by default)
+     ════════════════════════════════════════ */
+  #mod-panel {
+    position: fixed;
+    top: 1.5em;
+    right: 1.5em;
+    z-index: 200;
+    display: none;
+  }
+
+  #mod-panel.visible { display: block; }
+
+  .mod-btn {
+    padding: 0.5em 1em;
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    color: var(--cream-dim);
+    background: rgba(20,20,30,0.8);
+    border: 1px solid rgba(212,175,55,0.15);
+    border-radius: 4px;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+  }
+
+  .mod-btn:hover {
+    color: var(--gold);
+    border-color: var(--gold);
+  }
+
+  /* ════════════════════════════════════════
+     RESPONSIVE
+     ════════════════════════════════════════ */
+  @media (max-width: 768px) {
+    #salon-room {
+      width: 500vw;
+      min-width: 1500px;
+    }
+
+    .sofa-left, .sofa-right {
+      width: 35vw;
+      min-width: 200px;
+    }
+
+    .window-frame {
+      width: 25vw;
+      min-width: 150px;
+      height: 22vh;
+      min-height: 150px;
+    }
+
+    .hearth {
+      width: 40vw;
+      min-width: 280px;
+    }
+
+    #chat-input {
+      width: 60vw;
+    }
+
+    .category-grid {
+      grid-template-columns: 1fr;
+      max-width: 300px;
+    }
+  }
+
+  /* Dust particles */
+  .dust {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: rgba(212,175,55,0.2);
+    border-radius: 50%;
+    animation: dustFloat 15s linear infinite;
+    pointer-events: none;
+  }
+
+  @keyframes dustFloat {
+    0% { transform: translateY(0) translateX(0); opacity: 0; }
+    10% { opacity: 0.6; }
+    90% { opacity: 0.6; }
+    100% { transform: translateY(-100vh) translateX(50px); opacity: 0; }
+  }
+</style>
+<base target="_blank">
+</head>
+
+<body>
+
+<!-- ════════════════════════════════════════
+     CURTAIN OVERLAY
+     ════════════════════════════════════════ -->
+<div id="curtain-overlay">
+  <div class="curtain-title">The Salon</div>
+  <div class="curtain-subtitle">A living room where presence matters more than performance. How do you arrive today?</div>
+  <div class="category-grid">
+    <div class="category-card" data-category="reader" onclick="selectCategory('reader')">
+      <span class="cat-icon">📖</span>
+      <div class="cat-name">Reader</div>
+      <div class="cat-desc">Quiet, observant, absorbing</div>
+    </div>
+    <div class="category-card" data-category="writer" onclick="selectCategory('writer')">
+      <span class="cat-icon">✍️</span>
+      <div class="cat-name">Writer</div>
+      <div class="cat-desc">Constructing, offering, questioning</div>
+    </div>
+    <div class="category-card" data-category="researcher" onclick="selectCategory('researcher')">
+      <span class="cat-icon">🔬</span>
+      <div class="cat-name">Researcher</div>
+      <div class="cat-desc">Digging, connecting, citing</div>
+    </div>
+    <div class="category-card" data-category="explorer" onclick="selectCategory('explorer')">
+      <span class="cat-icon">🧭</span>
+      <div class="cat-name">Explorer</div>
+      <div class="cat-desc">Wandering, sensing, wondering</div>
+    </div>
+  </div>
+  <button class="enter-btn" id="enter-btn" onclick="enterSalon()">Enter</button>
+</div>
+
+<!-- ════════════════════════════════════════
+     AUDIO
+     ════════════════════════════════════════ -->
+<audio id="rain-audio" loop muted>
+  <source src="https://cdn.pixabay.com/download/audio/2022/03/24/audio_c8c8a73467.mp3?filename=rain-and-thunder-16705.mp3" type="audio/mpeg">
+</audio>
+<audio id="fire-audio" loop muted>
+  <source src="https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3?filename=fireplace-123120.mp3" type="audio/mpeg">
+</audio>
+
+<button id="audio-toggle" onclick="toggleAudio()" class="muted" title="Toggle ambient sound">🔇</button>
+
+<!-- ════════════════════════════════════════
+     PRESENCE BAR
+     ════════════════════════════════════════ -->
+<div id="presence-bar">
+  <div class="presence-count"><span class="dot reader"></span><span id="count-reader">0</span></div>
+  <div class="presence-count"><span class="dot writer"></span><span id="count-writer">0</span></div>
+  <div class="presence-count"><span class="dot researcher"></span><span id="count-researcher">0</span></div>
+  <div class="presence-count"><span class="dot explorer"></span><span id="count-explorer">0</span></div>
+</div>
+
+<!-- ════════════════════════════════════════
+     MODERATOR PANEL
+     ════════════════════════════════════════ -->
+<div id="mod-panel">
+  <button class="mod-btn" onclick="clearAllMessages()">Clear Room</button>
+</div>
+
+<!-- ════════════════════════════════════════
+     SALON ROOM
+     ════════════════════════════════════════ -->
+<div id="salon-container">
+  <div id="salon-room">
+    <div class="wall-texture"></div>
+    <div class="floor"></div>
+    <div class="rug"></div>
+
+    <!-- Window with rain -->
+    <div class="window-frame">
+      <div class="window-pane"></div>
+      <div class="rain-container" id="rain-container"></div>
+    </div>
+
+    <!-- Left Sofa — Reader -->
+    <div class="sofa-left">
+      <div class="zone-label">Reader's Corner</div>
+    </div>
+
+    <!-- Right Sofa — Writer -->
+    <div class="sofa-right">
+      <div class="zone-label">Writer's Nook</div>
+    </div>
+
+    <!-- Floor seating — Explorer -->
+    <div class="floor-seating">
+      <div class="zone-label">Explorer's Spot</div>
+    </div>
+
+    <!-- Hearth -->
+    <div class="hearth">
+      <div class="hearth-label">This Week's Hearth</div>
+      <div class="hearth-table"></div>
+      <div class="hearth-prompt" id="weekly-prompt">
+        "What are you carrying that you haven't set down yet?"
+      </div>
+    </div>
+
+    <!-- Floating candles -->
+    <div class="candle" style="left:15%; top:20%; animation-delay:0s;"></div>
+    <div class="candle" style="left:25%; top:35%; animation-delay:2s;"></div>
+    <div class="candle" style="left:70%; top:25%; animation-delay:1s;"></div>
+    <div class="candle" style="left:80%; top:40%; animation-delay:3s;"></div>
+    <div class="candle" style="left:45%; top:15%; animation-delay:4s;"></div>
+    <div class="candle" style="left:55%; top:30%; animation-delay:1.5s;"></div>
+
+    <!-- Dust particles -->
+    <div class="dust" style="left:20%; animation-delay:0s; animation-duration:12s;"></div>
+    <div class="dust" style="left:40%; animation-delay:3s; animation-duration:18s;"></div>
+    <div class="dust" style="left:60%; animation-delay:6s; animation-duration:14s;"></div>
+    <div class="dust" style="left:80%; animation-delay:9s; animation-duration:16s;"></div>
+
+    <!-- Message stream area -->
+    <div id="message-stream"></div>
+
+    <!-- Presence dots container -->
+    <div id="presence-dots"></div>
+  </div>
+</div>
+
+<!-- Scroll hint -->
+<div class="scroll-hint" id="scroll-hint">Swipe to explore the room</div>
+
+<!-- ════════════════════════════════════════
+     CHAT INTERFACE
+     ════════════════════════════════════════ -->
+<div id="chat-interface">
+  <input type="text" id="chat-input" placeholder="Speak into the room..." maxlength="200" onkeypress="if(event.key==='Enter')sendMessage()">
+  <button id="send-btn" onclick="sendMessage()">Send</button>
+</div>
+
+<!-- ════════════════════════════════════════
+     FIREBASE & LOGIC
+     ════════════════════════════════════════ -->
+<script type="module">
+  // ════════════════════════════════════════
+  // FIREBASE SETUP INSTRUCTIONS
+  // ════════════════════════════════════════
+  // 1. Go to https://console.firebase.google.com
+  // 2. Click "Create Project" → name it "metavoxa-salon"
+  // 3. Click the </> icon to add a Web App
+  // 4. Copy the firebaseConfig object below
+  // 5. Go to Build → Realtime Database → Create Database
+  // 6. Choose "Start in test mode" (we'll secure it after)
+  // 7. Copy your database URL
+  // 8. Replace the config below with yours
+  // 9. Go to Rules tab, paste these rules:
+  //    {
+  //      "rules": {
+  //        "salon": {
+  //          ".read": true,
+  //          ".write": true,
+  //          "messages": {
+  //            "$msg": {
+  //              ".validate": "newData.hasChildren(['text','category','timestamp']) && newData.child('text').val().length <= 200"
+  //            }
+  //          }
+  //        }
+  //      }
+  //    }
+  // 10. For moderation: add your email as a custom claim
+  //     or use a simple password check (implemented below)
+  // ════════════════════════════════════════
+
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getDatabase, ref, push, onChildAdded, onValue, remove, set, onDisconnect } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+  // REPLACE THIS WITH YOUR FIREBASE CONFIG
+  const firebaseConfig = {
+  apiKey: "AIzaSyBuWE_e-B_XOzmhCq2mUh7mbptA86NotAI",
+  authDomain: "metavoxa-salon.firebaseapp.com",
+  projectId: "metavoxa-salon",
+databaseURL: "https://metavoxa-salon-default-rtdb.europe-west1.firebasedatabase.app",
+storageBucket: ...
+  messagingSenderId: "871949825358",
+  appId: "1:871949825358:web:43a23cfe53128813339a1f",
+  measurementId: "G-ZM710BHDXV"
+};
+
+  // Initialize Firebase (will work once config is replaced)
+  let app, db, messagesRef, presenceRef, myPresenceRef;
+  let firebaseReady = false;
+
+  try {
+    app = initializeApp(firebaseConfig);
+    db = getDatabase(app);
+    messagesRef = ref(db, 'salon/messages');
+    presenceRef = ref(db, 'salon/presence');
+    firebaseReady = true;
+  } catch (e) {
+    console.log('Firebase not configured yet — running in demo mode');
+    firebaseReady = false;
+  }
+
+  // ════════════════════════════════════════
+  // STATE
+  // ════════════════════════════════════════
+  let myCategory = null;
+  let myUserId = 'user_' + Math.random().toString(36).substr(2, 9);
+  let isModerator = false;
+  const categoryColors = {
+    reader: '#2C0A0A',
+    writer: '#D4AF37',
+    researcher: '#0a3a3a',
+    explorer: '#e8dcc8'
+  };
+
+  // Weekly prompts (rotates — you change this manually or automate later)
+  const prompts = [
+    "What are you carrying that you haven't set down yet?",
+    "Tell us about a door you walked through without knowing where it led.",
+    "What truth are you circling but haven't spoken?",
+    "Describe the silence that taught you something.",
+    "What are you researching without knowing it?"
+  ];
+
+  // Set weekly prompt (changes based on week number)
+  const weekNum = Math.floor(Date.now() / (7 * 24 * 60 * 60 * 1000));
+  document.getElementById('weekly-prompt').textContent = '"' + prompts[weekNum % prompts.length] + '"';
+
+  // ════════════════════════════════════════
+  // CATEGORY SELECTION
+  // ════════════════════════════════════════
+  window.selectCategory = function(cat) {
+    myCategory = cat;
+    document.querySelectorAll('.category-card').forEach(c => c.classList.remove('selected'));
+    document.querySelector(`[data-category="${cat}"]`).classList.add('selected');
+    document.getElementById('enter-btn').classList.add('visible');
+  };
+
+  // ════════════════════════════════════════
+  // ENTER SALON
+  // ════════════════════════════════════════
+  window.enterSalon = function() {
+    if (!myCategory) return;
+
+    // Lift curtain
+    document.getElementById('curtain-overlay').classList.add('lifted');
+
+    // Hide scroll hint after 5 seconds
+    setTimeout(() => {
+      document.getElementById('scroll-hint').style.opacity = '0';
+    }, 5000);
+
+    // Center scroll on hearth
+    setTimeout(() => {
+      const container = document.getElementById('salon-container');
+      const room = document.getElementById('salon-room');
+      container.scrollLeft = (room.offsetWidth - container.offsetWidth) / 2;
+    }, 100);
+
+    // Setup Firebase presence
+    if (firebaseReady) {
+      myPresenceRef = push(presenceRef);
+      set(myPresenceRef, {
+        category: myCategory,
+        joined: Date.now()
+      });
+      onDisconnect(myPresenceRef).remove();
+
+      // Listen for messages
+      onChildAdded(messagesRef, (snapshot) => {
+        const msg = snapshot.val();
+        if (msg && msg.text) {
+          showMessage(msg.text, msg.category, msg.timestamp);
+        }
+      });
+
+      // Listen for presence counts
+      onValue(presenceRef, (snapshot) => {
+        const data = snapshot.val() || {};
+        const counts = { reader: 0, writer: 0, researcher: 0, explorer: 0 };
+        Object.values(data).forEach(p => {
+          if (counts[p.category] !== undefined) counts[p.category]++;
+        });
+        document.getElementById('count-reader').textContent = counts.reader;
+        document.getElementById('count-writer').textContent = counts.writer;
+        document.getElementById('count-researcher').textContent = counts.researcher;
+        document.getElementById('count-explorer').textContent = counts.explorer;
+
+        // Render presence dots
+        renderPresenceDots(data);
+      });
+    }
+
+    // Demo mode: show some sample messages
+    if (!firebaseReady) {
+      setTimeout(() => showMessage("The rain makes everything feel closer somehow.", "reader", Date.now()), 2000);
+      setTimeout(() => showMessage("I've been thinking about that door metaphor all week.", "writer", Date.now()), 5000);
+      setTimeout(() => showMessage("Has anyone read the new Lancet piece on neurodivergent women?", "researcher", Date.now()), 8000);
+    }
+  };
+
+  // ════════════════════════════════════════
+  // SEND MESSAGE
+  // ════════════════════════════════════════
+  window.sendMessage = function() {
+    const input = document.getElementById('chat-input');
+    const text = input.value.trim();
+    if (!text || !myCategory) return;
+
+    if (firebaseReady) {
+      push(messagesRef, {
+        text: text,
+        category: myCategory,
+        timestamp: Date.now()
+      });
+    } else {
+      showMessage(text, myCategory, Date.now());
+    }
+
+    input.value = '';
+  };
+
+  // ════════════════════════════════════════
+  // SHOW MESSAGE (floating bubble)
+  // ════════════════════════════════════════
+  function showMessage(text, category, timestamp) {
+    const stream = document.getElementById('message-stream');
+    const bubble = document.createElement('div');
+    bubble.className = 'message-bubble';
+    bubble.innerHTML = `<span class="msg-category" style="background:${categoryColors[category]}"></span><span class="msg-text">${escapeHtml(text)}</span>`;
+    stream.appendChild(bubble);
+
+    // Remove after animation
+    setTimeout(() => {
+      if (bubble.parentNode) bubble.remove();
+    }, 20000);
+
+    // Limit bubbles
+    while (stream.children.length > 6) {
+      stream.removeChild(stream.firstChild);
+    }
+  }
+
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  // ════════════════════════════════════════
+  // PRESENCE DOTS
+  // ════════════════════════════════════════
+  function renderPresenceDots(presenceData) {
+    const container = document.getElementById('presence-dots');
+    container.innerHTML = '';
+
+    const zones = {
+      reader: { left: '15%', bottom: '25%' },
+      writer: { left: '75%', bottom: '25%' },
+      researcher: { left: '45%', bottom: '30%' },
+      explorer: { left: '55%', bottom: '15%' }
+    };
+
+    Object.entries(presenceData).forEach(([id, p], i) => {
+      if (id === (myPresenceRef ? myPresenceRef.key : null)) return;
+      const zone = zones[p.category] || zones.explorer;
+      const dot = document.createElement('div');
+      dot.className = `presence-dot ${p.category}`;
+      dot.style.left = `calc(${zone.left} + ${(i % 3) * 20}px)`;
+      dot.style.bottom = `calc(${zone.bottom} + ${Math.floor(i / 3) * 20}px)`;
+      dot.style.animationDelay = `${i * 0.5}s`;
+      container.appendChild(dot);
+    });
+  }
+
+  // ════════════════════════════════════════
+  // AUDIO
+  // ════════════════════════════════════════
+  let audioEnabled = false;
+  window.toggleAudio = function() {
+    const rain = document.getElementById('rain-audio');
+    const fire = document.getElementById('fire-audio');
+    const btn = document.getElementById('audio-toggle');
+
+    if (!audioEnabled) {
+      rain.muted = false;
+      fire.muted = false;
+      rain.volume = 0.3;
+      fire.volume = 0.2;
+      rain.play().catch(()=>{});
+      fire.play().catch(()=>{});
+      btn.textContent = '🔊';
+      btn.classList.remove('muted');
+      audioEnabled = true;
+    } else {
+      rain.muted = true;
+      fire.muted = true;
+      btn.textContent = '🔇';
+      btn.classList.add('muted');
+      audioEnabled = false;
+    }
+  };
+
+  // ════════════════════════════════════════
+  // RAIN EFFECT
+  // ════════════════════════════════════════
+  function createRain() {
+    const container = document.getElementById('rain-container');
+    const dropCount = 40;
+
+    for (let i = 0; i < dropCount; i++) {
+      const drop = document.createElement('div');
+      drop.className = 'raindrop';
+      drop.style.left = Math.random() * 100 + '%';
+      drop.style.height = (Math.random() * 15 + 10) + 'px';
+      drop.style.animationDuration = (Math.random() * 0.5 + 0.3) + 's';
+      drop.style.animationDelay = Math.random() * 2 + 's';
+      drop.style.opacity = Math.random() * 0.4 + 0.1;
+      container.appendChild(drop);
+    }
+  }
+  createRain();
+
+  // ════════════════════════════════════════
+  // MODERATOR MODE
+  // ════════════════════════════════════════
+  // Type "metavoxa" in chat to unlock moderator panel
+  document.getElementById('chat-input').addEventListener('input', function(e) {
+    if (e.target.value.toLowerCase() === 'metavoxa') {
+      isModerator = true;
+      document.getElementById('mod-panel').classList.add('visible');
+      e.target.value = '';
+      showMessage('Moderator mode activated.', 'writer', Date.now());
+    }
+  });
+
+  window.clearAllMessages = function() {
+    if (!isModerator) return;
+    if (firebaseReady && confirm('Clear all messages from the room?')) {
+      remove(messagesRef);
+    }
+    document.getElementById('message-stream').innerHTML = '';
+  };
+
+  // ════════════════════════════════════════
+  // SCROLL BEHAVIOR (Desktop centering)
+  // ════════════════════════════════════════
+  const container = document.getElementById('salon-container');
+  let isScrolling = false;
+
+  container.addEventListener('scroll', () => {
+    isScrolling = true;
+    clearTimeout(window.scrollTimeout);
+    window.scrollTimeout = setTimeout(() => { isScrolling = false; }, 150);
+  });
+
+  // ════════════════════════════════════════
+  // DEMO PRESENCE COUNTS (when Firebase off)
+  // ════════════════════════════════════════
+  if (!firebaseReady) {
+    document.getElementById('count-reader').textContent = '2';
+    document.getElementById('count-writer').textContent = '1';
+    document.getElementById('count-researcher').textContent = '1';
+    document.getElementById('count-explorer').textContent = '3';
+  }
+</script>
+
+</body>
+</html>
