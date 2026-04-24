@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MetaVoxa | The Atrium</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
-    
+
     <style>
         * {
             margin: 0;
@@ -139,8 +139,16 @@
             transition: transform 0.3s ease-out;
         }
 
-        /* The photograph */
-        #base-image {
+        /* The photograph - PICTURE element for responsive images */
+        picture {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        picture img {
             position: absolute;
             top: 0;
             left: 0;
@@ -485,7 +493,7 @@
 
         /* ==================== MOBILE FIXES ==================== */
         @media (max-width: 768px) {
-            
+
             /* ===== TEXT SCALING ===== */
             #intro-metavoxa { 
                 font-size: 2rem; 
@@ -493,7 +501,7 @@
                 width: 90%;
                 text-align: center;
             }
-            
+
             #intro-guidance { 
                 font-size: 1rem; 
                 letter-spacing: 0.2em;
@@ -501,79 +509,85 @@
                 text-align: center;
                 line-height: 1.4;
             }
-            
+
             /* ===== ZONE FIXES - Make them tappable ===== */
             .zone {
                 min-width: 120px;
                 min-height: 80px;
             }
-            
+
             .zone-study {
                 left: 10%;
                 top: 20%;
                 width: 35%;
                 height: 30%;
             }
-            
+
             .zone-observatory {
                 right: 8%;
                 top: 20%;
                 width: 38%;
                 height: 30%;
             }
-            
+
             .zone-glam {
                 left: 5%;
                 bottom: 15%;
                 width: 30%;
                 height: 25%;
             }
-            
+
             .zone-salon {
                 right: 5%;
                 bottom: 10%;
                 width: 35%;
                 height: 30%;
             }
-            
-            /* Zone text - always visible on mobile (no hover) */
+
+            /* Zone text - hidden by default on mobile, shown on tap */
             .zone-text {
                 transform: scale(0.75) translateY(0);
-                opacity: 0.85;
+                opacity: 0;
                 width: 200px;
                 margin-left: -100px;
                 margin-top: -30px;
                 pointer-events: none;
             }
-            
+
+            /* Show on tap (touch-active class) */
+            .zone.touch-active .zone-text {
+                opacity: 0.9;
+                transform: scale(0.75) translateY(0);
+            }
+
             .zone-poetic { 
                 font-size: 0.9rem; 
                 letter-spacing: 0.08em;
                 text-shadow: 0 2px 15px rgba(0,0,0,0.9);
             }
-            
+
             .zone-name { 
                 font-size: 1rem; 
                 letter-spacing: 0.2em; 
             }
-            
+
             /* ===== CANDLES - Smaller, fewer ===== */
             .candle { 
                 transform: scale(0.6); 
                 pointer-events: none;
             }
-            
+
             /* Hide some candles on small screens */
             .candle:nth-child(n+5) {
                 display: none;
             }
-            
+
             /* ===== PARALLAX - Disable on touch devices ===== */
             #parallax-container {
                 transform: none !important;
                 transition: none;
             }
-            
+
             /* ===== BODY - Prevent scroll issues ===== */
             body {
                 overflow-x: hidden;
@@ -581,13 +595,14 @@
                 height: 100vh;
                 height: 100dvh;
             }
-            
+
             #atrium {
                 min-height: 100vh;
                 min-height: 100dvh;
             }
         }
     </style>
+<base target="_blank">
 </head>
 <body>
 
@@ -602,9 +617,23 @@
 
     <div id="atrium">
         <div id="parallax-container">
-            <img id="base-image" src="IMG_7289.jpg" alt="The Atrium">
+            <!-- PICTURE element for responsive image swap -->
+            <picture>
+                <!-- Mobile: portrait image -->
+                <source 
+                    media="(max-width: 768px) and (orientation: portrait)" 
+                    srcset="IMG_phone.jpg">
+
+                <!-- Desktop: landscape image -->
+                <source 
+                    media="(min-width: 769px)" 
+                    srcset="IMG_7289.jpg">
+
+                <!-- Fallback -->
+                <img src="IMG_7289.jpg" alt="The Atrium">
+            </picture>
         </div>
-        
+
         <svg id="swirls" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
             <defs>
                 <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
@@ -620,7 +649,7 @@
                     <stop offset="100%" style="stop-color:rgba(220,210,200,0);stop-opacity:0" />
                 </linearGradient>
             </defs>
-            
+
             <path d="M0,400 Q400,300 800,450 T1600,350 T1920,400" 
                   stroke="url(#stream1)" stroke-width="2" fill="none" filter="url(#glow)" opacity="0.5">
                 <animate attributeName="d" 
@@ -628,7 +657,7 @@
                     values="M0,400 Q400,300 800,450 T1600,350 T1920,400;M0,380 Q400,350 800,420 T1600,380 T1920,380;M0,400 Q400,300 800,450 T1600,350 T1920,400"
                     repeatCount="indefinite"/>
             </path>
-            
+
             <path d="M0,500 Q500,400 1000,500 T1920,450" 
                   stroke="url(#stream1)" stroke-width="1.5" fill="none" filter="url(#glow)" opacity="0.4">
                 <animate attributeName="d" 
@@ -636,7 +665,7 @@
                     values="M0,500 Q500,400 1000,500 T1920,450;M0,480 Q500,450 1000,480 T1920,480;M0,500 Q500,400 1000,500 T1920,450"
                     repeatCount="indefinite"/>
             </path>
-            
+
             <path d="M200,300 Q600,200 1000,350 T1800,300" 
                   stroke="url(#stream1)" stroke-width="2" fill="none" filter="url(#glow)" opacity="0.45">
                 <animate attributeName="d" 
@@ -644,7 +673,7 @@
                     values="M200,300 Q600,200 1000,350 T1800,300;M200,320 Q600,280 1000,320 T1800,320;M200,300 Q600,200 1000,350 T1800,300"
                     repeatCount="indefinite"/>
             </path>
-            
+
             <path d="M100,600 Q500,500 900,600 T1700,550" 
                   stroke="url(#stream1)" stroke-width="1" fill="none" filter="url(#glow)" opacity="0.35">
                 <animate attributeName="d" 
@@ -655,7 +684,7 @@
         </svg>
 
         <canvas id="effects-canvas"></canvas>
-        
+
         <div id="candles-container"></div>
 
         <div class="zone zone-study" data-target="study-wing.html">
@@ -697,23 +726,23 @@
         for (let i = 0; i < numCandles; i++) {
             const candle = document.createElement('div');
             candle.className = 'candle';
-            
+
             const flame = document.createElement('div');
             flame.className = 'flame';
             candle.appendChild(flame);
-            
+
             const glow = document.createElement('div');
             glow.className = 'glow';
             candle.appendChild(glow);
-            
+
             const baseX = 16 + Math.random() * 14;
             const baseY = 30 + Math.random() * 30;
-            
+
             candle.style.left = baseX + '%';
             candle.style.top = baseY + '%';
-            
+
             candlesContainer.appendChild(candle);
-            
+
             candles.push({
                 element: candle,
                 baseX: baseX,
@@ -732,7 +761,7 @@
                 const floatY = Math.sin(time * candle.speed + candle.phase) * candle.floatRange;
                 const driftX = Math.cos(time * candle.speed * 0.6 + candle.phase) * candle.driftRange;
                 const rotate = Math.sin(time * candle.speed * 0.3) * 3;
-                
+
                 candle.element.style.transform = `translate(${driftX}px, ${floatY}px) rotate(${rotate}deg)`;
             });
             requestAnimationFrame(animateCandles);
@@ -741,7 +770,7 @@
 
         const canvas = document.getElementById('effects-canvas');
         const ctx = canvas.getContext('2d');
-        
+
         function resizeCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
@@ -763,49 +792,49 @@
 
         function drawEffects() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
+
             particles.forEach(p => {
                 p.x += p.vx;
                 p.y += p.vy;
                 p.twinkle += 0.02;
-                
+
                 if (p.x < 0) p.x = canvas.width;
                 if (p.x > canvas.width) p.x = 0;
                 if (p.y < 0) p.y = canvas.height;
                 if (p.y > canvas.height) p.y = 0;
-                
+
                 const twinkleAlpha = p.alpha * (0.7 + Math.sin(p.twinkle) * 0.3);
-                
+
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
                 ctx.fillStyle = `rgba(230, 220, 210, ${twinkleAlpha * 0.4})`;
                 ctx.fill();
-                
+
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.size * 3, 0, Math.PI * 2);
                 ctx.fillStyle = `rgba(230, 220, 210, ${twinkleAlpha * 0.1})`;
                 ctx.fill();
             });
-            
+
             requestAnimationFrame(drawEffects);
         }
         drawEffects();
 
         const zones = document.querySelectorAll('.zone');
-        
+
         zones.forEach(zone => {
             zone.addEventListener('mouseenter', function() {
                 if (this.classList.contains('zone-study')) {
                     candles.forEach(c => c.element.classList.add('lit'));
                 }
             });
-            
+
             zone.addEventListener('mouseleave', function() {
                 if (this.classList.contains('zone-study')) {
                     candles.forEach(c => c.element.classList.remove('lit'));
                 }
             });
-            
+
             zone.addEventListener('click', function() {
                 const target = this.getAttribute('data-target');
                 document.getElementById('transition').classList.add('active');
@@ -819,30 +848,53 @@
         document.addEventListener('mousemove', (e) => {
             const x = (e.clientX / window.innerWidth - 0.5) * 15;
             const y = (e.clientY / window.innerHeight - 0.5) * 15;
-            
+
             parallaxContainer.style.transform = `translate(${-x}px, ${-y}px)`;
         });
 
-        // ==================== MOBILE FIXES ====================
-        
-        // Check if touch device
+        // ==================== MOBILE / TOUCH FIXES ====================
+
         const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
 
         if (isTouchDevice) {
-            // Auto-light candles on mobile after intro (since hover doesn't exist)
+            // Auto-light candles after intro (no hover on touch)
             setTimeout(() => {
                 candles.forEach(c => c.element.classList.add('lit'));
             }, 14000);
-            
-            // Add touch feedback for zones
+
+            // TAP-TRIGGERED WING LABELS
             zones.forEach(zone => {
                 zone.addEventListener('touchstart', function(e) {
-                    this.classList.add('touch-active');
+                    e.preventDefault();
+
+                    // Remove touch-active from all other zones
+                    zones.forEach(z => {
+                        if (z !== this) z.classList.remove('touch-active');
+                    });
+
+                    // Toggle this zone
+                    this.classList.toggle('touch-active');
+
+                    // Light candles if study wing tapped
+                    if (this.classList.contains('zone-study')) {
+                        candles.forEach(c => c.element.classList.add('lit'));
+                    }
                 });
-                
-                zone.addEventListener('touchend', function() {
-                    this.classList.remove('touch-active');
+
+                // Also handle click for hybrid devices
+                zone.addEventListener('click', function(e) {
+                    // Only handle if not already handled by touch
+                    if (!this.classList.contains('touch-active')) {
+                        this.classList.add('touch-active');
+                    }
                 });
+            });
+
+            // Tap outside zones to close all labels
+            document.addEventListener('touchstart', function(e) {
+                if (!e.target.closest('.zone')) {
+                    zones.forEach(z => z.classList.remove('touch-active'));
+                }
             });
         }
 
@@ -852,7 +904,6 @@
             clearTimeout(resizeTimeout);
             resizeTimeout = setTimeout(() => {
                 resizeCanvas();
-                // Reposition particles to new dimensions
                 particles.forEach(p => {
                     if (p.x > canvas.width) p.x = canvas.width - 10;
                     if (p.y > canvas.height) p.y = canvas.height - 10;
