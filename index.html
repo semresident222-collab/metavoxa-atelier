@@ -852,48 +852,49 @@
             parallaxContainer.style.transform = `translate(${-x}px, ${-y}px)`;
         });
 
-        // ==================== MOBILE / TOUCH FIXES ====================
-
+                // ==================== MOBILE / TOUCH FIXES ====================
+        
         const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
+        let activeZone = null; // Track which zone is currently showing its label
 
         if (isTouchDevice) {
             // Auto-light candles after intro (no hover on touch)
             setTimeout(() => {
                 candles.forEach(c => c.element.classList.add('lit'));
             }, 14000);
-
-            // TAP-TRIGGERED WING LABELS
+            
+            // TAP-TRIGGERED WING LABELS + NAVIGATION
             zones.forEach(zone => {
                 zone.addEventListener('touchstart', function(e) {
                     e.preventDefault();
-
-                    // Remove touch-active from all other zones
-                    zones.forEach(z => {
-                        if (z !== this) z.classList.remove('touch-active');
-                    });
-
-                    // Toggle this zone
-                    this.classList.toggle('touch-active');
-
+                    
+                    if (activeZone === this) {
+                        // Second tap on same zone = NAVIGATE
+                        const target = this.getAttribute('data-target');
+                        document.getElementById('transition').classList.add('active');
+                        setTimeout(() => {
+                            window.location.href = target;
+                        }, 1500);
+                        return;
+                    }
+                    
+                    // First tap = show label, close others
+                    zones.forEach(z => z.classList.remove('touch-active'));
+                    this.classList.add('touch-active');
+                    activeZone = this;
+                    
                     // Light candles if study wing tapped
                     if (this.classList.contains('zone-study')) {
                         candles.forEach(c => c.element.classList.add('lit'));
                     }
-                });
-
-                // Also handle click for hybrid devices
-                zone.addEventListener('click', function(e) {
-                    // Only handle if not already handled by touch
-                    if (!this.classList.contains('touch-active')) {
-                        this.classList.add('touch-active');
-                    }
-                });
+                }, { passive: false });
             });
-
+            
             // Tap outside zones to close all labels
             document.addEventListener('touchstart', function(e) {
                 if (!e.target.closest('.zone')) {
                     zones.forEach(z => z.classList.remove('touch-active'));
+                    activeZone = null;
                 }
             });
         }
@@ -904,6 +905,7 @@
             clearTimeout(resizeTimeout);
             resizeTimeout = setTimeout(() => {
                 resizeCanvas();
+                // Reposition particles to new dimensions
                 particles.forEach(p => {
                     if (p.x > canvas.width) p.x = canvas.width - 10;
                     if (p.y > canvas.height) p.y = canvas.height - 10;
