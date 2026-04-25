@@ -1,1237 +1,1016 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>The Observatory — MetaVoxa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  :root {
-    --bg: #050914;
-    --text: #f0ead8;
-    --text-secondary: rgba(255,255,255,0.4);
-    --gold: rgba(210,175,100,1);
-    --gold-dim: rgba(210,175,100,0.5);
-    --gold-faint: rgba(210,175,100,0.15);
-    --card-bg: rgba(255,255,255,0.04);
-    --card-border: rgba(255,255,255,0.08);
-    --card-hover: rgba(255,255,255,0.08);
-  }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    overflow-x: hidden;
-    min-height: 100vh;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  /* ========== TELESCOPE OPENING ========== */
-  #telescope-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 1000;
-    background: #000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: opacity 1.2s ease, visibility 1.2s ease;
-  }
-
-  #telescope-overlay.done {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-  }
-
-  #telescope-lens {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(210,175,100,0.4) 0%, rgba(5,9,20,0.8) 50%, #000 100%);
-    filter: blur(25px);
-    animation: telescope-focus 3.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-  }
-
-  @keyframes telescope-focus {
-    0% {
-      width: 80px;
-      height: 80px;
-      filter: blur(25px);
-      opacity: 0.4;
-    }
-    25% {
-      width: 250px;
-      height: 250px;
-      filter: blur(18px);
-      opacity: 0.6;
-    }
-    50% {
-      width: 600px;
-      height: 600px;
-      filter: blur(10px);
-      opacity: 0.8;
-    }
-    75% {
-      width: 1200px;
-      height: 1200px;
-      filter: blur(3px);
-      opacity: 0.9;
-    }
-    100% {
-      width: 300vmax;
-      height: 300vmax;
-      filter: blur(0px);
-      opacity: 0;
-    }
-  }
-
-  /* ========== SKY SECTION ========== */
-  #sky-section {
-    position: relative;
-    width: 100%;
-    height: 100vh;
-    min-height: 600px;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 24px;
-  }
-
-  #star-canvas {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-  }
-
-  .sky-content {
-    position: relative;
-    z-index: 1;
-    pointer-events: none;
-  }
-
-  .sky-content > * {
-    pointer-events: auto;
-  }
-
-  #sky-title {
-    font-size: clamp(1.8rem, 5vw, 3rem);
-    font-weight: 300;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--text);
-    margin-bottom: 8px;
-    opacity: 0;
-    transform: translateY(12px);
-    transition: opacity 1s ease, transform 1s ease;
-  }
-
-  #sky-title.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  #sky-tagline {
-    font-size: clamp(0.85rem, 2vw, 1rem);
-    color: var(--text-secondary);
-    letter-spacing: 0.1em;
-    font-weight: 300;
-    opacity: 0;
-    transform: translateY(12px);
-    transition: opacity 1s ease 0.3s, transform 1s ease 0.3s;
-  }
-
-  #sky-tagline.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  #meta-ghost {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: clamp(2rem, 8vw, 5rem);
-    letter-spacing: 0.5em;
-    color: rgba(255,255,255,0.03);
-    text-transform: uppercase;
-    font-weight: 200;
-    white-space: nowrap;
-    pointer-events: none;
-    user-select: none;
-    z-index: 0;
-  }
-
-  /* ========== SEARCH ========== */
-  #search-container {
-    position: relative;
-    z-index: 2;
-    width: 100%;
-    max-width: 600px;
-    margin: 0 auto 20px;
-    opacity: 0;
-    transform: translateY(12px);
-    transition: opacity 1s ease 0.6s, transform 1s ease 0.6s;
-  }
-
-  #search-container.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  #search-input {
-    width: 100%;
-    padding: 14px 20px;
-    background: rgba(255,255,255,0.03);
-    border: 0.5px solid var(--card-border);
-    border-radius: 8px;
-    color: var(--text);
-    font-size: 0.95rem;
-    letter-spacing: 0.02em;
-    outline: none;
-    transition: border-color 0.3s, box-shadow 0.3s;
-  }
-
-  #search-input::placeholder {
-    color: rgba(255,255,255,0.25);
-  }
-
-  #search-input:focus {
-    border-color: var(--gold-dim);
-    box-shadow: 0 0 20px rgba(210,175,100,0.1);
-  }
-
-  #search-hints {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    margin-top: 8px;
-    background: rgba(5,9,20,0.98);
-    border: 0.5px solid var(--card-border);
-    border-radius: 8px;
-    overflow: hidden;
-    display: none;
-    z-index: 50;
-  }
-
-  #search-hints.active {
-    display: block;
-  }
-
-  .search-hint {
-    padding: 12px 20px;
-    cursor: pointer;
-    transition: background 0.2s;
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-    border-bottom: 0.5px solid var(--card-border);
-  }
-
-  .search-hint:last-child { border-bottom: none; }
-  .search-hint:hover { background: rgba(210,175,100,0.08); color: var(--text); }
-  .search-hint strong { color: var(--gold); font-weight: 400; }
-
-  /* ========== FAST PATH BANNER ========== */
-  #fast-path {
-    position: relative;
-    z-index: 2;
-    text-align: center;
-    padding: 10px;
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-    letter-spacing: 0.05em;
-    opacity: 0;
-    transform: translateY(12px);
-    transition: opacity 1s ease 0.9s, transform 1s ease 0.9s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-  }
-
-  #fast-path.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  #fast-path.dismissed { display: none !important; }
-
-  #fast-path-close {
-    background: none;
-    border: none;
-    color: var(--text-secondary);
-    cursor: pointer;
-    font-size: 1rem;
-    padding: 2px 6px;
-    transition: color 0.2s;
-  }
-
-  #fast-path-close:hover { color: var(--text); }
-
-  /* ========== CARDS SECTION ========== */
-  #cards-section {
-    padding: 40px 24px 100px;
-    max-width: 1200px;
-    margin: 0 auto;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 1s ease 1.2s, transform 1s ease 1.2s;
-  }
-
-  #cards-section.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  #cards-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 16px;
-  }
-
-  @media (max-width: 640px) {
-    #cards-grid {
-      display: flex;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch;
-      gap: 12px;
-      padding-bottom: 8px;
-      scrollbar-width: none;
-    }
-    #cards-grid::-webkit-scrollbar { display: none; }
-  }
-
-  .wing-card {
-    background: var(--card-bg);
-    border: 0.5px solid var(--card-border);
-    border-radius: 12px;
-    padding: 24px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-  }
-
-  @media (max-width: 640px) {
-    .wing-card {
-      min-width: 280px;
-      flex-shrink: 0;
-      scroll-snap-align: start;
-    }
-  }
-
-  .wing-card:hover {
-    border-color: rgba(255,255,255,0.15);
-    background: var(--card-hover);
-    transform: translateY(-2px);
-  }
-
-  .wing-card.active {
-    border-color: var(--gold-dim);
-    background: rgba(210,175,100,0.06);
-  }
-
-  .wing-card.sealed {
-    opacity: 0.6;
-  }
-
-  .wing-card.sealed:hover {
-    opacity: 0.8;
-  }
-
-  .wing-card-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 12px;
-  }
-
-  .wing-number {
-    font-size: 0.7rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--text-secondary);
-  }
-
-  .wing-status {
-    font-size: 0.65rem;
-    padding: 3px 10px;
-    border-radius: 20px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
-
-  .wing-status.open {
-    background: rgba(210,175,100,0.15);
-    color: var(--gold);
-    border: 0.5px solid var(--gold-faint);
-  }
-
-  .wing-status.here {
-    background: rgba(210,175,100,0.2);
-    color: var(--gold);
-    border: 0.5px solid var(--gold-dim);
-  }
-
-  .wing-status.sealed {
-    background: rgba(255,255,255,0.05);
-    color: var(--text-secondary);
-    border: 0.5px solid var(--card-border);
-  }
-
-  .wing-name {
-    font-size: 1.3rem;
-    font-weight: 400;
-    letter-spacing: 0.05em;
-    margin-bottom: 8px;
-  }
-
-  .wing-desc {
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-    line-height: 1.6;
-    margin-bottom: 16px;
-  }
-
-  .wing-rooms {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-bottom: 16px;
-  }
-
-  .room-tag {
-    font-size: 0.7rem;
-    padding: 4px 10px;
-    border-radius: 4px;
-    background: rgba(255,255,255,0.05);
-    color: var(--text-secondary);
-    letter-spacing: 0.05em;
-  }
-
-  .wing-actions {
-    display: flex;
-    gap: 10px;
-  }
-
-  .wing-btn {
-    flex: 1;
-    padding: 10px 16px;
-    border-radius: 6px;
-    font-size: 0.8rem;
-    letter-spacing: 0.08em;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    background: transparent;
-    border: 0.5px solid var(--card-border);
-    color: var(--text-secondary);
-  }
-
-  .wing-btn.primary {
-    border: 0.5px solid var(--gold-dim);
-    color: var(--gold);
-  }
-
-  .wing-btn.primary:hover {
-    background: rgba(210,175,100,0.1);
-    border-color: var(--gold);
-  }
-
-  .wing-btn.secondary:hover {
-    border-color: rgba(255,255,255,0.2);
-    color: var(--text);
-  }
-
-  .wing-btn:disabled, .wing-btn.disabled {
-    opacity: 0.4;
-    cursor: default;
-    pointer-events: none;
-  }
-
-  /* ========== DEEP DIVE PANEL ========== */
-  #panel-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 24px 60px;
-  }
-
-  #panel-placeholder {
-    text-align: center;
-    padding: 40px 20px;
-    color: var(--text-secondary);
-    font-size: 0.85rem;
-    letter-spacing: 0.05em;
-  }
-
-  .deep-dive-panel {
-    background: var(--card-bg);
-    border: 0.5px solid var(--card-border);
-    border-radius: 12px;
-    overflow: hidden;
-    animation: panel-slide 0.5s ease;
-  }
-
-  @keyframes panel-slide {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .panel-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px 24px;
-    border-bottom: 0.5px solid var(--card-border);
-  }
-
-  .panel-title {
-    font-size: 1.1rem;
-    font-weight: 400;
-    letter-spacing: 0.08em;
-  }
-
-  .panel-close {
-    background: none;
-    border: none;
-    color: var(--text-secondary);
-    font-size: 1.2rem;
-    cursor: pointer;
-    padding: 4px;
-    transition: color 0.2s;
-  }
-
-  .panel-close:hover { color: var(--text); }
-
-  .panel-body {
-    padding: 0;
-  }
-
-  .panel-row {
-    display: grid;
-    grid-template-columns: 160px 1fr;
-    gap: 20px;
-    padding: 20px 24px;
-    border-bottom: 0.5px solid var(--card-border);
-  }
-
-  @media (max-width: 640px) {
-    .panel-row {
-      grid-template-columns: 1fr;
-      gap: 8px;
-    }
-  }
-
-  .panel-row:last-child { border-bottom: none; }
-
-  .panel-label {
-    font-size: 0.7rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--gold-dim);
-    font-weight: 500;
-    padding-top: 2px;
-  }
-
-  .panel-text {
-    font-size: 0.9rem;
-    color: var(--text);
-    line-height: 1.7;
-    font-weight: 300;
-  }
-
-  .panel-footer {
-    padding: 20px 24px;
-    border-top: 0.5px solid var(--card-border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
-  .panel-link {
-    color: var(--gold);
-    text-decoration: none;
-    font-size: 0.85rem;
-    letter-spacing: 0.05em;
-    transition: opacity 0.2s;
-  }
-
-  .panel-link:hover { opacity: 0.8; }
-
-  .panel-link.disabled {
-    opacity: 0.4;
-    pointer-events: none;
-  }
-
-  .panel-note {
-    font-size: 0.75rem;
-    color: var(--text-secondary);
-    font-style: italic;
-  }
-
-  /* ========== NAVIGATION KEY ========== */
-  #nav-key {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: rgba(5,9,20,0.95);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-top: 0.5px solid var(--card-border);
-    z-index: 100;
-    padding: 12px 16px;
-    transform: translateY(0);
-    transition: transform 0.3s ease;
-  }
-
-  #nav-key.hidden { transform: translateY(100%); }
-
-  #key-toggle {
-    position: absolute;
-    top: -36px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(5,9,20,0.95);
-    border: 0.5px solid var(--card-border);
-    border-bottom: none;
-    border-radius: 8px 8px 0 0;
-    padding: 8px 20px;
-    color: var(--gold);
-    font-size: 0.7rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    cursor: pointer;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-  }
-
-  .key-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
-    max-width: 600px;
-    margin: 0 auto;
-  }
-
-  @media (max-width: 480px) {
-    .key-grid { grid-template-columns: repeat(4, 1fr); }
-  }
-
-  .key-item {
-    text-align: center;
-    padding: 8px 4px;
-    border-radius: 6px;
-    transition: background 0.2s;
-    text-decoration: none;
-    display: block;
-  }
-
-  .key-item:hover { background: rgba(255,255,255,0.05); }
-
-  .key-icon {
-    font-size: 1.2rem;
-    margin-bottom: 4px;
-    display: block;
-  }
-
-  .key-label {
-    font-size: 0.6rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--text-secondary);
-    display: block;
-  }
-
-  .key-item.active .key-label { color: var(--gold); }
-
-  /* ========== UTILITIES ========== */
-  .hidden { display: none !important; }
-
-  ::-webkit-scrollbar { width: 4px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+:root {
+  --sky:              #050914;
+  --text:             #f0ead8;
+  --text-muted:       rgba(240,234,216,0.38);
+  --gold:             rgba(217,184,124,1);
+  --gold-mid:         rgba(217,184,124,0.55);
+  --gold-dim:         rgba(217,184,124,0.28);
+  --gold-faint:       rgba(217,184,124,0.09);
+  --card-bg:          rgba(255,255,255,0.04);
+  --card-border:      rgba(255,255,255,0.08);
+  --card-active-bg:   rgba(217,184,124,0.055);
+  --card-active-brd:  rgba(217,184,124,0.48);
+  --font-display:     'Cormorant Garamond', Georgia, serif;
+  --font-body:        'Outfit', system-ui, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--sky);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-weight: 300;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ─────────────────────────────────────
+   SKY SECTION
+───────────────────────────────────── */
+#sky-section {
+  position: relative;
+  width: 100%;
+  background: var(--sky);
+  overflow: hidden;
+}
+
+#sky-section::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 70px;
+  background: linear-gradient(to bottom, transparent, var(--sky));
+  pointer-events: none;
+  z-index: 2;
+}
+
+#sky-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  animation: telescope-open 3.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes telescope-open {
+  0%   { clip-path: circle(0.5% at 50% 54%); filter: blur(38px) brightness(0.08) saturate(0.15); }
+  16%  { clip-path: circle(4.5% at 50% 54%); filter: blur(24px) brightness(0.32) saturate(0.4);  }
+  40%  { clip-path: circle(22%  at 50% 54%); filter: blur(10px) brightness(0.68) saturate(0.78); }
+  70%  { clip-path: circle(60%  at 50% 54%); filter: blur(2.5px) brightness(0.94) saturate(0.96);}
+  100% { clip-path: circle(160% at 50% 54%); filter: blur(0) brightness(1) saturate(1);           }
+}
+
+#replay-btn {
+  position: absolute;
+  bottom: 14px; right: 16px;
+  z-index: 10;
+  background: rgba(255,255,255,0.05);
+  border: 0.5px solid rgba(255,255,255,0.12);
+  border-radius: 5px;
+  padding: 4px 11px;
+  font-size: 10px;
+  letter-spacing: 0.07em;
+  color: rgba(255,255,255,0.25);
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: all 0.25s;
+}
+#replay-btn:hover { color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.1); }
+
+/* twinkle keyframes */
+@keyframes tw-a { 0%,100%{opacity:.46}44%{opacity:.09} }
+@keyframes tw-b { 0%,100%{opacity:.36}58%{opacity:.07} }
+@keyframes tw-c { 0%,100%{opacity:.28}38%{opacity:.05} }
+@keyframes tw-d { 0%,100%{opacity:.2} 62%{opacity:.04} }
+.tw-a { animation: tw-a 4.3s ease-in-out infinite; }
+.tw-b { animation: tw-b 5.9s ease-in-out infinite; }
+.tw-c { animation: tw-c 3.6s ease-in-out infinite; }
+.tw-d { animation: tw-d 7.2s ease-in-out infinite; }
+
+/* constellation interactions */
+.const-node {
+  cursor: pointer;
+  transition: filter 0.3s ease;
+}
+.const-node:hover {
+  filter: drop-shadow(0 0 10px rgba(217,184,124,0.7));
+}
+.const-node.highlighted {
+  animation: node-pulse 1.4s ease-in-out infinite;
+}
+@keyframes node-pulse {
+  0%,100% { filter: drop-shadow(0 0 10px rgba(217,184,124,0.55)); }
+  50%      { filter: drop-shadow(0 0 24px rgba(217,184,124,1));    }
+}
+.active-node {
+  filter: drop-shadow(0 0 8px rgba(217,184,124,0.4));
+}
+.sealed-node {
+  cursor: default;
+  pointer-events: none;
+}
+
+/* ─────────────────────────────────────
+   CONTENT SECTION
+───────────────────────────────────── */
+#content {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 20px 64px;
+  opacity: 0;
+  animation: content-rise 0.8s ease forwards;
+  animation-delay: 4.1s;
+}
+@keyframes content-rise {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ─────────────────────────────────────
+   ADHD FAST-PATH BANNER
+───────────────────────────────────── */
+#adhd-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: rgba(217,184,124,0.07);
+  border: 0.5px solid rgba(217,184,124,0.22);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin: 20px 0 0;
+  font-size: 12px;
+  color: rgba(217,184,124,0.72);
+  letter-spacing: 0.03em;
+  line-height: 1.5;
+  overflow: hidden;
+  transition: opacity 0.4s, max-height 0.45s, margin 0.35s, padding 0.35s;
+  max-height: 80px;
+}
+#adhd-dismiss {
+  background: none;
+  border: none;
+  color: rgba(217,184,124,0.38);
+  cursor: pointer;
+  font-size: 18px;
+  flex-shrink: 0;
+  line-height: 1;
+  padding: 0 2px;
+  transition: color 0.2s;
+}
+#adhd-dismiss:hover { color: rgba(217,184,124,0.85); }
+
+/* ─────────────────────────────────────
+   SEARCH
+───────────────────────────────────── */
+#search-wrap {
+  position: relative;
+  margin: 16px 0 18px;
+}
+#search-icon {
+  position: absolute;
+  left: 13px; top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255,255,255,0.18);
+  font-size: 15px;
+  pointer-events: none;
+  line-height: 1;
+}
+#search-input {
+  width: 100%;
+  background: rgba(255,255,255,0.05);
+  border: 0.5px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  padding: 10px 14px 10px 36px;
+  color: var(--text);
+  font-size: 13px;
+  font-family: var(--font-body);
+  font-weight: 300;
+  outline: none;
+  transition: border-color 0.2s;
+}
+#search-input::placeholder { color: rgba(255,255,255,0.18); }
+#search-input:focus { border-color: rgba(217,184,124,0.42); }
+
+/* ─────────────────────────────────────
+   WING CARDS
+───────────────────────────────────── */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(158px, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.wcard {
+  background: var(--card-bg);
+  border: 0.5px solid var(--card-border);
+  border-radius: 10px;
+  padding: 14px 14px 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  transition: border-color 0.2s;
+}
+.wcard:not(.sealed):hover { border-color: rgba(255,255,255,0.2); }
+.wcard.active  { border-color: var(--card-active-brd); background: var(--card-active-bg); }
+.wcard.sealed  { opacity: 0.35; }
+.wcard.search-match { border-color: rgba(217,184,124,0.55); background: rgba(217,184,124,0.07); }
+
+.card-top .wnum   { font-size: 10px; letter-spacing: 0.1em; color: rgba(255,255,255,0.2); text-transform: uppercase; margin-bottom: 5px; }
+.card-top .wtitle { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+.card-top .wdesc  { font-size: 11px; color: rgba(255,255,255,0.3); line-height: 1.55; }
+.sealed-pill {
+  font-size: 9px; color: rgba(255,255,255,0.18);
+  border: 0.5px solid rgba(255,255,255,0.1);
+  border-radius: 3px; padding: 1px 5px;
+  display: inline-block; margin-top: 5px;
+  letter-spacing: 0.05em;
+}
+
+.card-actions { display: flex; flex-direction: column; gap: 6px; margin-top: auto; }
+
+.btn-briefing {
+  background: rgba(255,255,255,0.05);
+  border: 0.5px solid rgba(255,255,255,0.12);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 11px;
+  color: rgba(255,255,255,0.45);
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-weight: 400;
+  text-align: center;
+  letter-spacing: 0.03em;
+  transition: all 0.2s;
+  width: 100%;
+}
+.btn-briefing:hover:not(:disabled) { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.82); }
+.btn-briefing:disabled { opacity: 0.35; cursor: default; }
+
+.btn-enter {
+  display: block;
+  background: rgba(217,184,124,0.09);
+  border: 0.5px solid rgba(217,184,124,0.28);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 11px;
+  color: rgba(217,184,124,0.75);
+  text-decoration: none;
+  text-align: center;
+  letter-spacing: 0.03em;
+  font-weight: 400;
+  transition: all 0.2s;
+}
+.btn-enter:hover { background: rgba(217,184,124,0.17); color: rgba(217,184,124,1); }
+
+.btn-here {
+  font-size: 10px;
+  color: rgba(217,184,124,0.35);
+  text-align: center;
+  padding: 3px 0;
+  letter-spacing: 0.08em;
+}
+
+/* ─────────────────────────────────────
+   DEEP-DIVE PANEL
+───────────────────────────────────── */
+#panel {
+  background: rgba(255,255,255,0.03);
+  border: 0.5px solid rgba(217,184,124,0.2);
+  border-radius: 10px;
+  padding: 20px 22px;
+  margin-bottom: 12px;
+  display: none;
+  animation: panel-in 0.32s ease;
+}
+@keyframes panel-in {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+.panel-head h3 {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--text);
+  letter-spacing: 0.02em;
+  line-height: 1.3;
+}
+.panel-close {
+  background: none;
+  border: none;
+  font-size: 11px;
+  color: rgba(255,255,255,0.2);
+  cursor: pointer;
+  font-family: var(--font-body);
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
+  margin-left: 12px;
+  margin-top: 2px;
+  transition: color 0.2s;
+}
+.panel-close:hover { color: rgba(255,255,255,0.58); }
+
+.panel-row {
+  display: flex;
+  gap: 14px;
+  padding: 11px 0;
+  border-bottom: 0.5px solid rgba(255,255,255,0.05);
+}
+.panel-row:last-of-type { border-bottom: none; }
+
+.panel-label {
+  font-size: 9.5px;
+  letter-spacing: 0.11em;
+  color: rgba(255,255,255,0.18);
+  text-transform: uppercase;
+  min-width: 72px;
+  flex-shrink: 0;
+  padding-top: 1px;
+  font-weight: 500;
+}
+.panel-text {
+  font-size: 12.5px;
+  color: rgba(255,255,255,0.42);
+  line-height: 1.7;
+}
+
+.panel-link {
+  display: inline-block;
+  font-size: 12px;
+  color: rgba(217,184,124,0.62);
+  text-decoration: none;
+  margin-top: 15px;
+  letter-spacing: 0.04em;
+  transition: color 0.2s;
+}
+.panel-link:hover { color: rgba(217,184,124,1); }
+
+#panel-hint {
+  font-size: 10px;
+  color: rgba(255,255,255,0.13);
+  text-align: center;
+  padding: 10px 0 4px;
+  letter-spacing: 0.04em;
+}
+
+/* ─────────────────────────────────────
+   CHASE THE PATTERN — FOOTER NAV
+───────────────────────────────────── */
+#bottom-key {
+  border-top: 0.5px solid rgba(255,255,255,0.06);
+  padding-top: 24px;
+  margin-top: 10px;
+}
+.key-label {
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: rgba(255,255,255,0.14);
+  text-transform: uppercase;
+  font-weight: 500;
+  margin-bottom: 14px;
+}
+.key-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+.key-link {
+  font-size: 11px;
+  color: rgba(255,255,255,0.26);
+  text-decoration: none;
+  border: 0.5px solid rgba(255,255,255,0.07);
+  border-radius: 5px;
+  padding: 5px 11px;
+  letter-spacing: 0.04em;
+  transition: all 0.2s;
+}
+.key-link:hover   { color: rgba(217,184,124,0.82); border-color: rgba(217,184,124,0.28); }
+.key-link.current { color: rgba(217,184,124,0.52); border-color: rgba(217,184,124,0.22); cursor: default; }
+
+/* ─────────────────────────────────────
+   RESPONSIVE
+───────────────────────────────────── */
+@media (max-width: 480px) {
+  .cards-grid { grid-template-columns: 1fr 1fr; }
+  #content { padding: 0 14px 44px; }
+  .panel-label { min-width: 58px; font-size: 9px; }
+  .panel-text { font-size: 12px; }
+}
 </style>
-<base target="_blank">
 </head>
+
 <body>
 
-<!-- TELESCOPE OPENING -->
-<div id="telescope-overlay">
-  <div id="telescope-lens"></div>
+<!-- ═══════════════════════════════════
+     TELESCOPE + NIGHT SKY
+════════════════════════════════════ -->
+<div id="sky-section">
+  <button id="replay-btn" onclick="replayAnim()">replay ↺</button>
+
+  <svg id="sky-svg" viewBox="0 0 700 445"
+       preserveAspectRatio="xMidYMid meet"
+       xmlns="http://www.w3.org/2000/svg"
+       role="img" aria-label="MetaVoxa night sky — MV constellation formed by stars representing the wings of the house">
+
+    <rect width="700" height="445" fill="#050914"/>
+
+    <!-- ─── BACKGROUND STAR FIELD ─── -->
+    <!-- top band -->
+    <circle cx="18"  cy="14"  r=".8"  fill="#fff" opacity=".28"/>
+    <circle cx="44"  cy="30"  r="1.1" fill="#fff" opacity=".42" class="tw-b"/>
+    <circle cx="70"  cy="11"  r=".6"  fill="#fff" opacity=".2"/>
+    <circle cx="95"  cy="38"  r=".9"  fill="#fff" opacity=".35"/>
+    <circle cx="120" cy="17"  r=".7"  fill="#fff" opacity=".26" class="tw-a"/>
+    <circle cx="150" cy="44"  r="1.2" fill="#fff" opacity=".48"/>
+    <circle cx="178" cy="20"  r=".6"  fill="#fff" opacity=".2"/>
+    <circle cx="216" cy="36"  r=".8"  fill="#fff" opacity=".32" class="tw-c"/>
+    <circle cx="244" cy="13"  r=".7"  fill="#fff" opacity=".24"/>
+    <circle cx="272" cy="46"  r=".9"  fill="#fff" opacity=".35"/>
+    <circle cx="302" cy="18"  r=".5"  fill="#fff" opacity=".18"/>
+    <circle cx="336" cy="40"  r=".7"  fill="#fff" opacity=".27"/>
+    <circle cx="366" cy="15"  r=".8"  fill="#fff" opacity=".3"  class="tw-b"/>
+    <circle cx="398" cy="43"  r=".6"  fill="#fff" opacity=".2"/>
+    <circle cx="432" cy="21"  r="1"   fill="#fff" opacity=".4"/>
+    <circle cx="465" cy="38"  r=".7"  fill="#fff" opacity=".25" class="tw-d"/>
+    <circle cx="496" cy="14"  r=".8"  fill="#fff" opacity=".32"/>
+    <circle cx="528" cy="36"  r=".6"  fill="#fff" opacity=".2"/>
+    <circle cx="558" cy="17"  r="1.1" fill="#fff" opacity=".45" class="tw-a"/>
+    <circle cx="590" cy="41"  r=".7"  fill="#fff" opacity=".27"/>
+    <circle cx="622" cy="15"  r=".9"  fill="#fff" opacity=".35"/>
+    <circle cx="652" cy="32"  r=".6"  fill="#fff" opacity=".22"/>
+    <circle cx="684" cy="12"  r=".8"  fill="#fff" opacity=".28"/>
+
+    <!-- left band -->
+    <circle cx="14"  cy="70"  r=".7"  fill="#fff" opacity=".24"/>
+    <circle cx="34"  cy="98"  r=".9"  fill="#fff" opacity=".38" class="tw-c"/>
+    <circle cx="18"  cy="130" r=".6"  fill="#fff" opacity=".2"/>
+    <circle cx="46"  cy="158" r="1"   fill="#fff" opacity=".42"/>
+    <circle cx="22"  cy="190" r=".7"  fill="#fff" opacity=".27" class="tw-b"/>
+    <circle cx="60"  cy="220" r=".8"  fill="#fff" opacity=".32"/>
+    <circle cx="24"  cy="252" r=".6"  fill="#fff" opacity=".18"/>
+    <circle cx="50"  cy="282" r=".9"  fill="#fff" opacity=".34"/>
+    <circle cx="18"  cy="315" r=".7"  fill="#fff" opacity=".24"/>
+    <circle cx="54"  cy="348" r=".8"  fill="#fff" opacity=".3"  class="tw-d"/>
+    <circle cx="28"  cy="382" r=".6"  fill="#fff" opacity=".2"/>
+    <circle cx="64"  cy="415" r=".9"  fill="#fff" opacity=".28"/>
+
+    <!-- right band -->
+    <circle cx="688" cy="68"  r=".8"  fill="#fff" opacity=".32"/>
+    <circle cx="666" cy="100" r=".6"  fill="#fff" opacity=".22" class="tw-a"/>
+    <circle cx="690" cy="135" r="1"   fill="#fff" opacity=".4"/>
+    <circle cx="658" cy="168" r=".7"  fill="#fff" opacity=".27"/>
+    <circle cx="682" cy="200" r=".8"  fill="#fff" opacity=".34" class="tw-b"/>
+    <circle cx="660" cy="232" r=".6"  fill="#fff" opacity=".2"/>
+    <circle cx="688" cy="265" r=".9"  fill="#fff" opacity=".38"/>
+    <circle cx="655" cy="298" r=".7"  fill="#fff" opacity=".24" class="tw-c"/>
+    <circle cx="678" cy="332" r=".8"  fill="#fff" opacity=".3"/>
+    <circle cx="648" cy="368" r=".6"  fill="#fff" opacity=".18"/>
+    <circle cx="674" cy="402" r=".9"  fill="#fff" opacity=".27"/>
+
+    <!-- mid-left scatter -->
+    <circle cx="96"  cy="74"  r=".8"  fill="#fff" opacity=".3"/>
+    <circle cx="144" cy="90"  r=".6"  fill="#fff" opacity=".22" class="tw-d"/>
+    <circle cx="88"  cy="118" r=".9"  fill="#fff" opacity=".36"/>
+    <circle cx="125" cy="148" r=".7"  fill="#fff" opacity=".24"/>
+    <circle cx="80"  cy="175" r=".6"  fill="#fff" opacity=".2"/>
+    <circle cx="110" cy=".08" r=".8"  fill="#fff" opacity=".3"/>
+    <circle cx="84"  cy="242" r=".7"  fill="#fff" opacity=".24" class="tw-a"/>
+    <circle cx="128" cy="272" r=".9"  fill="#fff" opacity=".34"/>
+    <circle cx="92"  cy="302" r=".6"  fill="#fff" opacity=".18"/>
+    <circle cx="120" cy="336" r=".8"  fill="#fff" opacity=".27"/>
+    <circle cx="86"  cy="372" r=".7"  fill="#fff" opacity=".22" class="tw-b"/>
+    <circle cx="116" cy="408" r=".6"  fill="#fff" opacity=".18"/>
+    <circle cx="158" cy="120" r=".7"  fill="#fff" opacity=".26"/>
+    <circle cx="164" cy="188" r=".5"  fill="#fff" opacity=".18"/>
+    <circle cx="150" cy="240" r=".8"  fill="#fff" opacity=".3"  class="tw-c"/>
+    <circle cx="172" cy="308" r=".6"  fill="#fff" opacity=".2"/>
+    <circle cx="156" cy=".65" r=".7"  fill="#fff" opacity=".22"/>
+    <circle cx="170" cy="418" r=".8"  fill="#fff" opacity=".24"/>
+
+    <!-- mid-right scatter -->
+    <circle cx="612" cy="76"  r=".8"  fill="#fff" opacity=".3"/>
+    <circle cx="582" cy="108" r=".6"  fill="#fff" opacity=".22" class="tw-a"/>
+    <circle cx="618" cy="140" r=".9"  fill="#fff" opacity=".36"/>
+    <circle cx="586" cy="172" r=".7"  fill="#fff" opacity=".24"/>
+    <circle cx="610" cy="205" r=".6"  fill="#fff" opacity=".2"  class="tw-d"/>
+    <circle cx="580" cy="240" r=".8"  fill="#fff" opacity=".3"/>
+    <circle cx="614" cy="275" r=".7"  fill="#fff" opacity=".24"/>
+    <circle cx="583" cy="310" r=".9"  fill="#fff" opacity=".34" class="tw-b"/>
+    <circle cx="618" cy="348" r=".6"  fill="#fff" opacity=".18"/>
+    <circle cx="580" cy="382" r=".8"  fill="#fff" opacity=".27"/>
+    <circle cx="608" cy="418" r=".7"  fill="#fff" opacity=".22"/>
+    <circle cx="550" cy="90"  r=".6"  fill="#fff" opacity=".2"/>
+    <circle cx="534" cy="130" r=".7"  fill="#fff" opacity=".24"/>
+    <circle cx="558" cy="170" r=".8"  fill="#fff" opacity=".3"  class="tw-c"/>
+    <circle cx="536" cy="218" r=".6"  fill="#fff" opacity=".18"/>
+    <circle cx="554" cy="260" r=".7"  fill="#fff" opacity=".22"/>
+    <circle cx="540" cy="298" r=".8"  fill="#fff" opacity=".27"/>
+    <circle cx="560" cy="340" r=".6"  fill="#fff" opacity=".2"  class="tw-a"/>
+    <circle cx="534" cy="378" r=".7"  fill="#fff" opacity=".24"/>
+    <circle cx="554" cy="415" r=".8"  fill="#fff" opacity=".2"/>
+
+    <!-- center gap fill (between constellation letters and edges) -->
+    <circle cx="382" cy="90"  r=".7"  fill="#fff" opacity=".24"/>
+    <circle cx="424" cy="74"  r=".8"  fill="#fff" opacity=".3"  class="tw-b"/>
+    <circle cx="365" cy="116" r=".6"  fill="#fff" opacity=".2"/>
+    <circle cx="470" cy="96"  r=".7"  fill="#fff" opacity=".24"/>
+    <circle cx="410" cy="120" r=".5"  fill="#fff" opacity=".18"/>
+    <circle cx="390" cy="362" r=".8"  fill="#fff" opacity=".27"/>
+    <circle cx="430" cy="380" r=".6"  fill="#fff" opacity=".2"/>
+    <circle cx="370" cy="392" r=".7"  fill="#fff" opacity=".22" class="tw-d"/>
+    <circle cx="454" cy="408" r=".8"  fill="#fff" opacity=".24"/>
+    <circle cx="494" cy=".68" r=".6"  fill="#fff" opacity=".18"/>
+    <circle cx="340" cy="368" r=".7"  fill="#fff" opacity=".2"/>
+
+    <!-- brighter accent stars scattered -->
+    <circle cx="207" cy="60"  r="1.4" fill="#fff" opacity=".52" class="tw-a"/>
+    <circle cx="490" cy="54"  r="1.3" fill="#fff" opacity=".46"/>
+    <circle cx="74"  cy="312" r="1.2" fill="#fff" opacity=".44" class="tw-c"/>
+    <circle cx="636" cy="212" r="1.4" fill="#fff" opacity=".5"  class="tw-b"/>
+    <circle cx="344" cy="60"  r="1.1" fill="#fff" opacity=".42"/>
+    <circle cx="157" cy="422" r="1.2" fill="#fff" opacity=".38" class="tw-d"/>
+    <circle cx="570" cy="418" r="1.1" fill="#fff" opacity=".36"/>
+
+    <!-- ambient near constellation — adds nebulosity -->
+    <circle cx="224" cy="175" r=".9"  fill="#fff" opacity=".26"/>
+    <circle cx="250" cy="118" r=".7"  fill="#fff" opacity=".2"/>
+    <circle cx="287" cy="140" r=".6"  fill="#fff" opacity=".18"/>
+    <circle cx="300" cy="180" r=".8"  fill="#fff" opacity=".24"/>
+    <circle cx="315" cy="270" r=".7"  fill="#fff" opacity=".2"/>
+    <circle cx="255" cy="262" r=".6"  fill="#fff" opacity=".18"/>
+    <circle cx="234" cy="294" r=".8"  fill="#fff" opacity=".22"/>
+    <circle cx="368" cy="252" r=".7"  fill="#fff" opacity=".2"/>
+    <circle cx="382" cy="280" r=".6"  fill="#fff" opacity=".17"/>
+    <circle cx="424" cy="160" r=".8"  fill="#fff" opacity=".22"/>
+    <circle cx="447" cy="180" r=".6"  fill="#fff" opacity=".18"/>
+    <circle cx="437" cy="258" r=".7"  fill="#fff" opacity=".22"/>
+    <circle cx="480" cy="198" r=".8"  fill="#fff" opacity=".2"/>
+    <circle cx="500" cy="167" r=".6"  fill="#fff" opacity=".18"/>
+    <circle cx="488" cy="260" r=".7"  fill="#fff" opacity=".2"/>
+    <circle cx="510" cy="230" r=".6"  fill="#fff" opacity=".17"/>
+
+    <!-- ─── GHOSTED MV LETTERFORM (barely visible, atmospheric) ─── -->
+    <text x="345" y="228"
+          text-anchor="middle"
+          font-size="164" font-weight="700"
+          fill="rgba(217,184,124,0.018)"
+          font-family="Georgia, serif"
+          letter-spacing="14">MV</text>
+
+    <!-- ─── CONSTELLATION LINES ───
+         M nodes: BL(198,322) TL(222,148) MID(274,204) TR(330,144) BR(355,320)
+         V nodes: TL(400,138) BOT(462,330) TR(524,133)
+    ─── -->
+    <line x1="198" y1="322" x2="222" y2="148"
+          stroke="rgba(217,184,124,.26)" stroke-width=".9"
+          stroke-dasharray="4.5,7" stroke-linecap="round"/>
+    <line x1="222" y1="148" x2="274" y2="204"
+          stroke="rgba(217,184,124,.22)" stroke-width=".85"
+          stroke-dasharray="4.5,7" stroke-linecap="round"/>
+    <line x1="274" y1="204" x2="330" y2="144"
+          stroke="rgba(217,184,124,.22)" stroke-width=".85"
+          stroke-dasharray="4.5,7" stroke-linecap="round"/>
+    <line x1="330" y1="144" x2="355" y2="320"
+          stroke="rgba(217,184,124,.26)" stroke-width=".9"
+          stroke-dasharray="4.5,7" stroke-linecap="round"/>
+    <!-- V -->
+    <line x1="400" y1="138" x2="462" y2="330"
+          stroke="rgba(217,184,124,.3)"  stroke-width=".9"
+          stroke-dasharray="4.5,7" stroke-linecap="round"/>
+    <line x1="462" y1="330" x2="524" y2="133"
+          stroke="rgba(217,184,124,.27)" stroke-width=".9"
+          stroke-dasharray="4.5,7" stroke-linecap="round"/>
+
+    <!-- ─── CONSTELLATION NODES ─── -->
+
+    <!-- Study Wing — BL of M -->
+    <g id="node-study" class="const-node"
+       onclick="handleNodeClick('study')"
+       tabindex="0" role="button" aria-label="Open Study Wing briefing">
+      <circle cx="198" cy="322" r="20" fill="rgba(217,184,124,.04)"/>
+      <circle cx="198" cy="322" r="9.5" fill="rgba(217,184,124,.1)"
+              stroke="rgba(217,184,124,.32)" stroke-width=".8"/>
+      <circle cx="198" cy="322" r="2.8" fill="rgba(242,222,162,.9)"/>
+      <text x="188" y="308" text-anchor="middle" font-size="9"
+            fill="rgba(217,184,124,.48)"
+            font-family="Outfit, sans-serif" letter-spacing=".04em">Study Wing</text>
+    </g>
+
+    <!-- Reading Room — TL of M -->
+    <g id="node-reading" class="const-node"
+       onclick="handleNodeClick('study')"
+       tabindex="0" role="button" aria-label="Open Study Wing briefing (Reading Room)">
+      <circle cx="222" cy="148" r="24" fill="rgba(217,184,124,.04)"/>
+      <circle cx="222" cy="148" r="11" fill="rgba(217,184,124,.12)"
+              stroke="rgba(217,184,124,.36)" stroke-width=".85"/>
+      <circle cx="222" cy="148" r="3.4" fill="rgba(248,230,178,.95)"/>
+      <text x="222" y="131" text-anchor="middle" font-size="9"
+            fill="rgba(217,184,124,.52)"
+            font-family="Outfit, sans-serif" letter-spacing=".04em">Reading Room</text>
+    </g>
+
+    <!-- Mid (anonymous peak of M) -->
+    <circle cx="274" cy="204" r="5.5" fill="rgba(217,184,124,.07)"
+            stroke="rgba(217,184,124,.2)" stroke-width=".7"/>
+    <circle cx="274" cy="204" r="1.6" fill="rgba(217,184,124,.65)"/>
+
+    <!-- Salon — TR of M -->
+    <g id="node-salon" class="const-node"
+       onclick="handleNodeClick('salon')"
+       tabindex="0" role="button" aria-label="Open Salon briefing">
+      <circle cx="330" cy="144" r="24" fill="rgba(217,184,124,.04)"/>
+      <circle cx="330" cy="144" r="11" fill="rgba(217,184,124,.12)"
+              stroke="rgba(217,184,124,.36)" stroke-width=".85"/>
+      <circle cx="330" cy="144" r="3.4" fill="rgba(248,230,178,.95)"/>
+      <text x="350" y="131" text-anchor="start" font-size="9"
+            fill="rgba(217,184,124,.52)"
+            font-family="Outfit, sans-serif" letter-spacing=".04em">Salon</text>
+    </g>
+
+    <!-- Pattern Thoughts — BR of M -->
+    <g id="node-pattern" class="const-node"
+       onclick="handleNodeClick('study')"
+       tabindex="0" role="button" aria-label="Open Study Wing briefing (Pattern Thoughts)">
+      <circle cx="355" cy="320" r="17" fill="rgba(217,184,124,.04)"/>
+      <circle cx="355" cy="320" r="8.5" fill="rgba(217,184,124,.1)"
+              stroke="rgba(217,184,124,.28)" stroke-width=".8"/>
+      <circle cx="355" cy="320" r="2.5" fill="rgba(242,222,162,.88)"/>
+      <text x="378" y="324" text-anchor="start" font-size="9"
+            fill="rgba(217,184,124,.44)"
+            font-family="Outfit, sans-serif" letter-spacing=".04em">Pattern Thoughts</text>
+    </g>
+
+    <!-- Glam Wing — TL of V (sealed) -->
+    <g id="node-glam" class="sealed-node" aria-label="Glam Wing — sealed">
+      <circle cx="400" cy="138" r="15" fill="rgba(217,184,124,.03)"/>
+      <circle cx="400" cy="138" r="7.5" fill="rgba(217,184,124,.06)"
+              stroke="rgba(217,184,124,.17)" stroke-width=".8" stroke-dasharray="2,2"/>
+      <circle cx="400" cy="138" r="1.9" fill="rgba(217,184,124,.44)"/>
+      <text x="390" y="125" text-anchor="middle" font-size="8.5"
+            fill="rgba(217,184,124,.24)"
+            font-family="Outfit, sans-serif" letter-spacing=".04em">Glam Wing · sealed</text>
+    </g>
+
+    <!-- ★ Observatory — bottom of V — BRIGHTEST ★ -->
+    <g id="node-obs" class="const-node active-node"
+       onclick="handleNodeClick('obs')"
+       tabindex="0" role="button" aria-label="Observatory — you are here">
+      <circle cx="462" cy="330" r="40" fill="rgba(217,184,124,.035)"/>
+      <circle cx="462" cy="330" r="25" fill="rgba(217,184,124,.055)"/>
+      <circle cx="462" cy="330" r="15" fill="rgba(217,184,124,.1)"
+              stroke="rgba(217,184,124,.58)" stroke-width="1"/>
+      <circle cx="462" cy="330" r="5"  fill="rgba(252,240,198,.98)"/>
+      <text x="462" y="360" text-anchor="middle" font-size="9.5"
+            fill="rgba(217,184,124,.72)"
+            font-family="Outfit, sans-serif" letter-spacing=".06em">Observatory · you are here</text>
+    </g>
+
+    <!-- Wing V — TR of V (coming) -->
+    <g id="node-wing5" class="sealed-node" aria-label="Wing V — coming soon">
+      <circle cx="524" cy="133" r="15" fill="rgba(217,184,124,.03)"/>
+      <circle cx="524" cy="133" r="7.5" fill="rgba(217,184,124,.06)"
+              stroke="rgba(217,184,124,.15)" stroke-width=".8" stroke-dasharray="2,2"/>
+      <circle cx="524" cy="133" r="1.9" fill="rgba(217,184,124,.38)"/>
+      <text x="538" y="121" text-anchor="start" font-size="8.5"
+            fill="rgba(217,184,124,.2)"
+            font-family="Outfit, sans-serif" letter-spacing=".04em">Wing V · coming</text>
+    </g>
+
+    <!-- ─── PAGE HEADER ─── -->
+    <text x="38" y="58"
+          font-family="Cormorant Garamond, Georgia, serif"
+          font-size="30" font-weight="300"
+          fill="rgba(240,234,216,.92)"
+          letter-spacing=".02em">The Observatory</text>
+    <text x="38" y="80"
+          font-family="Outfit, sans-serif"
+          font-size="12" font-weight="300"
+          fill="rgba(255,255,255,.26)"
+          letter-spacing=".05em">Where distance creates clarity</text>
+
+  </svg>
 </div>
 
-<!-- SKY SECTION -->
-<section id="sky-section">
-  <canvas id="star-canvas"></canvas>
-  <div id="meta-ghost">M E T A V O X A</div>
+<!-- ═══════════════════════════════════
+     CONTENT
+════════════════════════════════════ -->
+<div id="content">
 
-  <div class="sky-content">
-    <h1 id="sky-title">The Observatory</h1>
-    <p id="sky-tagline">Where distance creates clarity</p>
-  </div>
-
-  <div id="search-container">
-    <input type="text" id="search-input" placeholder="Search — try 'salon', 'essays', 'how does this work'..." autocomplete="off">
-    <div id="search-hints"></div>
-  </div>
-
-  <div id="fast-path">
+  <!-- ADHD Fast-Path Banner -->
+  <div id="adhd-banner">
     <span>Already know what you want? Use the key below ↓ or search above ↑</span>
-    <button id="fast-path-close">✕</button>
+    <button id="adhd-dismiss" onclick="dismissBanner()" aria-label="Dismiss banner">×</button>
   </div>
-</section>
 
-<!-- CARDS SECTION -->
-<section id="cards-section">
-  <div id="cards-grid"></div>
-</section>
-
-<!-- PANEL CONTAINER -->
-<div id="panel-container">
-  <div id="panel-placeholder">← click any wing card to read its briefing</div>
-  <div id="panel-content" class="hidden"></div>
-</div>
-
-<!-- NAVIGATION KEY -->
-<nav id="nav-key">
-  <button id="key-toggle">Navigate</button>
-  <div class="key-grid">
-    <a href="index.html" class="key-item"><span class="key-icon">🏛</span><span class="key-label">Lobby</span></a>
-    <a href="atrium.html" class="key-item"><span class="key-icon">🌿</span><span class="key-label">Atrium</span></a>
-    <a href="study-wing.html" class="key-item"><span class="key-icon">🧠</span><span class="key-label">Study</span></a>
-    <a href="reading-room.html" class="key-item"><span class="key-icon">📚</span><span class="key-label">Reading</span></a>
-    <a href="pattern-thoughts.html" class="key-item"><span class="key-icon">🌀</span><span class="key-label">Patterns</span></a>
-    <a href="star-of-the-month.html" class="key-item"><span class="key-icon">⭐</span><span class="key-label">Star</span></a>
-    <a href="salon.html" class="key-item"><span class="key-icon">✍️</span><span class="key-label">Salon</span></a>
-    <a href="observatory.html" class="key-item active"><span class="key-icon">🔭</span><span class="key-label">Observatory</span></a>
+  <!-- Search -->
+  <div id="search-wrap">
+    <span id="search-icon" aria-hidden="true">⌕</span>
+    <input id="search-input"
+           type="text"
+           autocomplete="off"
+           spellcheck="false"
+           placeholder="Search — try 'salon', 'essays', 'how does this work'..."
+           oninput="handleSearch(this.value)"/>
   </div>
-</nav>
+
+  <!-- Wing Cards -->
+  <div class="cards-grid">
+
+    <!-- Wing I — Study Wing -->
+    <div class="wcard" id="card-study" data-wing="study">
+      <div class="card-top">
+        <p class="wnum">Wing I</p>
+        <p class="wtitle">Study Wing</p>
+        <p class="wdesc">Reading Room, Pattern Thoughts, Star of the Month</p>
+      </div>
+      <div class="card-actions">
+        <button class="btn-briefing" onclick="openPanel('study', this.closest('.wcard'))">Read Briefing</button>
+        <a class="btn-enter" href="/study-wing.html">Enter Room →</a>
+      </div>
+    </div>
+
+    <!-- Wing II — Salon -->
+    <div class="wcard" id="card-salon" data-wing="salon">
+      <div class="card-top">
+        <p class="wnum">Wing II · open</p>
+        <p class="wtitle">The Salon</p>
+        <p class="wdesc">Real-time room. Messages that fade. No record.</p>
+      </div>
+      <div class="card-actions">
+        <button class="btn-briefing" onclick="openPanel('salon', this.closest('.wcard'))">Read Briefing</button>
+        <a class="btn-enter" href="/salon.html">Enter Room →</a>
+      </div>
+    </div>
+
+    <!-- Wing III — Observatory (current) -->
+    <div class="wcard active" id="card-obs" data-wing="obs">
+      <div class="card-top">
+        <p class="wnum">Wing III · you are here</p>
+        <p class="wtitle">Observatory</p>
+        <p class="wdesc">The map room. Everything explained.</p>
+      </div>
+      <div class="card-actions">
+        <button class="btn-briefing" onclick="openPanel('obs', this.closest('.wcard'))">Read Briefing</button>
+        <p class="btn-here">· you are here ·</p>
+      </div>
+    </div>
+
+    <!-- Wing IV — Glam Wing (sealed) -->
+    <div class="wcard sealed" id="card-glam" data-wing="glam">
+      <div class="card-top">
+        <p class="wnum">Wing IV</p>
+        <p class="wtitle">Glam Wing</p>
+        <p class="wdesc">Five continents. Fashion archive world.</p>
+        <span class="sealed-pill">sealed</span>
+      </div>
+      <div class="card-actions">
+        <button class="btn-briefing" disabled>Sealed</button>
+      </div>
+    </div>
+
+  </div><!-- end cards-grid -->
+
+  <!-- Deep-Dive Panel -->
+  <div id="panel">
+    <div class="panel-head">
+      <h3 id="panel-title"></h3>
+      <button class="panel-close" onclick="closePanel()">close ✕</button>
+    </div>
+    <div id="panel-body"></div>
+    <p id="panel-hint">← click any wing card or constellation star to read its full briefing</p>
+  </div>
+
+  <!-- Chase the Pattern — bottom nav -->
+  <div id="bottom-key">
+    <p class="key-label">Chase the pattern</p>
+    <div class="key-links">
+      <a class="key-link" href="/index.html">Lobby</a>
+      <a class="key-link" href="/atrium.html">Atrium</a>
+      <a class="key-link" href="/study-wing.html">Study Wing</a>
+      <a class="key-link" href="/salon.html">Salon</a>
+      <a class="key-link" href="/reading-room.html">Reading Room</a>
+      <a class="key-link" href="/pattern-thoughts.html">Pattern Thoughts</a>
+      <a class="key-link" href="/star-of-the-month.html">Star of the Month</a>
+      <a class="key-link current" href="/observatory.html">Observatory ·</a>
+    </div>
+  </div>
+
+</div><!-- end content -->
+
 
 <script>
-// ========== SPACE HUM (Web Audio API) ==========
-let audioCtx;
-let humNodes = [];
-
-function startSpaceHum() {
-  try {
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
-    const freqs = [55, 110, 165, 220];
-    const targetGains = [0.03, 0.02, 0.015, 0.01];
-
-    freqs.forEach((freq, i) => {
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      const filter = audioCtx.createBiquadFilter();
-
-      osc.type = 'sine';
-      osc.frequency.value = freq;
-
-      filter.type = 'lowpass';
-      filter.frequency.value = 300;
-      filter.Q.value = 1;
-
-      gain.gain.value = 0;
-
-      osc.connect(filter);
-      filter.connect(gain);
-      gain.connect(audioCtx.destination);
-
-      osc.start();
-      humNodes.push({ osc, gain, filter, freq });
-    });
-
-    // Fade in
-    setTimeout(() => {
-      humNodes.forEach((node, i) => {
-        node.gain.gain.linearRampToValueAtTime(targetGains[i], audioCtx.currentTime + 3);
-      });
-    }, 100);
-
-    // Subtle modulation
-    setInterval(() => {
-      humNodes.forEach((node) => {
-        const drift = (Math.random() - 0.5) * 1.5;
-        node.osc.frequency.linearRampToValueAtTime(
-          node.freq + drift, 
-          audioCtx.currentTime + 4
-        );
-      });
-    }, 4000);
-
-  } catch(e) {
-    console.log('Audio not supported');
-  }
-}
-
-let humStarted = false;
-function initAudio() {
-  if (!humStarted && audioCtx) {
-    audioCtx.resume();
-    humStarted = true;
-  }
-}
-document.addEventListener('click', initAudio, { once: true });
-document.addEventListener('touchstart', initAudio, { once: true });
-
-// Start hum immediately (will be silent until user interacts, then fade in)
-startSpaceHum();
-
-// ========== STAR CANVAS ==========
-const canvas = document.getElementById('star-canvas');
-const ctx = canvas.getContext('2d');
-let stars = [];
-let width, height;
-
-function resizeCanvas() {
-  const dpr = window.devicePixelRatio || 1;
-  width = canvas.offsetWidth;
-  height = canvas.offsetHeight;
-  canvas.width = width * dpr;
-  canvas.height = height * dpr;
-  ctx.scale(dpr, dpr);
-}
-resizeCanvas();
-window.addEventListener('resize', () => {
-  resizeCanvas();
-  generateStars();
-});
-
-function generateStars() {
-  stars = [];
-  const count = Math.max(200, Math.floor((width * height) / 3000));
-
-  for (let i = 0; i < count; i++) {
-    stars.push({
-      x: Math.random() * width,
-      y: Math.random() * height,
-      size: Math.random() * 1.8 + 0.2,
-      opacity: Math.random() * 0.5 + 0.15,
-      twinkleSpeed: Math.random() * 0.015 + 0.003,
-      twinkleOffset: Math.random() * Math.PI * 2
-    });
-  }
-}
-generateStars();
-
-// Constellation nodes (MV shape) — responsive positions
-function getNodePositions() {
-  return [
-    { id: 'study', name: 'Study Wing', x: width * 0.12, y: height * 0.62, size: 4, brightness: 0.9, status: 'open' },
-    { id: 'reading', name: 'Reading Room', x: width * 0.28, y: height * 0.32, size: 3.5, brightness: 0.85, status: 'open' },
-    { id: 'salon', name: 'Salon', x: width * 0.52, y: height * 0.28, size: 4, brightness: 0.9, status: 'open' },
-    { id: 'patterns', name: 'Pattern Thoughts', x: width * 0.72, y: height * 0.58, size: 3.5, brightness: 0.8, status: 'open' },
-    { id: 'glam', name: 'Glam Wing', x: width * 0.38, y: height * 0.18, size: 3, brightness: 0.5, status: 'sealed' },
-    { id: 'observatory', name: 'Observatory', x: width * 0.45, y: height * 0.78, size: 6, brightness: 1, status: 'here' },
-    { id: 'wingv', name: 'Wing V', x: width * 0.82, y: height * 0.22, size: 3, brightness: 0.5, status: 'sealed' }
-  ];
-}
-
-const connections = [
-  ['study', 'reading'], ['reading', 'salon'], ['salon', 'patterns'],
-  ['glam', 'reading'], ['reading', 'observatory'], ['observatory', 'patterns'], ['patterns', 'wingv']
-];
-
-let time = 0;
-let canvasReady = false;
-
-function drawStars() {
-  ctx.clearRect(0, 0, width, height);
-
-  // Background
-  const grad = ctx.createRadialGradient(width/2, height/2, 0, width/2, height/2, Math.max(width, height));
-  grad.addColorStop(0, '#0a1025');
-  grad.addColorStop(1, '#050914');
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, width, height);
-
-  // Background stars
-  stars.forEach(star => {
-    const twinkle = Math.sin(time * star.twinkleSpeed + star.twinkleOffset) * 0.3 + 0.7;
-    ctx.beginPath();
-    ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(255,255,255,${star.opacity * twinkle})`;
-    ctx.fill();
-  });
-
-  const nodes = getNodePositions();
-
-  // Draw constellation lines
-  ctx.strokeStyle = 'rgba(210,175,100,0.25)';
-  ctx.lineWidth = 0.8;
-  connections.forEach(([a, b]) => {
-    const nodeA = nodes.find(w => w.id === a);
-    const nodeB = nodes.find(w => w.id === b);
-    if (nodeA && nodeB) {
-      ctx.beginPath();
-      ctx.moveTo(nodeA.x, nodeA.y);
-      ctx.lineTo(nodeB.x, nodeB.y);
-      ctx.stroke();
-    }
-  });
-
-  // Draw constellation nodes
-  nodes.forEach(node => {
-    const pulse = node.status === 'here' ? Math.sin(time * 0.025) * 0.25 + 0.75 : 1;
-
-    // Glow
-    const glowSize = node.size * (node.status === 'here' ? 10 : 5);
-    const glowGrad = ctx.createRadialGradient(node.x, node.y, 0, node.x, node.y, glowSize);
-    glowGrad.addColorStop(0, `rgba(210,175,100,${0.25 * node.brightness * pulse})`);
-    glowGrad.addColorStop(0.5, `rgba(210,175,100,${0.08 * node.brightness * pulse})`);
-    glowGrad.addColorStop(1, 'rgba(210,175,100,0)');
-    ctx.beginPath();
-    ctx.arc(node.x, node.y, glowSize, 0, Math.PI * 2);
-    ctx.fillStyle = glowGrad;
-    ctx.fill();
-
-    // Ring
-    ctx.beginPath();
-    ctx.arc(node.x, node.y, node.size * 2.5, 0, Math.PI * 2);
-    ctx.strokeStyle = node.status === 'sealed' 
-      ? `rgba(210,175,100,${0.25 * node.brightness})`
-      : `rgba(210,175,100,${0.7 * node.brightness})`;
-    ctx.lineWidth = node.status === 'sealed' ? 0.6 : 1.2;
-    if (node.status === 'sealed') {
-      ctx.setLineDash([4, 4]);
-    } else {
-      ctx.setLineDash([]);
-    }
-    ctx.stroke();
-    ctx.setLineDash([]);
-
-    // Center dot
-    ctx.beginPath();
-    ctx.arc(node.x, node.y, node.size * 0.7, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(210,175,100,${node.brightness})`;
-    ctx.fill();
-
-    // Inner bright core for "here"
-    if (node.status === 'here') {
-      ctx.beginPath();
-      ctx.arc(node.x, node.y, node.size * 0.3, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(255,255,255,0.8)';
-      ctx.fill();
-    }
-
-    // Label
-    ctx.font = `${window.innerWidth < 640 ? '10px' : '12px'} sans-serif`;
-    ctx.fillStyle = `rgba(255,255,255,${node.status === 'here' ? 0.85 : 0.55})`;
-    ctx.textAlign = 'center';
-    const labelY = node.y + node.size * 3.5 + 14;
-    ctx.fillText(node.name, node.x, labelY);
-
-    if (node.status === 'here') {
-      ctx.font = `${window.innerWidth < 640 ? '9px' : '10px'} sans-serif`;
-      ctx.fillStyle = 'rgba(210,175,100,0.7)';
-      ctx.fillText('you are here', node.x, labelY + 14);
-    }
-  });
-
-  time++;
-  requestAnimationFrame(drawStars);
-}
-
-// Start canvas immediately
-drawStars();
-
-// ========== TELESCOPE SEQUENCE ==========
-setTimeout(() => {
-  document.getElementById('telescope-overlay').classList.add('done');
-
-  // Reveal content
-  setTimeout(() => {
-    document.getElementById('sky-title').classList.add('visible');
-    document.getElementById('sky-tagline').classList.add('visible');
-    document.getElementById('search-container').classList.add('visible');
-    document.getElementById('fast-path').classList.add('visible');
-    document.getElementById('cards-section').classList.add('visible');
-  }, 400);
-
-}, 3500);
-
-// ========== WING DATA ==========
-const wings = [
-  {
-    id: 'study',
-    number: 'Wing I',
-    name: 'Study Wing',
-    status: 'open',
-    desc: 'The intellectual core. Essays, research, and pattern recognition live here.',
-    rooms: ['Reading Room', 'Pattern Thoughts', 'Star of the Month'],
-    link: 'study-wing.html',
-    briefing: {
-      what: 'A curated space for deep reading and structured thought. Three rooms, each serving a different mode of intellectual engagement.',
-      how: 'The Reading Room hosts categorized essays from Substack. Pattern Thoughts is a living calendar of micro-essays. Star of the Month features one standout piece.',
-      why: 'Not all thinking happens the same way. Some ideas need essays. Some need fragments. Some need to be held up and examined alone.',
-      now: 'All three rooms are live and updated weekly. The Tuesday essay rhythm feeds the Reading Room. Pattern Thoughts grows daily.'
-    }
+/* ─────────────────────────
+   PANEL CONTENT
+───────────────────────── */
+const PANELS = {
+  study: {
+    title: 'Study Wing — full briefing',
+    rows: [
+      ['What it is',   'Three rooms built for sustained attention. The Reading Room holds curated essays and books. Pattern Thoughts releases one numbered observation per day from a 360-node archive. Star of the Month features a person or idea worth sustained focus.'],
+      ['How it works', 'Each room runs on its own rhythm. Pattern Thoughts uses node numbers, not calendar dates — the archive builds like a library, not a feed. The Reading Room links outward to the sources that shaped the essays.'],
+      ['Why it exists','For the kind of thinking that doesn\'t happen in 30 seconds. The Study Wing is where MetaVoxa does its intellectual work out loud, slowly, in public.'],
+      ['Right now',    'All three rooms are open. Pattern Thoughts is live and updating daily. The Reading Room and Star of the Month are actively curated.']
+    ],
+    link: 'Enter the Study Wing →', href: '/study-wing.html'
   },
-  {
-    id: 'salon',
-    number: 'Wing II',
-    name: 'Salon',
-    status: 'open',
-    desc: 'Real-time conversation. Messages fade. No record. Presence only.',
-    rooms: ["Reader's Corner", "Writer's Nook", "Explorer's Spot"],
-    link: 'salon.html',
-    briefing: {
-      what: 'A living room for real-time conversation between readers, writers, researchers, and explorers. Messages appear and fade after 20 seconds. No scrollback.',
-      how: 'Choose your category, enter the room, and speak. The room is 360° scrollable with ambient rain and fire. Messages float and dissolve like thoughts.',
-      why: 'The internet remembers everything. The Salon remembers nothing. It is a space for presence, not performance. What matters is who is here now.',
-      now: 'Live and active. Firebase-powered real-time chat. Moderator mode available.'
-    }
+  salon: {
+    title: 'The Salon — full briefing',
+    rows: [
+      ['What it is',   'A real-time conversation room entered by choosing a role — Reader, Writer, Researcher, or Explorer. Each places you in a different zone. Presence appears as a coloured dot, not a name.'],
+      ['How it works', 'Messages float across the room and fade after 20 seconds. No scrollback. No archive. The room resets when it empties. Optional ambient audio — rain and fire — sets the atmosphere.'],
+      ['Why it exists','MetaVoxa needed a space for live thought that leaves no record. The Salon is where ideas pass through rather than stay. What happens there doesn\'t feed the essays or archive. That\'s the point.'],
+      ['Right now',    'The Salon is open. Enter from here, from the Lobby, or from the Atrium.']
+    ],
+    link: 'Enter the Salon →', href: '/salon.html'
   },
-  {
-    id: 'observatory',
-    number: 'Wing III',
-    name: 'Observatory',
-    status: 'here',
-    desc: 'The map room. Everything explained. Start here if you are lost.',
-    rooms: ['System Map', 'Search', 'Briefings'],
-    link: null,
-    briefing: {
-      what: 'You are here. The Observatory is the orientation room for MetaVoxa — a house with many wings and a specific rhythm.',
-      how: 'Explore the constellation to see how rooms connect. Search for what you need. Read briefings to understand any wing before entering.',
-      why: 'ADHD minds need clarity before exploration. The Observatory provides distance — a view of the whole system before you dive into any part.',
-      now: 'You are reading the Observatory briefing. All other wings are accessible from here via the cards above or the key below.'
-    }
-  },
-  {
-    id: 'glam',
-    number: 'Wing IV',
-    name: 'Glam Wing',
-    status: 'sealed',
-    desc: 'Five continents. Fashion archive world. Coming soon.',
-    rooms: ['Archive', 'Methodology', 'Global'],
-    link: null,
-    briefing: {
-      what: 'A fashion archive organized by continent and methodology. Not a blog. A research instrument for understanding how dress encodes power, resistance, and identity.',
-      how: 'Five continental sections, each with annotated visual essays. Cross-referenced by theme, era, and designer. Searchable by garment type and cultural context.',
-      why: 'Fashion is not frivolous. It is one of the most immediate languages of power and belonging. The Glam Wing treats it with the seriousness it deserves.',
-      now: 'Under construction. The architecture is planned. The content is being assembled. Enter when the seal breaks.'
-    }
+  obs: {
+    title: 'The Observatory — full briefing',
+    rows: [
+      ['What it is',   'The map room. A complete briefing on how MetaVoxa works — every wing, every system, every essay thread — for anyone who walked in and immediately thought: wait, what is this place?'],
+      ['Who it\'s for','Built specifically for ADHD brains, impatient visitors, and people who need the legend before they explore. Answers first. Wandering later, if at all. Both paths are valid.'],
+      ['Why it exists','MetaVoxa has an architecture. Five wings. A Substack. A Lobby. An Atrium. The Observatory makes that logic immediately legible — no navigation required to reverse-engineer it.'],
+      ['You are here', 'The Observatory is the brightest node in the constellation — the bottom point of the V. The MV in the sky is MetaVoxa. The whole house is mapped above you. You\'re already inside.']
+    ],
+    link: 'You are here', href: null
   }
-];
+};
 
-// ========== RENDER CARDS ==========
-const cardsGrid = document.getElementById('cards-grid');
+/* ─────────────────────────
+   SEARCH INDEX
+───────────────────────── */
+const SEARCH_INDEX = {
+  salon: 'salon', chat: 'salon', 'real-time': 'salon', realtime: 'salon',
+  messages: 'salon', writer: 'salon', reader: 'salon', researcher: 'salon',
+  explorer: 'salon', fire: 'salon', rain: 'salon', ambient: 'salon',
+  live: 'salon', conversation: 'salon', fade: 'salon',
+  study: 'study', reading: 'study', books: 'study', essays: 'study',
+  pattern: 'study', thoughts: 'study', star: 'study', archive: 'study',
+  library: 'study', substack: 'study', newsletter: 'study', writing: 'study',
+  publish: 'study', posts: 'study',
+  observatory: 'obs', map: 'obs', explain: 'obs', briefing: 'obs',
+  guide: 'obs', help: 'obs', wings: 'obs', house: 'obs', system: 'obs',
+  works: 'obs', navigate: 'obs', overview: 'obs'
+};
 
-wings.forEach(wing => {
-  const card = document.createElement('div');
-  card.className = `wing-card ${wing.status === 'sealed' ? 'sealed' : ''}`;
-  card.dataset.id = wing.id;
+/* node IDs per wing key */
+const NODE_MAP = {
+  study: ['node-study', 'node-reading', 'node-pattern'],
+  salon: ['node-salon'],
+  obs:   ['node-obs']
+};
 
-  const statusClass = wing.status === 'here' ? 'here' : wing.status === 'open' ? 'open' : 'sealed';
-  const statusText = wing.status === 'here' ? 'You Are Here' : wing.status === 'open' ? 'Open' : 'Sealed';
+let searchTimer = null;
 
-  const roomsHtml = wing.rooms.map(r => `<span class="room-tag">${r}</span>`).join('');
+/* ─────────────────────────
+   OPEN PANEL
+───────────────────────── */
+function openPanel(key, cardEl) {
+  const d = PANELS[key];
+  if (!d) return;
 
-  const actionsHtml = wing.status === 'here' 
-    ? `<button class="wing-btn disabled" disabled>You Are Here</button>`
-    : wing.status === 'sealed'
-    ? `<button class="wing-btn disabled" disabled>Coming Soon</button>`
-    : `<a href="${wing.link}" class="wing-btn primary">Enter Room →</a><button class="wing-btn secondary" onclick="event.stopPropagation(); openPanel('${wing.id}')">Read Briefing</button>`;
+  /* active card state */
+  document.querySelectorAll('.wcard').forEach(c => c.classList.remove('active'));
+  if (cardEl) cardEl.classList.add('active');
 
-  card.innerHTML = `
-    <div class="wing-card-header">
-      <span class="wing-number">${wing.number}</span>
-      <span class="wing-status ${statusClass}">${statusText}</span>
-    </div>
-    <div class="wing-name">${wing.name}</div>
-    <div class="wing-desc">${wing.desc}</div>
-    <div class="wing-rooms">${roomsHtml}</div>
-    <div class="wing-actions">${actionsHtml}</div>
-  `;
+  /* build panel */
+  document.getElementById('panel-title').textContent = d.title;
+  let html = d.rows.map(([label, text]) => `
+    <div class="panel-row">
+      <span class="panel-label">${label}</span>
+      <p class="panel-text">${text}</p>
+    </div>`).join('');
+  html += d.href
+    ? `<a class="panel-link" href="${d.href}">${d.link}</a>`
+    : `<span class="panel-link" style="cursor:default;opacity:.55">${d.link}</span>`;
 
-  card.addEventListener('click', (e) => {
-    if (e.target.closest('a') || e.target.closest('button')) return;
-    openPanel(wing.id);
-  });
+  document.getElementById('panel-body').innerHTML = html;
+  document.getElementById('panel-hint').style.display = 'none';
 
-  cardsGrid.appendChild(card);
-});
-
-// ========== PANEL LOGIC ==========
-const panelPlaceholder = document.getElementById('panel-placeholder');
-const panelContent = document.getElementById('panel-content');
-let activePanel = null;
-
-function openPanel(wingId) {
-  const wing = wings.find(w => w.id === wingId);
-  if (!wing) return;
-
-  document.querySelectorAll('.wing-card').forEach(c => c.classList.remove('active'));
-  document.querySelector(`.wing-card[data-id="${wingId}"]`).classList.add('active');
-
-  const linkHtml = wing.status === 'here' 
-    ? `<span class="panel-link disabled">You are here</span>`
-    : wing.status === 'sealed'
-    ? `<span class="panel-link disabled">Sealed — coming soon</span>`
-    : `<a href="${wing.link}" class="panel-link">Enter the ${wing.name} →</a>`;
-
-  panelContent.innerHTML = `
-    <div class="deep-dive-panel">
-      <div class="panel-header">
-        <span class="panel-title">${wing.name} — Full Briefing</span>
-        <button class="panel-close" onclick="closePanel()">✕</button>
-      </div>
-      <div class="panel-body">
-        <div class="panel-row">
-          <div class="panel-label">What It Is</div>
-          <div class="panel-text">${wing.briefing.what}</div>
-        </div>
-        <div class="panel-row">
-          <div class="panel-label">How It Works</div>
-          <div class="panel-text">${wing.briefing.how}</div>
-        </div>
-        <div class="panel-row">
-          <div class="panel-label">Why It Exists</div>
-          <div class="panel-text">${wing.briefing.why}</div>
-        </div>
-        <div class="panel-row">
-          <div class="panel-label">Right Now</div>
-          <div class="panel-text">${wing.briefing.now}</div>
-        </div>
-      </div>
-      <div class="panel-footer">
-        ${linkHtml}
-        <span class="panel-note">${wing.number} · ${wing.rooms.join(', ')}</span>
-      </div>
-    </div>
-  `;
-
-  panelPlaceholder.classList.add('hidden');
-  panelContent.classList.remove('hidden');
-  activePanel = wingId;
-
-  setTimeout(() => {
-    panelContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, 100);
+  const panel = document.getElementById('panel');
+  panel.style.animation = 'none';
+  void panel.offsetWidth;
+  panel.style.display = 'block';
+  panel.style.animation = 'panel-in .32s ease';
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
+/* ─────────────────────────
+   CLOSE PANEL
+───────────────────────── */
 function closePanel() {
-  panelContent.classList.add('hidden');
-  panelPlaceholder.classList.remove('hidden');
-  document.querySelectorAll('.wing-card').forEach(c => c.classList.remove('active'));
-  activePanel = null;
+  document.getElementById('panel').style.display = 'none';
+  document.querySelectorAll('.wcard').forEach(c => c.classList.remove('active'));
+  document.getElementById('card-obs').classList.add('active');
+  document.getElementById('panel-hint').style.display = 'block';
 }
 
-// ========== SEARCH ==========
-const searchInput = document.getElementById('search-input');
-const searchHints = document.getElementById('search-hints');
-
-const searchTerms = [
-  { term: 'salon', label: 'Salon — real-time conversation room', action: () => { scrollToCard('salon'); openPanel('salon'); } },
-  { term: 'study', label: 'Study Wing — essays and research', action: () => { scrollToCard('study'); openPanel('study'); } },
-  { term: 'reading', label: 'Reading Room — categorized essays', action: () => { scrollToCard('study'); openPanel('study'); } },
-  { term: 'essays', label: 'Essays — in the Study Wing', action: () => { scrollToCard('study'); openPanel('study'); } },
-  { term: 'pattern', label: 'Pattern Thoughts — micro-essays', action: () => { scrollToCard('study'); openPanel('study'); } },
-  { term: 'glam', label: 'Glam Wing — fashion archive (coming)', action: () => { scrollToCard('glam'); openPanel('glam'); } },
-  { term: 'how does this work', label: 'How MetaVoxa works — Observatory briefing', action: () => { scrollToCard('observatory'); openPanel('observatory'); } },
-  { term: 'map', label: 'System map — Observatory', action: () => { scrollToCard('observatory'); openPanel('observatory'); } },
-  { term: 'observatory', label: 'Observatory — you are here', action: () => { scrollToCard('observatory'); openPanel('observatory'); } }
-];
-
-function scrollToCard(wingId) {
-  const card = document.querySelector(`.wing-card[data-id="${wingId}"]`);
-  if (card) {
-    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+/* ─────────────────────────
+   CONSTELLATION CLICK
+───────────────────────── */
+function handleNodeClick(key) {
+  const card = document.getElementById('card-' + key);
+  if (card && !card.classList.contains('sealed')) {
+    openPanel(key, card);
+    highlightNodes(key);
+    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 }
 
-searchInput.addEventListener('input', (e) => {
-  const val = e.target.value.toLowerCase().trim();
-  if (!val) {
-    searchHints.classList.remove('active');
-    return;
-  }
+/* ─────────────────────────
+   SEARCH
+───────────────────────── */
+function handleSearch(val) {
+  clearTimeout(searchTimer);
+  clearHighlights();
+  if (!val || val.length < 2) return;
 
-  const matches = searchTerms.filter(s => s.term.includes(val) || val.includes(s.term) || s.label.toLowerCase().includes(val));
-
-  if (matches.length > 0) {
-    searchHints.innerHTML = matches.map(m => 
-      `<div class="search-hint" data-term="${m.term}"><strong>${m.term}</strong> — ${m.label}</div>`
-    ).join('');
-    searchHints.classList.add('active');
-  } else {
-    searchHints.innerHTML = `<div class="search-hint">No matches — try "salon", "essays", "how does this work"</div>`;
-    searchHints.classList.add('active');
-  }
-});
-
-searchInput.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') {
-    const val = searchInput.value.toLowerCase().trim();
-    const match = searchTerms.find(s => s.term.includes(val) || val.includes(s.term));
-    if (match) {
-      match.action();
-      searchHints.classList.remove('active');
-      searchInput.value = '';
+  searchTimer = setTimeout(() => {
+    const q = val.toLowerCase().trim();
+    let matchKey = null;
+    for (const [term, key] of Object.entries(SEARCH_INDEX)) {
+      if (q.includes(term)) { matchKey = key; break; }
     }
-  }
-});
+    if (!matchKey) return;
 
-searchHints.addEventListener('click', (e) => {
-  const hint = e.target.closest('.search-hint');
-  if (hint) {
-    const term = hint.dataset.term;
-    const match = searchTerms.find(s => s.term === term);
-    if (match) {
-      match.action();
-      searchHints.classList.remove('active');
-      searchInput.value = '';
+    /* highlight constellation star */
+    highlightNodes(matchKey);
+
+    /* highlight card */
+    const card = document.getElementById('card-' + matchKey);
+    if (card) {
+      card.classList.add('search-match');
+      card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      /* open briefing after short pause */
+      setTimeout(() => openPanel(matchKey, card), 420);
     }
-  }
-});
+  }, 340);
+}
 
-document.addEventListener('click', (e) => {
-  if (!e.target.closest('#search-container')) {
-    searchHints.classList.remove('active');
-  }
-});
+function highlightNodes(key) {
+  (NODE_MAP[key] || []).forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.add('highlighted');
+  });
+}
 
-// ========== FAST PATH ==========
-document.getElementById('fast-path-close').addEventListener('click', () => {
-  document.getElementById('fast-path').classList.add('dismissed');
-});
+function clearHighlights() {
+  document.querySelectorAll('.highlighted').forEach(el => el.classList.remove('highlighted'));
+  document.querySelectorAll('.search-match').forEach(el => el.classList.remove('search-match'));
+}
 
-// ========== NAV KEY TOGGLE ==========
-const navKey = document.getElementById('nav-key');
-const keyToggle = document.getElementById('key-toggle');
-let keyOpen = true;
+/* ─────────────────────────
+   ADHD BANNER DISMISS
+───────────────────────── */
+function dismissBanner() {
+  const b = document.getElementById('adhd-banner');
+  b.style.opacity     = '0';
+  b.style.maxHeight   = '0';
+  b.style.marginTop   = '0';
+  b.style.padding     = '0';
+  b.style.overflow    = 'hidden';
+  setTimeout(() => b.remove(), 460);
+}
 
-keyToggle.addEventListener('click', () => {
-  keyOpen = !keyOpen;
-  navKey.classList.toggle('hidden', !keyOpen);
-  keyToggle.textContent = keyOpen ? 'Navigate' : 'Open Key';
-});
+/* ─────────────────────────
+   REPLAY TELESCOPE
+───────────────────────── */
+function replayAnim() {
+  const svg = document.getElementById('sky-svg');
+  svg.style.animation = 'none';
+  void svg.offsetWidth;
+  svg.style.animation = 'telescope-open 3.9s cubic-bezier(0.16, 1, 0.3, 1) forwards';
+}
 
-let lastScroll = 0;
-window.addEventListener('scroll', () => {
-  const currentScroll = window.scrollY;
-  if (currentScroll > lastScroll && currentScroll > 200) {
-    navKey.classList.add('hidden');
-    keyOpen = false;
-    keyToggle.textContent = 'Open Key';
-  } else if (currentScroll < lastScroll) {
-    navKey.classList.remove('hidden');
-    keyOpen = true;
-    keyToggle.textContent = 'Navigate';
-  }
-  lastScroll = currentScroll;
+/* keyboard support for SVG nodes */
+document.querySelectorAll('.const-node[tabindex]').forEach(node => {
+  node.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      node.dispatchEvent(new MouseEvent('click'));
+    }
+  });
 });
 </script>
-
 </body>
 </html>
