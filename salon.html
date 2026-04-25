@@ -196,7 +196,7 @@
   #audio-toggle.muted { opacity: 0.5; }
 
   /* ════════════════════════════════════════
-     MAIN SALON — 360° Horizontal Room
+     MAIN SALON — Photo Background + 360° Scroll
      ════════════════════════════════════════ */
   #salon-container {
     position: fixed;
@@ -215,219 +215,152 @@
     height: 100vh;
     min-width: 1200px;
     position: relative;
-    background: var(--navy);
     display: flex;
     align-items: center;
     justify-content: center;
   }
 
-  /* Wall texture */
-  .wall-texture {
+  /* Photo background */
+  .salon-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    z-index: 0;
+  }
+
+  /* Gradient overlay for text readability */
+  .salon-overlay {
     position: absolute;
     inset: 0;
     background:
-      radial-gradient(ellipse at 20% 50%, rgba(18,18,26,0.8) 0%, transparent 50%),
-      radial-gradient(ellipse at 80% 30%, rgba(44,10,10,0.2) 0%, transparent 40%),
-      linear-gradient(180deg, var(--navy) 0%, var(--navy-light) 100%);
-    opacity: 0.9;
-  }
-
-  /* Floor */
-  .floor {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 25vh;
-    background:
-      linear-gradient(180deg, transparent 0%, rgba(8,8,12,0.9) 20%, var(--navy) 100%);
-  }
-
-  /* Rug pattern */
-  .rug {
-    position: absolute;
-    bottom: 8vh;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 40vw;
-    min-width: 500px;
-    height: 18vh;
-    background:
-      radial-gradient(ellipse at center, rgba(212,175,55,0.08) 0%, transparent 70%),
-      repeating-linear-gradient(90deg, transparent, transparent 20px, rgba(212,175,55,0.03) 20px, rgba(212,175,55,0.03) 21px);
-    border-radius: 50% 50% 0 0;
-    opacity: 0.6;
+      linear-gradient(180deg, rgba(10,10,15,0.3) 0%, transparent 30%, transparent 70%, rgba(10,10,15,0.5) 100%),
+      linear-gradient(90deg, rgba(10,10,15,0.4) 0%, transparent 20%, transparent 80%, rgba(10,10,15,0.4) 100%);
+    z-index: 1;
+    pointer-events: none;
   }
 
   /* ════════════════════════════════════════
-     FURNITURE ZONES
+     FURNITURE ZONES (Positioned over photo)
      ════════════════════════════════════════ */
 
-  /* Left Sofa — Reader zone */
+  /* Left Sofa — Reader */
   .sofa-left {
     position: absolute;
-    left: 8vw;
-    bottom: 18vh;
-    width: 22vw;
-    min-width: 280px;
-    height: 18vh;
-    min-height: 140px;
-    background: linear-gradient(180deg, rgba(20,20,30,0.9) 0%, rgba(10,10,15,0.95) 100%);
+    left: 12vw;
+    bottom: 22vh;
+    width: 18vw;
+    min-width: 220px;
+    height: 14vh;
+    min-height: 100px;
+    background: linear-gradient(180deg, rgba(20,20,30,0.7) 0%, rgba(10,10,15,0.8) 100%);
     border-radius: 20px 20px 8px 8px;
-    border: 1px solid rgba(212,175,55,0.1);
-    box-shadow:
-      0 20px 60px rgba(0,0,0,0.6),
-      inset 0 1px 0 rgba(255,255,255,0.03);
+    border: 1px solid rgba(212,175,55,0.08);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-end;
-    padding-bottom: 1.5em;
+    padding-bottom: 1em;
+    z-index: 5;
+    cursor: pointer;
+    transition: all 0.4s ease;
+  }
+
+  .sofa-left:hover {
+    background: linear-gradient(180deg, rgba(44,10,10,0.3) 0%, rgba(20,20,30,0.7) 100%);
+    border-color: rgba(212,175,55,0.2);
+    transform: translateY(-2px);
   }
 
   .sofa-left::after {
     content: '';
     position: absolute;
-    top: -8px;
+    top: -6px;
     left: 10%;
     right: 10%;
-    height: 12px;
-    background: linear-gradient(180deg, rgba(30,30,45,0.8), rgba(20,20,30,0.9));
-    border-radius: 10px;
-    border: 1px solid rgba(212,175,55,0.08);
+    height: 10px;
+    background: linear-gradient(180deg, rgba(30,30,45,0.6), rgba(20,20,30,0.7));
+    border-radius: 8px;
+    border: 1px solid rgba(212,175,55,0.05);
   }
 
-  .zone-label {
-    font-family: 'Cinzel', serif;
-    font-size: 0.7rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--cream-dim);
-    opacity: 0.6;
-    margin-bottom: 0.5em;
-  }
-
-  /* Right Sofa — Writer zone */
+  /* Right Sofa — Writer */
   .sofa-right {
     position: absolute;
-    right: 8vw;
-    bottom: 18vh;
-    width: 22vw;
-    min-width: 280px;
-    height: 18vh;
-    min-height: 140px;
-    background: linear-gradient(180deg, rgba(20,20,30,0.9) 0%, rgba(10,10,15,0.95) 100%);
+    right: 12vw;
+    bottom: 22vh;
+    width: 18vw;
+    min-width: 220px;
+    height: 14vh;
+    min-height: 100px;
+    background: linear-gradient(180deg, rgba(20,20,30,0.7) 0%, rgba(10,10,15,0.8) 100%);
     border-radius: 20px 20px 8px 8px;
-    border: 1px solid rgba(212,175,55,0.1);
-    box-shadow:
-      0 20px 60px rgba(0,0,0,0.6),
-      inset 0 1px 0 rgba(255,255,255,0.03);
+    border: 1px solid rgba(212,175,55,0.08);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-end;
-    padding-bottom: 1.5em;
+    padding-bottom: 1em;
+    z-index: 5;
+    cursor: pointer;
+    transition: all 0.4s ease;
+  }
+
+  .sofa-right:hover {
+    background: linear-gradient(180deg, rgba(212,175,55,0.1) 0%, rgba(20,20,30,0.7) 100%);
+    border-color: rgba(212,175,55,0.2);
+    transform: translateY(-2px);
   }
 
   .sofa-right::after {
     content: '';
     position: absolute;
-    top: -8px;
+    top: -6px;
     left: 10%;
     right: 10%;
-    height: 12px;
-    background: linear-gradient(180deg, rgba(30,30,45,0.8), rgba(20,20,30,0.9));
-    border-radius: 10px;
-    border: 1px solid rgba(212,175,55,0.08);
+    height: 10px;
+    background: linear-gradient(180deg, rgba(30,30,45,0.6), rgba(20,20,30,0.7));
+    border-radius: 8px;
+    border: 1px solid rgba(212,175,55,0.05);
   }
 
-  /* Floor seating — Explorer zone */
+  /* Floor seating — Explorer */
   .floor-seating {
     position: absolute;
-    right: 35vw;
-    bottom: 10vh;
-    width: 12vw;
-    min-width: 150px;
-    height: 8vh;
-    min-height: 60px;
-    background: radial-gradient(ellipse at center, rgba(212,175,55,0.06) 0%, transparent 70%);
+    right: 38vw;
+    bottom: 14vh;
+    width: 10vw;
+    min-width: 120px;
+    height: 6vh;
+    min-height: 50px;
+    background: radial-gradient(ellipse at center, rgba(232,220,200,0.08) 0%, transparent 70%);
     border-radius: 50%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    z-index: 5;
+    cursor: pointer;
+    transition: all 0.4s ease;
   }
 
-  /* Window — Rain view */
-  .window-frame {
-    position: absolute;
-    left: 5vw;
-    top: 12vh;
-    width: 18vw;
-    min-width: 200px;
-    height: 28vh;
-    min-height: 200px;
-    background: linear-gradient(180deg, rgba(8,12,20,0.9) 0%, rgba(5,8,15,0.95) 100%);
-    border: 3px solid rgba(212,175,55,0.2);
-    border-radius: 4px;
-    overflow: hidden;
-    box-shadow:
-      0 0 40px rgba(0,0,0,0.5),
-      inset 0 0 30px rgba(0,0,0,0.4);
+  .floor-seating:hover {
+    background: radial-gradient(ellipse at center, rgba(232,220,200,0.15) 0%, transparent 70%);
   }
 
-  .window-pane {
-    position: absolute;
-    inset: 0;
-    background:
-      linear-gradient(180deg, rgba(15,20,35,0.8) 0%, rgba(8,12,25,0.9) 100%);
-  }
-
-  /* Rain effect */
-  .rain-container {
-    position: absolute;
-    inset: 0;
-    overflow: hidden;
+  .zone-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--cream-dim);
+    opacity: 0.7;
+    margin-bottom: 0.3em;
     pointer-events: none;
-  }
-
-  .raindrop {
-    position: absolute;
-    width: 1px;
-    background: linear-gradient(180deg, transparent, rgba(200,210,230,0.3), transparent);
-    animation: fall linear infinite;
-  }
-
-  @keyframes fall {
-    0% { transform: translateY(-100%); opacity: 0; }
-    10% { opacity: 1; }
-    90% { opacity: 1; }
-    100% { transform: translateY(100vh); opacity: 0; }
-  }
-
-  /* Window crossbars */
-  .window-frame::before,
-  .window-frame::after {
-    content: '';
-    position: absolute;
-    background: rgba(212,175,55,0.15);
-    z-index: 2;
-  }
-
-  .window-frame::before {
-    left: 50%;
-    top: 0;
-    bottom: 0;
-    width: 2px;
-    transform: translateX(-50%);
-  }
-
-  .window-frame::after {
-    top: 50%;
-    left: 0;
-    right: 0;
-    height: 2px;
-    transform: translateY(-50%);
   }
 
   /* ════════════════════════════════════════
@@ -436,102 +369,62 @@
   .hearth {
     position: absolute;
     left: 50%;
-    bottom: 22vh;
+    bottom: 26vh;
     transform: translateX(-50%);
-    width: 28vw;
-    min-width: 350px;
-    max-width: 500px;
+    width: 26vw;
+    min-width: 320px;
+    max-width: 450px;
     text-align: center;
     z-index: 10;
   }
 
   .hearth-table {
     width: 100%;
-    height: 12vh;
-    min-height: 80px;
-    background: linear-gradient(180deg, rgba(25,20,15,0.9) 0%, rgba(15,12,10,0.95) 100%);
+    height: 10vh;
+    min-height: 60px;
+    background: linear-gradient(180deg, rgba(25,20,15,0.75) 0%, rgba(15,12,10,0.8) 100%);
     border-radius: 8px;
-    border: 1px solid rgba(212,175,55,0.15);
-    box-shadow:
-      0 15px 50px rgba(0,0,0,0.5),
-      inset 0 1px 0 rgba(255,255,255,0.02);
+    border: 1px solid rgba(212,175,55,0.12);
+    box-shadow: 0 15px 50px rgba(0,0,0,0.4);
     position: relative;
-    margin-bottom: 1.5em;
+    margin-bottom: 1.2em;
   }
 
   /* Fire glow under table */
   .hearth-table::before {
     content: '';
     position: absolute;
-    bottom: -20px;
+    bottom: -15px;
     left: 20%;
     right: 20%;
-    height: 40px;
-    background: radial-gradient(ellipse at center, rgba(212,175,55,0.15) 0%, transparent 70%);
-    filter: blur(15px);
+    height: 30px;
+    background: radial-gradient(ellipse at center, rgba(212,175,55,0.12) 0%, transparent 70%);
+    filter: blur(12px);
     animation: firePulse 4s ease-in-out infinite;
   }
 
   @keyframes firePulse {
-    0%, 100% { opacity: 0.6; transform: scale(1); }
-    50% { opacity: 1; transform: scale(1.1); }
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50% { opacity: 0.9; transform: scale(1.1); }
   }
 
   .hearth-prompt {
     font-family: 'Cormorant Garamond', serif;
     font-style: italic;
-    font-size: clamp(0.95rem, 1.5vw, 1.2rem);
+    font-size: clamp(0.9rem, 1.3vw, 1.1rem);
     color: var(--cream);
     line-height: 1.6;
     padding: 0 1em;
-    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    text-shadow: 0 2px 10px rgba(0,0,0,0.6);
   }
 
   .hearth-label {
     font-family: 'Cinzel', serif;
-    font-size: 0.6rem;
+    font-size: 0.55rem;
     letter-spacing: 0.25em;
     text-transform: uppercase;
     color: var(--gold-dim);
-    margin-bottom: 1em;
-  }
-
-  /* ════════════════════════════════════════
-     FLOATING CANDLES
-     ════════════════════════════════════════ */
-  .candle {
-    position: absolute;
-    width: 8px;
-    height: 24px;
-    background: linear-gradient(180deg, var(--warm-white) 0%, var(--cream) 100%);
-    border-radius: 2px;
-    box-shadow:
-      0 0 20px rgba(212,175,55,0.3),
-      0 0 60px rgba(212,175,55,0.1);
-    animation: candleFloat 6s ease-in-out infinite;
-  }
-
-  .candle::before {
-    content: '';
-    position: absolute;
-    top: -6px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 4px;
-    height: 6px;
-    background: radial-gradient(ellipse at center, #fff 0%, var(--gold) 50%, transparent 70%);
-    border-radius: 50%;
-    animation: flameFlicker 2s ease-in-out infinite;
-  }
-
-  @keyframes candleFloat {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-15px); }
-  }
-
-  @keyframes flameFlicker {
-    0%, 100% { opacity: 1; transform: translateX(-50%) scale(1); }
-    50% { opacity: 0.8; transform: translateX(-50%) scale(1.2); }
+    margin-bottom: 0.8em;
   }
 
   /* ════════════════════════════════════════
@@ -582,12 +475,12 @@
   #message-stream {
     position: absolute;
     left: 50%;
-    bottom: 38vh;
+    bottom: 40vh;
     transform: translateX(-50%);
-    width: 35vw;
-    min-width: 300px;
-    max-width: 500px;
-    height: 30vh;
+    width: 32vw;
+    min-width: 280px;
+    max-width: 450px;
+    height: 28vh;
     pointer-events: none;
     z-index: 20;
     overflow: hidden;
@@ -599,8 +492,8 @@
     left: 50%;
     transform: translateX(-50%);
     max-width: 90%;
-    padding: 0.8em 1.2em;
-    background: rgba(10,10,15,0.85);
+    padding: 0.7em 1em;
+    background: rgba(10,10,15,0.8);
     border: 1px solid rgba(212,175,55,0.1);
     border-radius: 12px;
     font-size: clamp(0.85rem, 1.2vw, 1rem);
@@ -640,22 +533,22 @@
     left: 0;
     right: 0;
     z-index: 100;
-    background: linear-gradient(180deg, transparent 0%, rgba(10,10,15,0.95) 30%);
-    padding: 2em 1em 1.5em;
+    background: linear-gradient(180deg, transparent 0%, rgba(10,10,15,0.9) 40%);
+    padding: 1.5em 1em 1.2em;
     display: flex;
     justify-content: center;
     gap: 0.8em;
   }
 
   #chat-input {
-    width: 50vw;
-    min-width: 250px;
-    max-width: 500px;
-    padding: 0.9em 1.2em;
+    width: 45vw;
+    min-width: 220px;
+    max-width: 450px;
+    padding: 0.8em 1.1em;
     font-family: 'Cormorant Garamond', serif;
     font-size: 1rem;
     color: var(--cream);
-    background: rgba(20,20,30,0.8);
+    background: rgba(20,20,30,0.85);
     border: 1px solid rgba(212,175,55,0.2);
     border-radius: 8px;
     outline: none;
@@ -673,13 +566,13 @@
   }
 
   #send-btn {
-    padding: 0.9em 1.5em;
+    padding: 0.8em 1.4em;
     font-family: 'Cinzel', serif;
     font-size: 0.75rem;
     letter-spacing: 0.15em;
     text-transform: uppercase;
     color: var(--gold);
-    background: rgba(20,20,30,0.8);
+    background: rgba(20,20,30,0.85);
     border: 1px solid rgba(212,175,55,0.3);
     border-radius: 8px;
     cursor: pointer;
@@ -694,27 +587,27 @@
   }
 
   /* ════════════════════════════════════════
-     SCROLL HINT (Mobile)
+     SCROLL HINT
      ════════════════════════════════════════ */
   .scroll-hint {
     position: fixed;
-    bottom: 6em;
+    bottom: 5.5em;
     left: 50%;
     transform: translateX(-50%);
     z-index: 50;
     font-family: 'Cinzel', serif;
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--cream-dim);
-    opacity: 0.5;
+    opacity: 0.4;
     animation: hintPulse 3s ease-in-out infinite;
     pointer-events: none;
   }
 
   @keyframes hintPulse {
-    0%, 100% { opacity: 0.3; }
-    50% { opacity: 0.6; }
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 0.5; }
   }
 
   /* ════════════════════════════════════════
@@ -722,17 +615,17 @@
      ════════════════════════════════════════ */
   #presence-bar {
     position: fixed;
-    top: 1.5em;
+    top: 1.2em;
     left: 50%;
     transform: translateX(-50%);
     z-index: 50;
     display: flex;
-    gap: 1.5em;
+    gap: 1.2em;
     align-items: center;
-    background: rgba(10,10,15,0.7);
+    background: rgba(10,10,15,0.75);
     border: 1px solid rgba(212,175,55,0.1);
     border-radius: 30px;
-    padding: 0.6em 1.5em;
+    padding: 0.5em 1.2em;
     backdrop-filter: blur(10px);
   }
 
@@ -741,7 +634,7 @@
     align-items: center;
     gap: 0.4em;
     font-family: 'Cinzel', serif;
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     letter-spacing: 0.1em;
     color: var(--cream-dim);
   }
@@ -758,12 +651,12 @@
   .presence-count .dot.explorer { background: var(--cream); }
 
   /* ════════════════════════════════════════
-     MODERATOR CONTROLS (Hidden by default)
+     MODERATOR CONTROLS
      ════════════════════════════════════════ */
   #mod-panel {
     position: fixed;
-    top: 1.5em;
-    right: 1.5em;
+    top: 1.2em;
+    right: 1.2em;
     z-index: 200;
     display: none;
   }
@@ -773,7 +666,7 @@
   .mod-btn {
     padding: 0.5em 1em;
     font-family: 'Cinzel', serif;
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     letter-spacing: 0.1em;
     color: var(--cream-dim);
     background: rgba(20,20,30,0.8);
@@ -798,48 +691,25 @@
     }
 
     .sofa-left, .sofa-right {
-      width: 35vw;
-      min-width: 200px;
-    }
-
-    .window-frame {
-      width: 25vw;
-      min-width: 150px;
-      height: 22vh;
-      min-height: 150px;
+      width: 30vw;
+      min-width: 160px;
+      height: 12vh;
+      min-height: 80px;
     }
 
     .hearth {
-      width: 40vw;
-      min-width: 280px;
+      width: 45vw;
+      min-width: 250px;
     }
 
     #chat-input {
-      width: 60vw;
+      width: 55vw;
     }
 
     .category-grid {
       grid-template-columns: 1fr;
-      max-width: 300px;
+      max-width: 280px;
     }
-  }
-
-  /* Dust particles */
-  .dust {
-    position: absolute;
-    width: 2px;
-    height: 2px;
-    background: rgba(212,175,55,0.2);
-    border-radius: 50%;
-    animation: dustFloat 15s linear infinite;
-    pointer-events: none;
-  }
-
-  @keyframes dustFloat {
-    0% { transform: translateY(0) translateX(0); opacity: 0; }
-    10% { opacity: 0.6; }
-    90% { opacity: 0.6; }
-    100% { transform: translateY(-100vh) translateX(50px); opacity: 0; }
   }
 </style>
 <base target="_blank">
@@ -908,19 +778,18 @@
 </div>
 
 <!-- ════════════════════════════════════════
-     SALON ROOM
+     SALON ROOM — Photo Background
      ════════════════════════════════════════ -->
 <div id="salon-container">
   <div id="salon-room">
-    <div class="wall-texture"></div>
-    <div class="floor"></div>
-    <div class="rug"></div>
+    <!-- Photo background with desktop/mobile swap -->
+    <picture class="salon-bg">
+      <source srcset="IMG_mobile.jpg" media="(max-width: 768px)">
+      <img src="IMG_desktop.jpg" alt="The Salon" class="salon-bg">
+    </picture>
 
-    <!-- Window with rain -->
-    <div class="window-frame">
-      <div class="window-pane"></div>
-      <div class="rain-container" id="rain-container"></div>
-    </div>
+    <!-- Gradient overlay for text readability -->
+    <div class="salon-overlay"></div>
 
     <!-- Left Sofa — Reader -->
     <div class="sofa-left">
@@ -945,20 +814,6 @@
         "What are you carrying that you haven't set down yet?"
       </div>
     </div>
-
-    <!-- Floating candles -->
-    <div class="candle" style="left:15%; top:20%; animation-delay:0s;"></div>
-    <div class="candle" style="left:25%; top:35%; animation-delay:2s;"></div>
-    <div class="candle" style="left:70%; top:25%; animation-delay:1s;"></div>
-    <div class="candle" style="left:80%; top:40%; animation-delay:3s;"></div>
-    <div class="candle" style="left:45%; top:15%; animation-delay:4s;"></div>
-    <div class="candle" style="left:55%; top:30%; animation-delay:1.5s;"></div>
-
-    <!-- Dust particles -->
-    <div class="dust" style="left:20%; animation-delay:0s; animation-duration:12s;"></div>
-    <div class="dust" style="left:40%; animation-delay:3s; animation-duration:18s;"></div>
-    <div class="dust" style="left:60%; animation-delay:6s; animation-duration:14s;"></div>
-    <div class="dust" style="left:80%; animation-delay:9s; animation-duration:16s;"></div>
 
     <!-- Message stream area -->
     <div id="message-stream"></div>
@@ -1037,7 +892,7 @@
   document.getElementById('weekly-prompt').textContent = '"' + prompts[weekNum % prompts.length] + '"';
 
   // ════════════════════════════════════════
-  // CATEGORY SELECTION (using event listeners)
+  // CATEGORY SELECTION
   // ════════════════════════════════════════
   document.querySelectorAll('.category-card').forEach(card => {
     card.addEventListener('click', function() {
@@ -1167,10 +1022,10 @@
     container.innerHTML = '';
 
     const zones = {
-      reader: { left: '15%', bottom: '25%' },
-      writer: { left: '75%', bottom: '25%' },
-      researcher: { left: '45%', bottom: '30%' },
-      explorer: { left: '55%', bottom: '15%' }
+      reader: { left: '15%', bottom: '28%' },
+      writer: { left: '75%', bottom: '28%' },
+      researcher: { left: '45%', bottom: '35%' },
+      explorer: { left: '55%', bottom: '18%' }
     };
 
     Object.entries(presenceData).forEach(([id, p], i) => {
@@ -1212,25 +1067,6 @@
       audioEnabled = false;
     }
   });
-
-  // ════════════════════════════════════════
-  // RAIN EFFECT
-  // ════════════════════════════════════════
-  function createRain() {
-    const container = document.getElementById('rain-container');
-    const dropCount = 40;
-    for (let i = 0; i < dropCount; i++) {
-      const drop = document.createElement('div');
-      drop.className = 'raindrop';
-      drop.style.left = Math.random() * 100 + '%';
-      drop.style.height = (Math.random() * 15 + 10) + 'px';
-      drop.style.animationDuration = (Math.random() * 0.5 + 0.3) + 's';
-      drop.style.animationDelay = Math.random() * 2 + 's';
-      drop.style.opacity = Math.random() * 0.4 + 0.1;
-      container.appendChild(drop);
-    }
-  }
-  createRain();
 
   // ════════════════════════════════════════
   // MODERATOR MODE
