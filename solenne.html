@@ -759,9 +759,15 @@ function openLightbox(data){
       wrap.appendChild(dot); wrap.appendChild(tip);
     });
   }
-  img.complete&&img.naturalWidth ? place() : (img.onload=place);
   document.getElementById('lb-overlay').classList.add('open');
   document.body.style.overflow='hidden';
+
+  function doPlace(){
+    requestAnimationFrame(function(){
+      requestAnimationFrame(place);
+    });
+  }
+  img.complete&&img.naturalWidth ? doPlace() : (img.onload=doPlace);
 }
 
 document.getElementById('lb-close').addEventListener('click',closeLb);
