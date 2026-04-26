@@ -7,14 +7,17 @@
     <title>Glam Wing — MetaVoxa</title>
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        html { width: 100%; height: 100%; overflow: hidden; touch-action: none; }
-        body { width: 100%; height: 100%; overflow: hidden; background: #050914; font-family: 'Georgia', 'Times New Roman', serif; color: #f0ead8; -webkit-tap-highlight-color: transparent; touch-action: none; position: fixed; }
+        html, body { width: 100%; height: 100%; overflow: hidden; background: #050914; font-family: 'Georgia', 'Times New Roman', serif; color: #f0ead8; -webkit-tap-highlight-color: transparent; touch-action: none; }
+        body { position: fixed; display: flex; align-items: center; justify-content: center; }
         
-        .map-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; width: 100vw; height: 100vh; height: 100dvh; overflow: hidden; background: #050914; }
-        .map-image { position: absolute; top: 0; left: 0; width: 100%; height: 100%; width: 100vw; height: 100vh; height: 100dvh; object-fit: cover; object-position: center center; display: block; opacity: 0; transform: scale(1.12); animation: mapUnroll 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s forwards; will-change: transform, opacity; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
-        @keyframes mapUnroll { 0% { opacity: 0; transform: scale(1.12); } 30% { opacity: 0.8; } 100% { opacity: 1; transform: scale(1); } }
+        .map-wrapper { position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .unroll-mask { position: relative; width: 100%; height: 0%; overflow: hidden; animation: unrollMap 2.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s forwards; display: flex; align-items: center; justify-content: center; }
+        @keyframes unrollMap { 0% { height: 0%; opacity: 0; } 20% { opacity: 1; } 100% { height: 100%; opacity: 1; } }
         
-        .vignette { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; background: radial-gradient(ellipse at center, transparent 40%, rgba(5, 9, 20, 0.3) 70%, rgba(5, 9, 20, 0.6) 100%); z-index: 2; opacity: 0; animation: fadeIn 1.5s ease 1.5s forwards; }
+        .map-image { width: 100%; height: 100%; object-fit: contain; object-position: center center; display: block; opacity: 0; transform: scale(1.05); animation: mapReveal 1.8s ease 0.8s forwards; will-change: transform, opacity; }
+        @keyframes mapReveal { 0% { opacity: 0; transform: scale(1.05); } 100% { opacity: 1; transform: scale(1); } }
+        
+        .vignette { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; background: radial-gradient(ellipse at center, transparent 40%, rgba(5, 9, 20, 0.3) 70%, rgba(5, 9, 20, 0.6) 100%); z-index: 2; opacity: 0; animation: fadeIn 1.5s ease 2s forwards; }
         @keyframes fadeIn { to { opacity: 1; } }
         
         .continent-zone { position: absolute; cursor: pointer; z-index: 10; transition: all 0.4s ease; }
@@ -25,11 +28,11 @@
         .continent-label { position: absolute; bottom: 8%; left: 50%; transform: translateX(-50%) translateY(12px); font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; color: rgba(240, 234, 216, 0.5); background: rgba(5, 9, 20, 0.7); padding: 5px 14px; border-radius: 20px; border: 1px solid rgba(210, 175, 100, 0.15); opacity: 0; transition: all 0.4s ease; pointer-events: none; white-space: nowrap; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
         .continent-zone:hover .continent-label, .continent-zone.active .continent-label { opacity: 1; transform: translateX(-50%) translateY(0); color: rgba(210, 175, 100, 0.95); border-color: rgba(210, 175, 100, 0.5); box-shadow: 0 0 25px rgba(210, 175, 100, 0.15); }
         
-        .zone-kaelum { top: 22%; left: 36%; width: 22%; height: 26%; clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 70% 100%, 50% 80%, 20% 80%, 0% 60%); }
-        .zone-solenne { top: 27%; left: 58%; width: 25%; height: 29%; clip-path: polygon(0% 0%, 100% 0%, 100% 80%, 70% 80%, 50% 60%, 20% 60%, 0% 40%); }
-        .zone-oria { top: 41%; left: 41%; width: 22%; height: 39%; clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 60% 100%, 40% 85%, 0% 85%); }
-        .zone-wide-current { top: 49%; left: 19%; width: 18%; height: 29%; clip-path: polygon(0% 0%, 100% 0%, 100% 80%, 60% 80%, 40% 60%, 0% 60%); }
-        .zone-terra-somnia { top: 67%; left: 70%; width: 16%; height: 21%; cursor: default; clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 60% 100%, 40% 80%, 0% 80%); }
+        .zone-kaelum { top: 26.6%; left: 44.9%; width: 14.5%; height: 16.0%; clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 65% 100%, 40% 75%, 15% 75%, 0% 50%); }
+        .zone-solenne { top: 31.9%; left: 58.0%; width: 21.7%; height: 21.3%; clip-path: polygon(0% 0%, 100% 0%, 100% 75%, 50% 75%, 35% 55%, 15% 55%, 0% 35%); }
+        .zone-oria { top: 42.6%; left: 44.9%; width: 17.4%; height: 34.6%; clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 50% 100%, 30% 85%, 0% 85%); }
+        .zone-wide-current { top: 55.9%; left: 20.3%; width: 14.5%; height: 23.9%; clip-path: polygon(0% 0%, 100% 0%, 100% 80%, 60% 80%, 40% 60%, 0% 60%); }
+        .zone-terra-somnia { top: 71.8%; left: 71.0%; width: 14.5%; height: 18.6%; cursor: default; clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 50% 100%, 30% 80%, 0% 80%); }
         .zone-terra-somnia:hover::before, .zone-terra-somnia.active::before { background: radial-gradient(ellipse at center, rgba(128, 128, 128, 0.2) 0%, rgba(128, 128, 128, 0.05) 50%, transparent 70%); animation: none; }
         .zone-terra-somnia .continent-label { font-style: italic; letter-spacing: 3px; }
         
@@ -39,9 +42,9 @@
         .pin-marker.bounce::after { animation: pinBounce 0.6s ease; }
         @keyframes pinBounce { 0%, 100% { transform: translate(-50%, -50%) rotate(-45deg) scale(1); } 30% { transform: translate(-50%, -65%) rotate(-45deg) scale(1.3); } 60% { transform: translate(-50%, -40%) rotate(-45deg) scale(0.9); } }
         
-        .pin-1 { top: 28%; left: 28%; animation-delay: 2.8s; } .pin-2 { top: 19%; left: 38%; animation-delay: 2.95s; } .pin-3 { top: 22%; left: 41%; animation-delay: 3.1s; } .pin-4 { top: 18%; left: 55%; animation-delay: 3.25s; } .pin-5 { top: 26%; left: 75%; animation-delay: 3.4s; } .pin-6 { top: 40%; left: 85%; animation-delay: 3.55s; } .pin-7 { top: 68%; left: 88%; animation-delay: 3.7s; } .pin-8 { top: 55%; left: 31%; animation-delay: 3.85s; } .pin-9 { top: 47%; left: 27%; animation-delay: 4.0s; } .pin-10 { top: 52%; left: 20%; animation-delay: 4.15s; }
+        .pin-1 { top: 28%; left: 28%; animation-delay: 3.0s; } .pin-2 { top: 19%; left: 38%; animation-delay: 3.15s; } .pin-3 { top: 22%; left: 41%; animation-delay: 3.3s; } .pin-4 { top: 18%; left: 55%; animation-delay: 3.45s; } .pin-5 { top: 26%; left: 75%; animation-delay: 3.6s; } .pin-6 { top: 40%; left: 85%; animation-delay: 3.75s; } .pin-7 { top: 68%; left: 88%; animation-delay: 3.9s; } .pin-8 { top: 55%; left: 31%; animation-delay: 4.05s; } .pin-9 { top: 47%; left: 27%; animation-delay: 4.2s; } .pin-10 { top: 52%; left: 20%; animation-delay: 4.35s; }
         
-        .geyser { position: absolute; width: 3px; z-index: 5; pointer-events: none; opacity: 0; animation: geyserFadeIn 2s ease 2s forwards; }
+        .geyser { position: absolute; width: 3px; z-index: 5; pointer-events: none; opacity: 0; animation: geyserFadeIn 2s ease 2.5s forwards; }
         @keyframes geyserFadeIn { to { opacity: 1; } }
         .geyser-wisp { position: absolute; width: 2px; background: linear-gradient(to top, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.08) 50%, transparent 100%); border-radius: 50%; animation: smokeRise 5s ease-in-out infinite; }
         @keyframes smokeRise { 0% { height: 0; opacity: 0; transform: translateX(0) scale(1); } 15% { opacity: 0.5; } 85% { opacity: 0.2; } 100% { height: 70px; opacity: 0; transform: translateX(12px) scale(1.8); } }
@@ -59,32 +62,34 @@
         .audio-toggle:hover { border-color: rgba(210, 175, 100, 0.4); color: rgba(210, 175, 100, 0.8); }
         .audio-toggle.active { border-color: rgba(210, 175, 100, 0.5); color: rgba(210, 175, 100, 0.9); box-shadow: 0 0 15px rgba(210, 175, 100, 0.1); }
         
-        @media (max-width: 768px) { .map-image { object-position: center center; } .continent-label { font-size: 0.7rem; padding: 4px 10px; letter-spacing: 1.5px; } .pin-marker { width: 18px; height: 18px; } .pin-marker::after { width: 8px; height: 8px; } .back-lobby { bottom: 15px; left: 15px; font-size: 0.7rem; padding: 6px 10px; } .audio-toggle { bottom: 15px; right: 15px; width: 34px; height: 34px; } .terra-tooltip { font-size: 0.75rem; padding: 10px 16px; } }
-        @media (prefers-reduced-motion: reduce) { .map-image { animation: none; transform: scale(1); opacity: 1; } .vignette { animation: none; opacity: 1; } .continent-zone::before { animation: none; } .geyser { animation: none; opacity: 1; } .geyser-wisp { animation: none; opacity: 0.25; height: 35px; } .pin-marker { animation: none; opacity: 1; } }
+        @media (max-width: 768px) { .map-image { object-fit: contain; } .continent-label { font-size: 0.7rem; padding: 4px 10px; letter-spacing: 1.5px; } .pin-marker { width: 18px; height: 18px; } .pin-marker::after { width: 8px; height: 8px; } .back-lobby { bottom: 15px; left: 15px; font-size: 0.7rem; padding: 6px 10px; } .audio-toggle { bottom: 15px; right: 15px; width: 34px; height: 34px; } .terra-tooltip { font-size: 0.75rem; padding: 10px 16px; } }
+        @media (prefers-reduced-motion: reduce) { .unroll-mask { animation: none; height: 100%; opacity: 1; } .map-image { animation: none; opacity: 1; transform: scale(1); } .vignette { animation: none; opacity: 1; } .continent-zone::before { animation: none; } .geyser { animation: none; opacity: 1; } .geyser-wisp { animation: none; opacity: 0.25; height: 35px; } .pin-marker { animation: none; opacity: 1; } }
     </style>
 </head>
 <body>
-    <div class="map-container">
-        <img src="IMG_glam.jpg" alt="Glam Wing Map" class="map-image" id="mapImage" loading="eager" decoding="async">
-        <div class="vignette"></div>
-        
-        <div class="geyser geyser-1"><div class="geyser-wisp wisp-1"></div><div class="geyser-wisp wisp-2"></div><div class="geyser-wisp wisp-3"></div></div>
-        <div class="geyser geyser-2"><div class="geyser-wisp wisp-1"></div><div class="geyser-wisp wisp-2"></div><div class="geyser-wisp wisp-3"></div></div>
-        <div class="geyser geyser-3"><div class="geyser-wisp wisp-1"></div><div class="geyser-wisp wisp-2"></div><div class="geyser-wisp wisp-3"></div></div>
-        <div class="geyser geyser-4"><div class="geyser-wisp wisp-1"></div><div class="geyser-wisp wisp-2"></div><div class="geyser-wisp wisp-3"></div></div>
-        <div class="geyser geyser-5"><div class="geyser-wisp wisp-1"></div><div class="geyser-wisp wisp-2"></div><div class="geyser-wisp wisp-3"></div></div>
-        
-        <div class="pin-marker pin-1"></div><div class="pin-marker pin-2"></div><div class="pin-marker pin-3"></div><div class="pin-marker pin-4"></div><div class="pin-marker pin-5"></div>
-        <div class="pin-marker pin-6"></div><div class="pin-marker pin-7"></div><div class="pin-marker pin-8"></div><div class="pin-marker pin-9"></div><div class="pin-marker pin-10"></div>
-        
-        <a href="oria.html" class="continent-zone zone-oria" data-continent="oria"><span class="continent-label">Oria</span></a>
-        <a href="kaelum.html" class="continent-zone zone-kaelum" data-continent="kaelum"><span class="continent-label">Kaelum</span></a>
-        <a href="solenne.html" class="continent-zone zone-solenne" data-continent="solenne"><span class="continent-label">Solenne</span></a>
-        <a href="wide-current.html" class="continent-zone zone-wide-current" data-continent="wide-current"><span class="continent-label">The Wide Current</span></a>
-        
-        <div class="continent-zone zone-terra-somnia" data-continent="terra-somnia">
-            <span class="continent-label">Terra Somnia</span>
-            <div class="terra-tooltip">Terra Somnia — Uncharted. Not yet.</div>
+    <div class="map-wrapper">
+        <div class="unroll-mask">
+            <img src="IMG_glam.jpg" alt="Glam Wing Map" class="map-image" id="mapImage" loading="eager" decoding="async">
+            <div class="vignette"></div>
+            
+            <div class="geyser geyser-1"><div class="geyser-wisp wisp-1"></div><div class="geyser-wisp wisp-2"></div><div class="geyser-wisp wisp-3"></div></div>
+            <div class="geyser geyser-2"><div class="geyser-wisp wisp-1"></div><div class="geyser-wisp wisp-2"></div><div class="geyser-wisp wisp-3"></div></div>
+            <div class="geyser geyser-3"><div class="geyser-wisp wisp-1"></div><div class="geyser-wisp wisp-2"></div><div class="geyser-wisp wisp-3"></div></div>
+            <div class="geyser geyser-4"><div class="geyser-wisp wisp-1"></div><div class="geyser-wisp wisp-2"></div><div class="geyser-wisp wisp-3"></div></div>
+            <div class="geyser geyser-5"><div class="geyser-wisp wisp-1"></div><div class="geyser-wisp wisp-2"></div><div class="geyser-wisp wisp-3"></div></div>
+            
+            <div class="pin-marker pin-1"></div><div class="pin-marker pin-2"></div><div class="pin-marker pin-3"></div><div class="pin-marker pin-4"></div><div class="pin-marker pin-5"></div>
+            <div class="pin-marker pin-6"></div><div class="pin-marker pin-7"></div><div class="pin-marker pin-8"></div><div class="pin-marker pin-9"></div><div class="pin-marker pin-10"></div>
+            
+            <a href="oria.html" class="continent-zone zone-oria" data-continent="oria"><span class="continent-label">Oria</span></a>
+            <a href="kaelum.html" class="continent-zone zone-kaelum" data-continent="kaelum"><span class="continent-label">Kaelum</span></a>
+            <a href="solenne.html" class="continent-zone zone-solenne" data-continent="solenne"><span class="continent-label">Solenne</span></a>
+            <a href="wide-current.html" class="continent-zone zone-wide-current" data-continent="wide-current"><span class="continent-label">The Wide Current</span></a>
+            
+            <div class="continent-zone zone-terra-somnia" data-continent="terra-somnia">
+                <span class="continent-label">Terra Somnia</span>
+                <div class="terra-tooltip">Terra Somnia — Uncharted. Not yet.</div>
+            </div>
         </div>
     </div>
     
@@ -107,13 +112,8 @@
                     zone.addEventListener('touchstart', function(e) {
                         e.stopPropagation();
                         if (activeZone && activeZone !== this) activeZone.classList.remove('active');
-                        if (this.classList.contains('active')) {
-                            if (this.dataset.continent !== 'terra-somnia') return;
-                        } else {
-                            this.classList.add('active');
-                            activeZone = this;
-                            if (this.dataset.continent === 'terra-somnia') e.preventDefault(); else e.preventDefault();
-                        }
+                        if (this.classList.contains('active')) { if (this.dataset.continent !== 'terra-somnia') return; }
+                        else { this.classList.add('active'); activeZone = this; if (this.dataset.continent === 'terra-somnia') e.preventDefault(); else e.preventDefault(); }
                     }, { passive: false });
                 }
                 zone.addEventListener('mouseenter', function() {
@@ -121,53 +121,29 @@
                     const pinMap = { 'oria': [4, 5], 'kaelum': [1, 2, 3], 'solenne': [4, 5], 'wide-current': [0, 7, 8, 9], 'terra-somnia': [6] };
                     const indices = pinMap[continent] || [];
                     const allPins = document.querySelectorAll('.pin-marker');
-                    indices.map(i => allPins[i]).filter(Boolean).forEach(pin => {
-                        pin.classList.remove('bounce'); void pin.offsetWidth; pin.classList.add('bounce');
-                        setTimeout(() => pin.classList.remove('bounce'), 600);
-                    });
+                    indices.map(i => allPins[i]).filter(Boolean).forEach(pin => { pin.classList.remove('bounce'); void pin.offsetWidth; pin.classList.add('bounce'); setTimeout(() => pin.classList.remove('bounce'), 600); });
                 });
             });
             
-            document.addEventListener('touchstart', function(e) {
-                if (!e.target.closest('.continent-zone')) { zones.forEach(z => z.classList.remove('active')); activeZone = null; }
-            });
+            document.addEventListener('touchstart', function(e) { if (!e.target.closest('.continent-zone')) { zones.forEach(z => z.classList.remove('active')); activeZone = null; } });
             
             let audioContext = null, oscillators = [], isPlaying = false;
             const audioToggle = document.getElementById('audioToggle');
             
             function initAudio() {
                 if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                [55, 82.5, 110].forEach((freq, i) => {
-                    const osc = audioContext.createOscillator(), gain = audioContext.createGain();
-                    osc.type = i === 0 ? 'sine' : 'triangle'; osc.frequency.value = freq; gain.gain.value = 0.015;
-                    osc.connect(gain); gain.connect(audioContext.destination); osc.start();
-                    oscillators.push({ osc, gain });
-                });
+                [55, 82.5, 110].forEach((freq, i) => { const osc = audioContext.createOscillator(), gain = audioContext.createGain(); osc.type = i === 0 ? 'sine' : 'triangle'; osc.frequency.value = freq; gain.gain.value = 0.015; osc.connect(gain); gain.connect(audioContext.destination); osc.start(); oscillators.push({ osc, gain }); });
                 setInterval(() => { oscillators.forEach(({ gain }) => { gain.gain.setTargetAtTime(0.015 + (Math.random() - 0.5) * 0.005, audioContext.currentTime, 2); }); }, 3000);
             }
             
             function stopAudio() { oscillators.forEach(({ osc }) => { try { osc.stop(); } catch(e) {} }); oscillators = []; }
             
-            audioToggle.addEventListener('click', () => {
-                if (isPlaying) { stopAudio(); audioToggle.textContent = '🔇'; audioToggle.classList.remove('active'); isPlaying = false; }
-                else { initAudio(); audioToggle.textContent = '🔊'; audioToggle.classList.add('active'); isPlaying = true; }
-            });
+            audioToggle.addEventListener('click', () => { if (isPlaying) { stopAudio(); audioToggle.textContent = '🔇'; audioToggle.classList.remove('active'); isPlaying = false; } else { initAudio(); audioToggle.textContent = '🔊'; audioToggle.classList.add('active'); isPlaying = true; } });
             
             const mapImage = document.getElementById('mapImage');
-            mapImage.addEventListener('error', () => {
-                document.body.style.background = 'linear-gradient(135deg, #1a1510 0%, #2d2418 50%, #1a1510 100%)';
-                mapImage.style.display = 'none';
-                const fallback = document.createElement('div');
-                fallback.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;color:rgba(240,234,216,0.6);font-size:1.2rem;letter-spacing:2px;z-index:100;';
-                fallback.innerHTML = '<p>Glam Wing Map</p><p style=\"font-size:0.8rem;margin-top:10px;opacity:0.5;\">Please upload the map image to the same folder</p>';
-                document.querySelector('.map-container').appendChild(fallback);
-            });
+            mapImage.addEventListener('error', () => { document.body.style.background = 'linear-gradient(135deg, #1a1510 0%, #2d2418 50%, #1a1510 100%)'; mapImage.style.display = 'none'; const fallback = document.createElement('div'); fallback.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;color:rgba(240,234,216,0.6);font-size:1.2rem;letter-spacing:2px;z-index:100;'; fallback.innerHTML = '<p>Glam Wing Map</p><p style=\"font-size:0.8rem;margin-top:10px;opacity:0.5;\">Please upload the map image to the same folder</p>'; document.querySelector('.unroll-mask').appendChild(fallback); });
             
-            setTimeout(() => {
-                document.querySelectorAll('.pin-marker').forEach((pin, i) => {
-                    setTimeout(() => { pin.classList.remove('bounce'); void pin.offsetWidth; pin.classList.add('bounce'); setTimeout(() => pin.classList.remove('bounce'), 600); }, i * 120);
-                });
-            }, 2800);
+            setTimeout(() => { document.querySelectorAll('.pin-marker').forEach((pin, i) => { setTimeout(() => { pin.classList.remove('bounce'); void pin.offsetWidth; pin.classList.add('bounce'); setTimeout(() => pin.classList.remove('bounce'), 600); }, i * 120); }); }, 3000);
         })();
     </script>
 </body>
