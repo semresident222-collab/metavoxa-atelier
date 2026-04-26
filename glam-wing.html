@@ -42,15 +42,15 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            clip-path: inset(50% 0 50% 0);
+            clip-path: inset(0 50% 0 50%);
             opacity: 0;
             animation: unrollMap 2.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s forwards;
         }
 
         @keyframes unrollMap {
-            0%   { clip-path: inset(50% 0 50% 0); opacity: 0; }
+            0%   { clip-path: inset(0 50% 0 50%); opacity: 0; }
             12%  { opacity: 1; }
-            100% { clip-path: inset(0% 0 0% 0);  opacity: 1; }
+            100% { clip-path: inset(0 0 0 0);  opacity: 1; }
         }
 
         /* ── MAP IMAGE — always contain, never crop ── */
