@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Oria — Glam Wing · MetaVoxa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+
+<style>
+/* ══════════════════════════════════════
+   ORIA — THE ORIGIN CONTINENT
+   Palette: warm terracotta, deep amber,
+   copper, raw linen, burnt earth
+══════════════════════════════════════ */
+:root{
+  --bg:           #120a05;
+  --wall:         #1c0f07;
+  --wall-mid:     #241308;
+  --copper:       rgba(196,128,58,1);
+  --copper-mid:   rgba(196,128,58,0.55);
+  --copper-dim:   rgba(196,128,58,0.28);
+  --copper-faint: rgba(196,128,58,0.09);
+  --amber:        rgba(218,158,72,1);
+  --text:         rgba(240,224,196,0.92);
+  --text-muted:   rgba(240,224,196,0.38);
+  --box-frame:    rgba(196,128,58,0.55);
+  --box-bg:       #1a0e06;
+  --font-d:       'Cormorant Garamond', Georgia, serif;
+  --font-b:       'Outfit', system-ui, sans-serif;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-b);
+  font-weight:300;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ── WALL TEXTURE BACKGROUND ── */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse 120% 80% at 50% 0%,
+      rgba(196,128,58,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 80% 60% at 20% 100%,
+      rgba(160,80,20,0.1) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 40% at 80% 80%,
+      rgba(218,158,72,0.06) 0%, transparent 50%);
+  pointer-events:none;z-index:0;
+}
+
+/* ── PAGE HEADER ── */
+#room-header{
+  position:relative;z-index:2;
+  padding:32px 32px 0;
+  display:flex;align-items:flex-end;justify-content:space-between;
+  flex-wrap:wrap;gap:12px;
+  opacity:0;animation:rise 0.7s ease forwards;animation-delay:.15s;
+}
+#room-header .room-eyebrow{
+  font-size:clamp(9px,1.1vw,10px);
+  letter-spacing:.22em;color:var(--copper-mid);
+  text-transform:uppercase;margin-bottom:5px;
+}
+#room-header h1{
+  font-family:var(--font-d);
+  font-size:clamp(26px,4vw,44px);
+  font-weight:300;font-style:italic;
+  color:var(--text);letter-spacing:.04em;
+  line-height:1.1;
+}
+#room-header .room-sub{
+  font-size:clamp(10px,1.2vw,12px);
+  letter-spacing:.14em;color:var(--text-muted);
+  text-transform:uppercase;margin-top:4px;
+}
+#back-map{
+  font-family:var(--font-b);
+  font-size:clamp(9px,1.1vw,10px);
+  letter-spacing:.15em;color:var(--copper-dim);
+  text-decoration:none;text-transform:uppercase;
+  border:.5px solid var(--copper-dim);
+  border-radius:4px;padding:6px 14px;
+  transition:all .22s;white-space:nowrap;
+  align-self:center;
+}
+#back-map:hover{color:var(--copper);border-color:var(--copper-mid)}
+
+/* ── DIVIDER ── */
+.room-divider{
+  position:relative;z-index:2;
+  height:.5px;
+  background:linear-gradient(to right,transparent,var(--copper-dim) 30%,var(--copper-mid) 50%,var(--copper-dim) 70%,transparent);
+  margin:20px 32px 0;
+  opacity:0;animation:rise .6s ease forwards;animation-delay:.3s;
+}
+
+/* ── WALL / GRID ── */
+#wall{
+  position:relative;z-index:2;
+  padding:28px 24px 64px;
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:20px;
+  max-width:1200px;margin:0 auto;
+}
+
+/* ── BOX — CLOSED ── */
+.box{
+  position:relative;
+  background:var(--box-bg);
+  border:1px solid var(--box-frame);
+  border-radius:5px;
+  cursor:pointer;
+  transition:transform .32s cubic-bezier(.2,0,.2,1),
+             border-color .28s, box-shadow .28s;
+  overflow:visible;
+  opacity:0;
+  animation:box-appear .5s ease forwards;
+}
+.box:hover{
+  transform:translateY(-8px) scale(1.01);
+  border-color:var(--amber);
+  box-shadow:0 16px 48px rgba(196,128,58,.22),
+             0 0 0 .5px rgba(218,158,72,.3);
+}
+
+/* staggered entrance */
+.box:nth-child(1){animation-delay:.4s}
+.box:nth-child(2){animation-delay:.55s}
+.box:nth-child(3){animation-delay:.7s}
+.box:nth-child(4){animation-delay:.85s}
+.box:nth-child(5){animation-delay:1s}
+.box:nth-child(6){animation-delay:1.15s}
+
+@keyframes box-appear{
+  from{opacity:0;transform:translateY(18px)}
+  to  {opacity:1;transform:translateY(0)}
+}
+
+/* top band */
+.box-band{
+  display:flex;justify-content:space-between;align-items:center;
+  background:rgba(196,128,58,.1);
+  border-bottom:.5px solid rgba(196,128,58,.2);
+  padding:7px 11px;
+}
+.box-band .loc{
+  font-size:10px;letter-spacing:.14em;
+  color:var(--amber);text-transform:uppercase;font-weight:500;
+}
+.box-band .season{
+  font-size:9px;letter-spacing:.1em;
+  color:rgba(240,224,196,.32);text-transform:uppercase;
+}
+
+/* photo window */
+.box-window{
+  margin:8px;
+  border:.5px solid rgba(196,128,58,.18);
+  border-radius:3px;
+  overflow:hidden;
+  aspect-ratio:3/4;
+  background:#0e0804;
+  position:relative;
+}
+.box-window img{
+  width:100%;height:100%;
+  object-fit:contain;
+  object-position:center center;
+  display:block;
+  transition:transform .4s ease;
+}
+.box:hover .box-window img{transform:scale(1.03)}
+
+/* perfume corner badge */
+.perfume-badge{
+  position:absolute;bottom:6px;right:6px;
+  background:rgba(18,10,5,.82);
+  border:.5px solid rgba(196,128,58,.35);
+  border-radius:3px;
+  padding:3px 7px;
+  font-size:8px;letter-spacing:.08em;
+  color:rgba(196,128,58,.7);
+  font-family:var(--font-d);font-style:italic;
+}
+
+/* bottom label */
+.box-foot{
+  padding:8px 11px 10px;
+  border-top:.5px solid rgba(196,128,58,.12);
+}
+.box-foot .city-name{
+  font-family:var(--font-d);
+  font-size:clamp(13px,1.6vw,15px);
+  font-style:italic;color:var(--text);
+  margin-bottom:2px;
+}
+.box-foot .continent-tag{
+  font-size:8.5px;letter-spacing:.14em;
+  color:var(--text-muted);text-transform:uppercase;
+}
+
+/* hover hint */
+.box-hint{
+  position:absolute;bottom:-22px;left:50%;
+  transform:translateX(-50%);
+  font-size:8px;letter-spacing:.12em;
+  color:var(--copper-dim);text-transform:uppercase;
+  white-space:nowrap;opacity:0;
+  transition:opacity .2s;pointer-events:none;
+}
+.box:hover .box-hint{opacity:1}
+
+
+/* ══════════════════════════════════════
+   LIGHTBOX — EXPANDED BOX
+══════════════════════════════════════ */
+#lightbox-overlay{
+  position:fixed;inset:0;
+  background:rgba(10,5,2,.88);
+  backdrop-filter:blur(8px);
+  z-index:100;
+  display:none;
+  align-items:center;justify-content:center;
+  padding:20px;
+  animation:lb-in .32s ease;
+}
+#lightbox-overlay.open{display:flex}
+@keyframes lb-in{from{opacity:0}to{opacity:1}}
+
+#lightbox{
+  position:relative;
+  background:var(--box-bg);
+  border:1px solid var(--box-frame);
+  border-radius:6px;
+  max-width:520px;width:100%;
+  max-height:92vh;
+  overflow-y:auto;
+  animation:lb-rise .36s cubic-bezier(.2,0,.2,1);
+}
+@keyframes lb-rise{
+  from{opacity:0;transform:scale(.94) translateY(16px)}
+  to  {opacity:1;transform:none}
+}
+
+/* close button */
+#lb-close{
+  position:absolute;top:12px;right:14px;
+  background:none;border:none;
+  font-size:11px;letter-spacing:.1em;
+  color:rgba(240,224,196,.25);cursor:pointer;
+  font-family:var(--font-b);z-index:10;
+  transition:color .2s;
+}
+#lb-close:hover{color:rgba(240,224,196,.7)}
+
+/* lb top band */
+#lb-band{
+  display:flex;justify-content:space-between;align-items:center;
+  background:rgba(196,128,58,.1);
+  border-bottom:.5px solid rgba(196,128,58,.2);
+  padding:9px 40px 9px 14px;
+}
+#lb-loc{font-size:11px;letter-spacing:.16em;color:var(--amber);text-transform:uppercase;font-weight:500}
+#lb-season{font-size:10px;letter-spacing:.1em;color:rgba(240,224,196,.35);text-transform:uppercase}
+
+/* lb photo + hotspot container */
+#lb-photo-wrap{
+  position:relative;
+  margin:10px;
+  border:.5px solid rgba(196,128,58,.18);
+  border-radius:3px;overflow:hidden;
+}
+#lb-photo-wrap img{
+  width:100%;display:block;
+  max-height:58vh;object-fit:contain;object-position:center center;background:#0e0804;
+}
+
+/* ── HOTSPOTS ── */
+.hotspot{
+  position:absolute;
+  width:26px;height:26px;
+  border-radius:50%;
+  border:1.5px solid rgba(218,158,72,.75);
+  background:rgba(196,128,58,.15);
+  backdrop-filter:blur(3px);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;
+  transition:background .2s,transform .2s,border-color .2s;
+  z-index:5;
+  transform:translate(-50%,-50%);/* anchored by center */
+}
+.hotspot::after{
+  content:'';
+  position:absolute;inset:-5px;border-radius:50%;
+  border:.5px solid rgba(218,158,72,.25);
+  animation:hs-ring 2.2s ease-in-out infinite;
+}
+@keyframes hs-ring{
+  0%,100%{transform:scale(1);opacity:.5}
+  50%    {transform:scale(1.3);opacity:0}
+}
+.hotspot:hover{
+  background:rgba(218,158,72,.35);
+  border-color:rgba(218,158,72,1);
+  transform:translate(-50%,-50%) scale(1.15);
+}
+.hotspot svg{width:10px;height:10px;fill:rgba(218,158,72,.9)}
+
+/* ── HOTSPOT TOOLTIP ── */
+.hs-tip{
+  position:absolute;
+  background:rgba(18,10,5,.96);
+  border:.5px solid rgba(196,128,58,.4);
+  border-radius:5px;
+  padding:8px 12px;
+  width:160px;
+  pointer-events:none;
+  opacity:0;transform:translateY(4px);
+  transition:opacity .2s,transform .2s;
+  z-index:20;
+  font-family:var(--font-b);
+}
+.hs-tip.show{opacity:1;transform:none}
+.hs-tip .tip-label{
+  font-size:8.5px;letter-spacing:.14em;
+  color:var(--copper);text-transform:uppercase;
+  display:block;margin-bottom:4px;font-weight:500;
+}
+.hs-tip .tip-note{
+  font-family:var(--font-d);font-style:italic;
+  font-size:13px;color:rgba(240,224,196,.72);
+  line-height:1.55;
+}
+
+/* lb footer */
+#lb-footer{
+  padding:12px 14px 16px;
+  border-top:.5px solid rgba(196,128,58,.14);
+}
+#lb-footer .lb-city{
+  font-family:var(--font-d);font-size:18px;
+  font-style:italic;color:var(--text);margin-bottom:2px;
+}
+#lb-footer .lb-sub{
+  font-size:9px;letter-spacing:.15em;
+  color:var(--text-muted);text-transform:uppercase;margin-bottom:14px;
+}
+.lb-links{display:flex;flex-direction:column;gap:8px}
+.lb-link{
+  display:flex;align-items:center;gap:10px;
+  background:rgba(255,255,255,.04);
+  border:.5px solid rgba(255,255,255,.08);
+  border-radius:6px;padding:9px 13px;
+  text-decoration:none;
+  font-size:clamp(11px,1.4vw,12.5px);
+  color:rgba(240,224,196,.4);
+  letter-spacing:.04em;
+  transition:all .22s;
+}
+.lb-link:hover{border-color:var(--copper-mid);color:var(--copper)}
+.lb-link .lbl-icon{font-size:15px;flex-shrink:0}
+.lb-link .lbl-sub{font-size:9px;color:rgba(240,224,196,.2);letter-spacing:.1em;display:block;margin-top:1px}
+
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+/* ── RESPONSIVE ── */
+@media(max-width:600px){
+  #wall{grid-template-columns:repeat(2,1fr);gap:12px;padding:16px 12px 48px}
+  #room-header{padding:20px 16px 0}
+  .room-divider{margin:16px}
+  #lightbox{max-width:100%}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<header id="room-header">
+  <div>
+    <p class="room-eyebrow">Glam Wing · Oria</p>
+    <h1>The Origin Continent</h1>
+    <p class="room-sub">Africa · The collection</p>
+  </div>
+  <a id="back-map" href="/glam.html">← Back to the map</a>
+</header>
+
+<div class="room-divider"></div>
+
+<!-- ══ COLLECTOR WALL ══ -->
+<div id="wall">
+
+  <!-- ════════════════════════════════
+    HOW TO ADD A NEW BOX
+    Copy from ▼ START BOX to ▼ END BOX
+    Fill in: location, season, image src,
+    perfume name, city name, hotspot notes,
+    Instagram + Substack links.
+  ════════════════════════════════ -->
+
+  <!-- ▼ START BOX — Marrakech, February -->
+  <div class="box"
+       onclick="openLightbox({
+         loc:      'Marrakech',
+         season:   'February',
+         img:      'IMG_oria_1.jpg',
+         perfume:  'Roses d\'émotion',
+         city:     'Marrakech, Morocco',
+         tag:      'Oria · Africa',
+         ig:       'https://instagram.com/kwissbae',
+         sub:      'https://substack.com/',
+         hotspots: [
+           { top:'8%',  left:'50%', label:'Hair',    note:'Box braids swept to one side. Weight without effort.' },
+           { top:'16%', left:'68%', label:'Makeup',  note:'Bold lash, defined arch. Let the tile speak — you still speak louder.' },
+           { top:'20%', left:'32%', label:'Jewelry', note:'Small gold studs. Restraint is also a choice.' },
+           { top:'44%', left:'50%', label:'Outfit',  note:'Burnt rust ruffle maxi. Abstract print that looks like the walls chose it for me.' },
+           { top:'55%', left:'72%', label:'Bag',     note:'Woven rattan hobo. Morocco found its match.' },
+           { top:'88%', left:'44%', label:'Shoes',   note:'Burgundy pointed kitten heel. The only colour that argues with the dress — and wins.' }
+         ]
+       })"
+       aria-label="Open Marrakech look">
+    <div class="box-band">
+      <span class="loc">Marrakech</span>
+      <span class="season">February</span>
+    </div>
+    <div class="box-window">
+      <!-- Upload as: IMG_oria_1.jpg -->
+      <img src="IMG_oria_1.jpg" alt="Marrakech, February — Badia Palace"/>
+      <span class="perfume-badge">Roses d'émotion</span>
+    </div>
+    <div class="box-foot">
+      <p class="city-name">Marrakech, Morocco</p>
+      <p class="continent-tag">Oria · Africa</p>
+    </div>
+    <span class="box-hint">click to open</span>
+  </div>
+  <!-- ▲ END BOX -->
+
+
+  <!-- ▼ PLACEHOLDER BOX 2 — swap when ready -->
+  <div class="box" style="opacity:.28;cursor:default;pointer-events:none">
+    <div class="box-band">
+      <span class="loc">Coming</span>
+      <span class="season">—</span>
+    </div>
+    <div class="box-window" style="display:flex;align-items:center;justify-content:center;min-height:240px">
+      <span style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:rgba(196,128,58,.3)">next drop</span>
+    </div>
+    <div class="box-foot">
+      <p class="city-name" style="color:rgba(240,224,196,.22)">Oria</p>
+      <p class="continent-tag">Oria · Africa</p>
+    </div>
+  </div>
+
+  <!-- ▼ PLACEHOLDER BOX 3 -->
+  <div class="box" style="opacity:.18;cursor:default;pointer-events:none">
+    <div class="box-band">
+      <span class="loc">Coming</span>
+      <span class="season">—</span>
+    </div>
+    <div class="box-window" style="display:flex;align-items:center;justify-content:center;min-height:240px">
+      <span style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:rgba(196,128,58,.2)">next drop</span>
+    </div>
+    <div class="box-foot">
+      <p class="city-name" style="color:rgba(240,224,196,.15)">Oria</p>
+      <p class="continent-tag">Oria · Africa</p>
+    </div>
+  </div>
+
+</div><!-- end wall -->
+
+
+<!-- ══ LIGHTBOX ══ -->
+<div id="lightbox-overlay" onclick="closeLightboxOutside(event)">
+  <div id="lightbox">
+    <button id="lb-close" onclick="closeLightbox()">close ✕</button>
+
+    <div id="lb-band">
+      <span id="lb-loc"></span>
+      <span id="lb-season"></span>
+    </div>
+
+    <div id="lb-photo-wrap">
+      <img id="lb-img" src="" alt=""/>
+      <!-- hotspots injected by JS -->
+    </div>
+
+    <div id="lb-footer">
+      <p id="lb-city" class="lb-city"></p>
+      <p id="lb-tag"  class="lb-sub"></p>
+      <div class="lb-links">
+        <a id="lb-ig" class="lb-link" href="#" target="_blank" rel="noopener">
+          <span class="lbl-icon">📷</span>
+          <span>
+            See other variations of this look
+            <span class="lbl-sub">Instagram</span>
+          </span>
+        </a>
+        <a id="lb-sub" class="lb-link" href="#" target="_blank" rel="noopener">
+          <span class="lbl-icon">✦</span>
+          <span>
+            Read the full story
+            <span class="lbl-sub">Substack</span>
+          </span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+/* ── OPEN LIGHTBOX ── */
+function openLightbox(data) {
+  // populate band
+  document.getElementById('lb-loc').textContent    = data.loc;
+  document.getElementById('lb-season').textContent = data.season;
+
+  // populate image
+  const img = document.getElementById('lb-img');
+  img.src = data.img;
+  img.alt = data.loc;
+
+  // populate footer
+  document.getElementById('lb-city').textContent = data.city;
+  document.getElementById('lb-tag').textContent  = data.tag;
+  document.getElementById('lb-ig').href          = data.ig;
+  document.getElementById('lb-sub').href         = data.sub;
+
+  // clear old hotspots
+  const wrap = document.getElementById('lb-photo-wrap');
+  wrap.querySelectorAll('.hotspot,.hs-tip').forEach(el => el.remove());
+
+  // inject hotspots
+  data.hotspots.forEach((hs, i) => {
+    // dot
+    const dot = document.createElement('div');
+    dot.className = 'hotspot';
+    dot.style.top  = hs.top;
+    dot.style.left = hs.left;
+    dot.innerHTML = `<svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="2.5"/></svg>`;
+
+    // tooltip
+    const tip = document.createElement('div');
+    tip.className = 'hs-tip';
+    tip.id = 'tip-' + i;
+    tip.innerHTML = `<span class="tip-label">${hs.label}</span><span class="tip-note">${hs.note}</span>`;
+
+    dot.addEventListener('mouseenter', (e) => {
+      positionTip(dot, tip);
+      tip.classList.add('show');
+    });
+    dot.addEventListener('mouseleave', () => tip.classList.remove('show'));
+
+    // touch support
+    dot.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = tip.classList.contains('show');
+      wrap.querySelectorAll('.hs-tip').forEach(t => t.classList.remove('show'));
+      if (!isOpen) { positionTip(dot, tip); tip.classList.add('show'); }
+    });
+
+    wrap.appendChild(dot);
+    wrap.appendChild(tip);
+  });
+
+  // show overlay
+  const overlay = document.getElementById('lightbox-overlay');
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function positionTip(dot, tip) {
+  const wrap  = document.getElementById('lb-photo-wrap');
+  const dr    = dot.getBoundingClientRect();
+  const wr    = wrap.getBoundingClientRect();
+  const tw    = 164;
+
+  let left = (dr.left - wr.left) + 30;
+  let top  = (dr.top  - wr.top)  - 12;
+
+  if (left + tw > wr.width - 4) left = (dr.left - wr.left) - tw - 6;
+  if (top < 0) top = (dr.top - wr.top) + 30;
+
+  tip.style.left = left + 'px';
+  tip.style.top  = top  + 'px';
+}
+
+/* ── CLOSE ── */
+function closeLightbox() {
+  document.getElementById('lightbox-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function closeLightboxOutside(e) {
+  if (e.target === document.getElementById('lightbox-overlay')) closeLightbox();
+}
+
+/* keyboard close */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeLightbox();
+});
+</script>
+</body>
+</html>
