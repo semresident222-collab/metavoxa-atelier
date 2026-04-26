@@ -157,7 +157,7 @@
         .zone-solenne      { top:31.9%; left:58.0%; width:21.7%; height:21.3%; clip-path:polygon(0% 0%,100% 0%,100% 75%,50% 75%,35% 55%,15% 55%,0% 35%); }
         .zone-oria         { top:42.6%; left:44.9%; width:17.4%; height:34.6%; clip-path:polygon(0% 0%,100% 0%,100% 100%,50% 100%,30% 85%,0% 85%); }
         .zone-wide-current { top:55.9%; left:20.3%; width:14.5%; height:23.9%; clip-path:polygon(0% 0%,100% 0%,100% 80%,60% 80%,40% 60%,0% 60%); }
-        .zone-terra-somnia { top:71.8%; left:71.0%; width:14.5%; height:18.6%; cursor:default; clip-path:polygon(0% 0%,100% 0%,100% 100%,50% 100%,30% 80%,0% 80%); }
+        .zone-terra-somnia { top:71.8%; left:71.0%; width:14.5%; height:18.6%; cursor:pointer; clip-path:polygon(0% 0%,100% 0%,100% 100%,50% 100%,30% 80%,0% 80%); }
 
         .zone-terra-somnia:hover::before,
         .zone-terra-somnia.active::before {
@@ -261,12 +261,14 @@
         <a href="kaelum.html"       class="continent-zone zone-kaelum"       data-continent="kaelum">      <span class="continent-label">Kaelum</span></a>
         <a href="solenne.html"      class="continent-zone zone-solenne"      data-continent="solenne">     <span class="continent-label">Solenne</span></a>
         <a href="wide-current.html" class="continent-zone zone-wide-current" data-continent="wide-current"><span class="continent-label">The Wide Current</span></a>
-        <a href="terra-somnia.html" class="continent-zone zone-terra-somnia" data-continent="terra-somnia"><span class="continent-label">Terra Somnia</span></a>
+      <a href="terra-somnia.html"
+          class="continent-zone zone-terra-somnia"
+   data-continent="terra-somnia">
 
-        <div class="continent-zone zone-terra-somnia" data-continent="terra-somnia">
-            <span class="continent-label">Terra Somnia</span>
-            <div class="terra-tooltip">Terra Somnia — Uncharted. Not yet.</div>
-        </div>
+   <span class="continent-label">Terra Somnia</span>
+   <div class="terra-tooltip">Terra Somnia — Uncharted. Not yet.</div>
+
+</a>
 
     </div>
 </div>
