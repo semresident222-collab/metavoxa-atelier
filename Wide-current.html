@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 <title>The Wide Current — Glam Wing · MetaVoxa</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -10,368 +10,101 @@
 
 <style>
 :root{
-  --bg:#06090f;
-  --slate:#0b1018;
-  --frost:rgba(200,218,240,1);
-  --frost-mid:rgba(200,218,240,0.5);
-  --frost-dim:rgba(200,218,240,0.22);
-  --frost-faint:rgba(200,218,240,0.07);
-  --rust:rgba(186,88,44,1);
-  --rust-mid:rgba(186,88,44,0.55);
-  --rust-dim:rgba(186,88,44,0.26);
-  --ice:rgba(228,240,255,0.92);
-  --text:rgba(228,238,252,0.92);
-  --text-muted:rgba(200,218,240,0.38);
-  --box-bg:#080d14;
-  --font-d:'Cormorant Garamond',Georgia,serif;
-  --font-b:'Outfit',system-ui,sans-serif;
+  --bg:#1a1209;--slate:#2a1f14;
+  --coral:rgba(210,120,70,1);--coral-mid:rgba(210,120,70,0.55);--coral-dim:rgba(210,120,70,0.26);--coral-faint:rgba(210,120,70,0.08);
+  --sage:rgba(120,160,100,1);--sage-mid:rgba(120,160,100,0.5);--sage-dim:rgba(120,160,100,0.22);
+  --indigo:rgba(75,60,140,1);--indigo-mid:rgba(75,60,140,0.45);
+  --sand:rgba(230,200,150,0.92);--sand-mid:rgba(230,200,150,0.5);--sand-dim:rgba(230,200,150,0.2);
+  --text:rgba(240,225,200,0.92);--text-muted:rgba(200,180,150,0.45);
+  --box-bg:#1e160e;
+  --font-d:'Cormorant Garamond',Georgia,serif;--font-b:'Outfit',system-ui,sans-serif;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{
-  background:var(--bg);
-  color:var(--text);
-  font-family:var(--font-b);
-  font-weight:300;
-  min-height:100vh;
-  overflow-x:hidden;
-}
+body{background:var(--bg);color:var(--text);font-family:var(--font-b);font-weight:300;min-height:100vh;overflow-x:hidden}
 
-/* ══ ENTRY — SNOWFALL ══ */
-#snow-veil{
-  position:fixed;inset:0;z-index:200;
-  pointer-events:none;
-  background:#06090f;
-  animation:veil-clear 5.8s ease forwards;
-}
-@keyframes veil-clear{
-  0%  {opacity:1}
-  55% {opacity:1}
-  100%{opacity:0}
-}
+#dust-veil{position:fixed;inset:0;z-index:200;pointer-events:none;background:var(--bg);animation:veil-clear 4.5s ease forwards}
+@keyframes veil-clear{0%{opacity:1}60%{opacity:1}100%{opacity:0}}
+#golden-dust{position:fixed;inset:0;z-index:201;pointer-events:none;overflow:hidden}
+.dust-particle{position:absolute;border-radius:50%;background:rgba(210,160,80,0.6);animation:dust-float var(--dur,5s) ease-in-out var(--delay,0s) forwards}
+@keyframes dust-float{0%{transform:translateY(0) translateX(0) scale(0);opacity:0}15%{opacity:0.8;transform:scale(1)}85%{opacity:0.4}100%{transform:translateY(-100vh) translateX(var(--drift,30px)) scale(0.3);opacity:0}}
+#warm-haze{position:fixed;bottom:0;left:0;right:0;height:35vh;z-index:199;pointer-events:none;background:linear-gradient(to top,rgba(210,120,70,0.15) 0%,rgba(180,100,50,0.08) 40%,transparent 80%);animation:haze-fade 4s ease forwards}
+@keyframes haze-fade{0%{opacity:1;transform:translateY(20px)}60%{opacity:0.7}100%{opacity:0;transform:translateY(0)}}
 
-#snowfall{
-  position:fixed;inset:0;z-index:201;
-  pointer-events:none;overflow:hidden;
-}
-.flake{
-  position:absolute;
-  top:-10px;
-  border-radius:50%;
-  background:rgba(228,240,255,0.82);
-  animation:flake-fall var(--dur,6s) linear var(--delay,0s) forwards;
-}
-@keyframes flake-fall{
-  0%  {transform:translateY(0) translateX(0) rotate(0deg);opacity:0}
-  8%  {opacity:0.85}
-  85% {opacity:0.6}
-  100%{transform:translateY(110vh) translateX(var(--drift,20px)) rotate(360deg);opacity:0}
-}
-
-/* cold mist rising from bottom */
-#cold-mist{
-  position:fixed;bottom:0;left:0;right:0;
-  height:40vh;z-index:199;pointer-events:none;
-  background:linear-gradient(to top,
-    rgba(160,200,240,0.18) 0%,
-    rgba(140,185,228,0.1)  30%,
-    transparent 80%
-  );
-  animation:mist-fade 5s ease forwards;
-}
-@keyframes mist-fade{
-  0%  {opacity:1;transform:translateY(30px)}
-  50% {opacity:0.8}
-  100%{opacity:0;transform:translateY(0)}
-}
-
-/* ══ WALL ══ */
-#americas-wall{
-  position:fixed;inset:0;z-index:0;overflow:hidden;
-}
-#americas-wall::before{
-  content:'';position:absolute;inset:0;
-  background:
-    radial-gradient(ellipse 70% 50% at 12% 18%, rgba(186,88,44,0.1) 0%,transparent 60%),
-    radial-gradient(ellipse 55% 45% at 88% 22%, rgba(100,130,180,0.08) 0%,transparent 55%),
-    radial-gradient(ellipse 65% 50% at 85% 85%, rgba(60,90,140,0.1) 0%,transparent 55%),
-    radial-gradient(ellipse 50% 40% at 12% 82%, rgba(140,70,28,0.09) 0%,transparent 55%),
-    linear-gradient(175deg,#0a0f18 0%,#06090f 40%,#080c14 70%,#0b0f1a 100%);
-}
+#americas-wall{position:fixed;inset:0;z-index:0;overflow:hidden}
+#americas-wall::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 20% 20%, rgba(210,120,70,0.12) 0%,transparent 60%),radial-gradient(ellipse 50% 45% at 80% 15%, rgba(120,160,100,0.08) 0%,transparent 55%),radial-gradient(ellipse 55% 50% at 85% 85%, rgba(75,60,140,0.1) 0%,transparent 55%),radial-gradient(ellipse 45% 40% at 15% 80%, rgba(180,130,60,0.08) 0%,transparent 55%),linear-gradient(175deg,#1e160e 0%,#1a1209 40%,#1c150d 70%,#1f170f 100%)}
 #wall-svg{position:absolute;inset:0;width:100%;height:100%;opacity:1}
 
-/* quadrant labels */
-.quad-label{
-  position:fixed;font-family:var(--font-d);font-style:italic;
-  font-size:clamp(9px,1vw,11px);letter-spacing:.18em;
-  color:rgba(186,88,44,0.16);text-transform:uppercase;
-  pointer-events:none;z-index:1;
-}
-#ql-n{top:14px;left:50%;transform:translateX(-50%)}
-#ql-s{bottom:14px;left:50%;transform:translateX(-50%)}
-#ql-w{top:50%;left:16px;transform:translateY(-50%) rotate(-90deg)}
-#ql-e{top:50%;right:16px;transform:translateY(-50%) rotate(90deg)}
+.quad-label{position:fixed;font-family:var(--font-d);font-style:italic;font-size:clamp(9px,1vw,11px);letter-spacing:.18em;color:rgba(210,120,70,0.2);text-transform:uppercase;pointer-events:none;z-index:1}
+#ql-n{top:14px;left:50%;transform:translateX(-50%)}#ql-s{bottom:14px;left:50%;transform:translateX(-50%)}#ql-w{top:50%;left:16px;transform:translateY(-50%) rotate(-90deg)}#ql-e{top:50%;right:16px;transform:translateY(-50%) rotate(90deg)}
 
-/* ══ PAGE ══ */
 #page{position:relative;z-index:2;min-height:100vh}
-
-/* header */
-#room-header{
-  padding:30px 32px 0;
-  display:flex;align-items:flex-end;justify-content:space-between;
-  flex-wrap:wrap;gap:12px;
-  opacity:0;animation:rise .7s ease forwards;animation-delay:.5s;
-}
-.room-eyebrow{font-size:clamp(9px,1.1vw,10px);letter-spacing:.22em;color:var(--rust-mid);text-transform:uppercase;margin-bottom:5px}
+#room-header{padding:30px 32px 0;display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:12px;opacity:0;animation:rise .7s ease forwards;animation-delay:.5s}
+.room-eyebrow{font-size:clamp(9px,1.1vw,10px);letter-spacing:.22em;color:var(--coral-mid);text-transform:uppercase;margin-bottom:5px}
 h1{font-family:var(--font-d);font-size:clamp(26px,4vw,44px);font-weight:300;font-style:italic;color:var(--text);letter-spacing:.04em;line-height:1.1}
 .room-sub{font-size:clamp(10px,1.2vw,12px);letter-spacing:.14em;color:var(--text-muted);text-transform:uppercase;margin-top:4px}
-#back-map{
-  font-family:var(--font-b);font-size:clamp(9px,1.1vw,10px);letter-spacing:.15em;
-  color:var(--rust-dim);text-decoration:none;text-transform:uppercase;
-  border:.5px solid var(--rust-dim);border-radius:4px;padding:6px 14px;
-  transition:all .22s;white-space:nowrap;align-self:center;
-}
-#back-map:hover{color:var(--rust);border-color:var(--rust-mid)}
+#back-map{font-family:var(--font-b);font-size:clamp(9px,1.1vw,10px);letter-spacing:.15em;color:var(--coral-dim);text-decoration:none;text-transform:uppercase;border:.5px solid var(--coral-dim);border-radius:4px;padding:6px 14px;transition:all .22s;white-space:nowrap;align-self:center}
+#back-map:hover{color:var(--coral);border-color:var(--coral-mid)}
+.room-divider{height:.5px;background:linear-gradient(to right,transparent,var(--coral-dim) 30%,var(--coral-mid) 50%,var(--coral-dim) 70%,transparent);margin:20px 32px 0;opacity:0;animation:rise .6s ease forwards;animation-delay:.65s}
 
-.room-divider{
-  height:.5px;
-  background:linear-gradient(to right,transparent,var(--rust-dim) 30%,var(--rust-mid) 50%,var(--rust-dim) 70%,transparent);
-  margin:20px 32px 0;
-  opacity:0;animation:rise .6s ease forwards;animation-delay:.65s;
-}
-
-/* ══ COLLECTOR WALL ══ */
-#wall{
-  position:relative;z-index:2;
-  padding:28px 28px 80px;
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(210px,1fr));
-  gap:22px;
-  max-width:1200px;margin:0 auto;
-}
-
-/* ── BOX ── */
-.box{
-  position:relative;
-  background:var(--box-bg);
-  border:1px solid rgba(186,88,44,0.42);
-  border-radius:5px;
-  cursor:pointer;
-  transition:transform .32s cubic-bezier(.2,0,.2,1),border-color .28s,box-shadow .28s;
-  opacity:0;
-  animation:box-appear .5s ease forwards;
-}
-.box:hover{
-  transform:translateY(-10px) scale(1.015);
-  border-color:var(--frost);
-  box-shadow:0 18px 52px rgba(160,200,240,.15),0 0 0 .5px rgba(200,218,240,.25);
-}
-.box:nth-child(1){animation-delay:.8s}
-.box:nth-child(2){animation-delay:.98s}
-.box:nth-child(3){animation-delay:1.16s}
-.box:nth-child(n+4){animation-delay:1.3s}
+#wall{position:relative;z-index:2;padding:28px 28px 80px;display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:22px;max-width:1200px;margin:0 auto}
+.box{position:relative;background:var(--box-bg);border:1px solid rgba(210,120,70,0.42);border-radius:5px;cursor:pointer;transition:transform .32s cubic-bezier(.2,0,.2,1),border-color .28s,box-shadow .28s;opacity:0;animation:box-appear .5s ease forwards}
+.box:hover{transform:translateY(-10px) scale(1.015);border-color:var(--sand);box-shadow:0 18px 52px rgba(210,160,80,.12),0 0 0 .5px rgba(230,200,150,.2)}
+.box:nth-child(1){animation-delay:.8s}.box:nth-child(2){animation-delay:.98s}.box:nth-child(3){animation-delay:1.16s}.box:nth-child(n+4){animation-delay:1.3s}
 @keyframes box-appear{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
-
-.box-band{
-  display:flex;justify-content:space-between;align-items:center;
-  background:rgba(186,88,44,.09);border-bottom:.5px solid rgba(186,88,44,.18);
-  padding:7px 11px;
-}
-.box-band .loc{font-size:10px;letter-spacing:.14em;color:rgba(228,200,168,0.88);text-transform:uppercase;font-weight:500}
-.box-band .season{font-size:9px;letter-spacing:.1em;color:rgba(200,218,240,.3);text-transform:uppercase}
-
-.box-window{
-  margin:8px;border:.5px solid rgba(186,88,44,.16);border-radius:3px;
-  overflow:hidden;aspect-ratio:3/4;background:#060a10;position:relative;
-}
-.box-window img{
-  width:100%;height:100%;
-  object-fit:contain;object-position:center center;
-  display:block;transition:transform .4s ease;
-}
+.box-band{display:flex;justify-content:space-between;align-items:center;background:rgba(210,120,70,.09);border-bottom:.5px solid rgba(210,120,70,.18);padding:7px 11px}
+.box-band .loc{font-size:10px;letter-spacing:.14em;color:rgba(230,200,168,0.88);text-transform:uppercase;font-weight:500}
+.box-band .season{font-size:9px;letter-spacing:.1em;color:rgba(200,180,150,.3);text-transform:uppercase}
+.box-window{margin:8px;border:.5px solid rgba(210,120,70,.16);border-radius:3px;overflow:hidden;aspect-ratio:3/4;background:#16100a;position:relative}
+.box-window img{width:100%;height:100%;object-fit:contain;object-position:center center;display:block;transition:transform .4s ease}
 .box:hover .box-window img{transform:scale(1.04)}
-
-.perfume-badge{
-  position:absolute;bottom:6px;right:6px;
-  background:rgba(6,10,16,.88);border:.5px solid rgba(186,88,44,.32);
-  border-radius:3px;padding:3px 7px;
-  font-size:8px;letter-spacing:.07em;color:rgba(186,88,44,.72);
-  font-family:var(--font-d);font-style:italic;
-}
-
-.box-foot{padding:8px 11px 10px;border-top:.5px solid rgba(186,88,44,.1)}
+.perfume-badge{position:absolute;bottom:6px;right:6px;background:rgba(22,16,10,.88);border:.5px solid rgba(210,120,70,.32);border-radius:3px;padding:3px 7px;font-size:8px;letter-spacing:.07em;color:rgba(210,120,70,.72);font-family:var(--font-d);font-style:italic}
+.box-foot{padding:8px 11px 10px;border-top:.5px solid rgba(210,120,70,.1)}
 .box-foot .city-name{font-family:var(--font-d);font-size:clamp(13px,1.6vw,15px);font-style:italic;color:var(--text);margin-bottom:2px}
 .box-foot .continent-tag{font-size:8.5px;letter-spacing:.14em;color:var(--text-muted);text-transform:uppercase}
-
-.box-hint{
-  position:absolute;bottom:-22px;left:50%;transform:translateX(-50%);
-  font-size:8px;letter-spacing:.12em;color:var(--rust-dim);text-transform:uppercase;
-  white-space:nowrap;opacity:0;transition:opacity .2s;pointer-events:none;
-}
+.box-hint{position:absolute;bottom:-22px;left:50%;transform:translateX(-50%);font-size:8px;letter-spacing:.12em;color:var(--coral-dim);text-transform:uppercase;white-space:nowrap;opacity:0;transition:opacity .2s;pointer-events:none}
 .box:hover .box-hint{opacity:1}
 
-/* ══ LIGHTBOX ══ */
-#lb-overlay{
-  position:fixed;inset:0;background:rgba(4,7,12,.92);
-  backdrop-filter:blur(10px);z-index:100;
-  display:none;align-items:center;justify-content:center;padding:16px;
-  animation:lb-in .3s ease;
-}
+#lb-overlay{position:fixed;inset:0;background:rgba(20,14,8,.92);backdrop-filter:blur(10px);z-index:100;display:none;align-items:center;justify-content:center;padding:16px;animation:lb-in .3s ease}
 #lb-overlay.open{display:flex}
 @keyframes lb-in{from{opacity:0}to{opacity:1}}
-
-#lb{
-  position:relative;background:var(--box-bg);
-  border:1px solid rgba(186,88,44,.42);border-radius:6px;
-  max-width:500px;width:100%;max-height:94vh;overflow-y:auto;
-  animation:lb-rise .36s cubic-bezier(.2,0,.2,1);
-}
+#lb{position:relative;background:var(--box-bg);border:1px solid rgba(210,120,70,.42);border-radius:6px;max-width:500px;width:100%;max-height:94vh;overflow-y:auto;animation:lb-rise .36s cubic-bezier(.2,0,.2,1)}
 @keyframes lb-rise{from{opacity:0;transform:scale(.93) translateY(18px)}to{opacity:1;transform:none}}
-
-#lb-close{
-  position:absolute;top:11px;right:13px;
-  background:none;border:none;font-size:11px;letter-spacing:.1em;
-  color:rgba(200,218,240,.2);cursor:pointer;font-family:var(--font-b);z-index:10;
-  transition:color .2s;
-}
-#lb-close:hover{color:rgba(200,218,240,.7)}
-
-#lb-band{
-  display:flex;justify-content:space-between;align-items:center;
-  background:rgba(186,88,44,.09);border-bottom:.5px solid rgba(186,88,44,.18);
-  padding:9px 42px 9px 14px;
-}
-#lb-loc{font-size:11px;letter-spacing:.16em;color:rgba(228,200,168,0.9);text-transform:uppercase;font-weight:500}
-#lb-season{font-size:10px;letter-spacing:.1em;color:rgba(200,218,240,.32);text-transform:uppercase}
-
-#lb-photo-wrap{
-  position:relative;margin:10px;
-  border:.5px solid rgba(186,88,44,.16);border-radius:3px;overflow:hidden;
-  background:#060a10;
-}
+#lb-close{position:absolute;top:11px;right:13px;background:none;border:none;font-size:11px;letter-spacing:.1em;color:rgba(200,180,150,.2);cursor:pointer;font-family:var(--font-b);z-index:10;transition:color .2s}
+#lb-close:hover{color:rgba(200,180,150,.7)}
+#lb-band{display:flex;justify-content:space-between;align-items:center;background:rgba(210,120,70,.09);border-bottom:.5px solid rgba(210,120,70,.18);padding:9px 42px 9px 14px}
+#lb-loc{font-size:11px;letter-spacing:.16em;color:rgba(230,200,168,0.9);text-transform:uppercase;font-weight:500}
+#lb-season{font-size:10px;letter-spacing:.1em;color:rgba(200,180,150,.32);text-transform:uppercase}
+#lb-photo-wrap{position:relative;margin:10px;border:.5px solid rgba(210,120,70,.16);border-radius:3px;overflow:hidden;background:#16100a}
 #lb-photo-wrap img{width:100%;display:block;max-height:60vh;object-fit:contain;object-position:center}
-
-/* hotspots — invisible */
-.hotspot{
-  position:absolute;
-  width:44px;height:44px;border-radius:50%;
-  background:transparent;border:none;
-  cursor:crosshair;z-index:5;
-  transform:translate(-50%,-50%);
-}
-.hotspot svg{display:none}
-
-/* tooltip */
-.hs-tip{
-  position:absolute;
-  background:rgba(6,9,16,.97);border:.5px solid rgba(186,88,44,.4);
-  border-radius:5px;padding:9px 13px;width:158px;
-  pointer-events:none;opacity:0;transform:translateY(5px);
-  transition:opacity .22s,transform .22s;z-index:20;
-  font-family:var(--font-b);
-}
+.hotspot{position:absolute;width:44px;height:44px;border-radius:50%;background:transparent;border:none;cursor:crosshair;z-index:5;transform:translate(-50%,-50%)}
+.hs-tip{position:absolute;background:rgba(22,16,10,.97);border:.5px solid rgba(210,120,70,.4);border-radius:5px;padding:9px 13px;width:158px;pointer-events:none;opacity:0;transform:translateY(5px);transition:opacity .22s,transform .22s;z-index:20;font-family:var(--font-b)}
 .hs-tip.show{opacity:1;transform:translateY(0)}
-.tip-label{font-size:8.5px;letter-spacing:.16em;color:var(--rust);text-transform:uppercase;display:block;margin-bottom:4px;font-weight:500}
-.tip-note{font-family:var(--font-d);font-style:italic;font-size:13.5px;color:rgba(200,218,240,.72);line-height:1.55}
-
-/* lb footer */
-#lb-footer{padding:13px 14px 18px;border-top:.5px solid rgba(186,88,44,.12)}
+.tip-label{font-size:8.5px;letter-spacing:.16em;color:var(--coral);text-transform:uppercase;display:block;margin-bottom:4px;font-weight:500}
+.tip-note{font-family:var(--font-d);font-style:italic;font-size:13.5px;color:rgba(200,180,150,.72);line-height:1.55}
+#lb-footer{padding:13px 14px 18px;border-top:.5px solid rgba(210,120,70,.12)}
 .lb-city{font-family:var(--font-d);font-size:19px;font-style:italic;color:var(--text);margin-bottom:2px}
 .lb-sub-tag{font-size:9px;letter-spacing:.15em;color:var(--text-muted);text-transform:uppercase;margin-bottom:15px}
 .lb-links{display:flex;flex-direction:column;gap:8px}
-.lb-link{
-  display:flex;align-items:center;gap:10px;
-  background:rgba(255,255,255,.04);border:.5px solid rgba(255,255,255,.07);
-  border-radius:6px;padding:10px 14px;text-decoration:none;
-  font-size:clamp(11px,1.4vw,12.5px);color:rgba(200,218,240,.38);
-  letter-spacing:.04em;transition:all .22s;
-}
-.lb-link:hover{border-color:var(--rust-mid);color:var(--rust)}
+.lb-link{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.04);border:.5px solid rgba(255,255,255,.07);border-radius:6px;padding:10px 14px;text-decoration:none;font-size:clamp(11px,1.4vw,12.5px);color:rgba(200,180,150,.38);letter-spacing:.04em;transition:all .22s}
+.lb-link:hover{border-color:var(--coral-mid);color:var(--coral)}
 .lb-link .li-icon{font-size:15px;flex-shrink:0}
-.lb-link .li-sub{font-size:9px;color:rgba(200,218,240,.2);letter-spacing:.1em;display:block;margin-top:1px}
-
+.lb-link .li-sub{font-size:9px;color:rgba(200,180,150,.2);letter-spacing:.1em;display:block;margin-top:1px}
 @keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-
-@media(max-width:600px){
-  #wall{grid-template-columns:repeat(2,1fr);gap:12px;padding:16px 12px 56px}
-  #room-header{padding:20px 16px 0}
-  .room-divider{margin:16px}
-}
+@media(max-width:600px){#wall{grid-template-columns:repeat(2,1fr);gap:12px;padding:16px 12px 56px}#room-header{padding:20px 16px 0}.room-divider{margin:16px}}
 </style>
 </head>
 <body>
 
-<!-- ══ ENTRY ══ -->
-<div id="snow-veil"></div>
-<div id="snowfall"></div>
-<div id="cold-mist"></div>
+<div id="dust-veil"></div><div id="golden-dust"></div><div id="warm-haze"></div>
 
-<!-- ══ AMERICAS WALL ══ -->
 <div id="americas-wall">
-  <svg id="wall-svg" viewBox="0 0 1200 800"
-       preserveAspectRatio="xMidYMid slice"
-       xmlns="http://www.w3.org/2000/svg">
+  <svg id="wall-svg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
     <defs>
-
-      <!-- NORTH: First Nations Pacific Northwest diamond geometry -->
-      <pattern id="pat-north" x="0" y="0" width="64" height="64" patternUnits="userSpaceOnUse">
-        <g stroke="rgba(186,88,44,0.17)" stroke-width=".8" fill="none">
-          <rect x="8" y="8" width="48" height="48" transform="rotate(45 32 32)"/>
-          <rect x="16" y="16" width="32" height="32" transform="rotate(45 32 32)"/>
-          <line x1="32" y1="0" x2="32" y2="64" stroke-width=".5"/>
-          <line x1="0" y1="32" x2="64" y2="32" stroke-width=".5"/>
-          <circle cx="32" cy="32" r="4" fill="rgba(186,88,44,0.1)"/>
-        </g>
-      </pattern>
-
-      <!-- SOUTH: Aztec stepped pyramid motif -->
-      <pattern id="pat-south" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
-        <g stroke="rgba(160,80,30,0.16)" stroke-width=".8" fill="none">
-          <rect x="4"  y="4"  width="52" height="52"/>
-          <rect x="12" y="12" width="36" height="36"/>
-          <rect x="20" y="20" width="20" height="20"/>
-          <rect x="26" y="26" width="8"  height="8" fill="rgba(160,80,30,0.1)"/>
-          <line x1="4"  y1="28" x2="12" y2="28"/>
-          <line x1="48" y1="28" x2="56" y2="28"/>
-          <line x1="28" y1="4"  x2="28" y2="12"/>
-          <line x1="28" y1="48" x2="28" y2="56"/>
-        </g>
-      </pattern>
-
-      <!-- WEST: Totem/coastal Pacific Northwest eye motif -->
-      <pattern id="pat-west" x="0" y="0" width="52" height="52" patternUnits="userSpaceOnUse">
-        <g stroke="rgba(186,88,44,0.15)" stroke-width=".8" fill="none">
-          <ellipse cx="26" cy="26" rx="20" ry="12"/>
-          <ellipse cx="26" cy="26" rx="12" ry="6"/>
-          <circle  cx="26" cy="26" r="4" fill="rgba(186,88,44,0.1)"/>
-          <circle  cx="26" cy="26" r="1.5" fill="rgba(186,88,44,0.22)" stroke="none"/>
-          <line x1="6" y1="26" x2="0"  y2="26" stroke-width=".5"/>
-          <line x1="46" y1="26" x2="52" y2="26" stroke-width=".5"/>
-          <path d="M14,18 Q26,10 38,18" stroke-width=".6"/>
-          <path d="M14,34 Q26,42 38,34" stroke-width=".6"/>
-        </g>
-      </pattern>
-
-      <!-- EAST: Appalachian quilt block — nine-patch star -->
-      <pattern id="pat-east" x="0" y="0" width="54" height="54" patternUnits="userSpaceOnUse">
-        <g stroke="rgba(140,100,60,0.14)" stroke-width=".7" fill="none">
-          <rect x="3"  y="3"  width="16" height="16"/>
-          <rect x="19" y="3"  width="16" height="16"/>
-          <rect x="35" y="3"  width="16" height="16"/>
-          <rect x="3"  y="19" width="16" height="16"/>
-          <rect x="19" y="19" width="16" height="16" fill="rgba(140,100,60,0.08)"/>
-          <rect x="35" y="19" width="16" height="16"/>
-          <rect x="3"  y="35" width="16" height="16"/>
-          <rect x="19" y="35" width="16" height="16"/>
-          <rect x="35" y="35" width="16" height="16"/>
-          <line x1="3" y1="3" x2="19" y2="19"/>
-          <line x1="19" y1="3" x2="3" y2="19"/>
-          <line x1="35" y1="35" x2="51" y2="51"/>
-          <line x1="51" y1="35" x2="35" y2="51"/>
-        </g>
-      </pattern>
-
-      <!-- fade masks -->
+      <pattern id="pat-north" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse"><g stroke="rgba(210,120,70,0.18)" stroke-width=".8" fill="none"><rect x="5" y="5" width="50" height="50"/><rect x="15" y="15" width="30" height="30"/><line x1="30" y1="5" x2="30" y2="55" stroke-width=".5"/><line x1="5" y1="30" x2="55" y2="30" stroke-width=".5"/><circle cx="30" cy="30" r="6" fill="rgba(210,120,70,0.08)"/><path d="M20,20 L30,10 L40,20 L30,30 Z" fill="rgba(210,120,70,0.06)"/></g></pattern>
+      <pattern id="pat-south" x="0" y="0" width="56" height="56" patternUnits="userSpaceOnUse"><g stroke="rgba(120,160,100,0.16)" stroke-width=".8" fill="none"><rect x="4" y="4" width="48" height="48"/><rect x="12" y="12" width="32" height="32"/><rect x="20" y="20" width="16" height="16" fill="rgba(120,160,100,0.08)"/><line x1="4" y1="28" x2="52" y2="28" stroke-width=".5"/><line x1="28" y1="4" x2="28" y2="52" stroke-width=".5"/><circle cx="28" cy="28" r="4" fill="rgba(75,60,140,0.12)"/></g></pattern>
+      <pattern id="pat-west" x="0" y="0" width="64" height="48" patternUnits="userSpaceOnUse"><g stroke="rgba(180,130,60,0.15)" stroke-width=".8" fill="none"><path d="M0,24 Q16,8 32,24 Q48,40 64,24" stroke-width=".6"/><path d="M0,32 Q16,16 32,32 Q48,48 64,32" stroke-width=".5"/><path d="M0,16 Q16,0 32,16 Q48,32 64,16" stroke-width=".5"/><circle cx="32" cy="24" r="3" fill="rgba(210,160,80,0.1)"/></g></pattern>
+      <pattern id="pat-east" x="0" y="0" width="48" height="48" patternUnits="userSpaceOnUse"><g stroke="rgba(160,100,60,0.14)" stroke-width=".7" fill="none"><rect x="4" y="4" width="40" height="40"/><rect x="12" y="12" width="24" height="24" fill="rgba(160,100,60,0.06)"/><line x1="4" y1="24" x2="44" y2="24" stroke-width=".5"/><line x1="24" y1="4" x2="24" y2="44" stroke-width=".5"/><circle cx="24" cy="24" r="5" fill="rgba(210,120,70,0.08)"/></g></pattern>
       <linearGradient id="fn" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="white" stop-opacity="1"/><stop offset="65%" stop-color="white" stop-opacity="0"/></linearGradient>
       <linearGradient id="fs" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="white" stop-opacity="1"/><stop offset="65%" stop-color="white" stop-opacity="0"/></linearGradient>
       <linearGradient id="fw" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="white" stop-opacity="1"/><stop offset="65%" stop-color="white" stop-opacity="0"/></linearGradient>
@@ -381,153 +114,34 @@ h1{font-family:var(--font-d);font-size:clamp(26px,4vw,44px);font-weight:300;font
       <mask id="mw"><rect width="600" height="800" fill="url(#fw)"/></mask>
       <mask id="me"><rect x="600" width="600" height="800" fill="url(#fe)"/></mask>
     </defs>
-
-    <!-- quadrant patterns -->
     <rect width="1200" height="400" fill="url(#pat-north)" mask="url(#mn)" opacity=".95"/>
     <rect y="400" width="1200" height="400" fill="url(#pat-south)" mask="url(#ms)" opacity=".95"/>
     <rect width="600" height="800" fill="url(#pat-west)" mask="url(#mw)" opacity=".95"/>
     <rect x="600" width="600" height="800" fill="url(#pat-east)" mask="url(#me)" opacity=".95"/>
 
-    <!-- ══ REGIONAL SHAPES — scattered silhouettes ══ -->
+    <g opacity=".16" fill="rgba(120,160,100,0.7)" transform="translate(50,60) scale(0.7)"><rect x="22" y="20" width="12" height="70" rx="6"/><rect x="10" y="35" width="10" height="25" rx="5" transform="rotate(-25 15 47)"/><rect x="36" y="30" width="10" height="20" rx="5" transform="rotate(25 41 40)"/><rect x="10" y="60" width="10" height="18" rx="5" transform="rotate(-20 15 69)"/></g>
+    <g opacity=".1" fill="rgba(120,160,100,0.6)" transform="translate(20,200) scale(0.45)"><rect x="22" y="20" width="12" height="70" rx="6"/><rect x="10" y="35" width="10" height="25" rx="5" transform="rotate(-25 15 47)"/><rect x="36" y="30" width="10" height="20" rx="5" transform="rotate(25 41 40)"/></g>
 
-    <!-- 🦌 CARIBOU / REINDEER — top left area -->
-    <g opacity=".18" fill="rgba(186,88,44,0.9)" transform="translate(62,48) scale(0.72)">
-      <!-- body -->
-      <ellipse cx="50" cy="52" rx="28" ry="16"/>
-      <!-- head -->
-      <ellipse cx="78" cy="38" rx="10" ry="8"/>
-      <!-- neck -->
-      <path d="M68,44 Q72,42 78,46"/>
-      <!-- antlers left -->
-      <path d="M74,30 L70,14 M70,14 L64,8 M70,14 L74,6 M70,14 L66,18" stroke="rgba(186,88,44,0.9)" stroke-width="2" fill="none" stroke-linecap="round"/>
-      <!-- antlers right -->
-      <path d="M80,30 L84,12 M84,12 L90,6 M84,12 L80,4 M84,12 L88,18" stroke="rgba(186,88,44,0.9)" stroke-width="2" fill="none" stroke-linecap="round"/>
-      <!-- legs -->
-      <line x1="32" y1="65" x2="28" y2="84" stroke="rgba(186,88,44,0.9)" stroke-width="3" stroke-linecap="round"/>
-      <line x1="42" y1="66" x2="40" y2="86" stroke="rgba(186,88,44,0.9)" stroke-width="3" stroke-linecap="round"/>
-      <line x1="58" y1="66" x2="56" y2="86" stroke="rgba(186,88,44,0.9)" stroke-width="3" stroke-linecap="round"/>
-      <line x1="68" y1="65" x2="72" y2="84" stroke="rgba(186,88,44,0.9)" stroke-width="3" stroke-linecap="round"/>
-      <!-- tail -->
-      <ellipse cx="24" cy="50" rx="5" ry="4" fill="rgba(220,200,180,0.4)"/>
-    </g>
+    <g transform="translate(1050,80) scale(0.75)" opacity=".14" fill="rgba(210,120,70,0.7)"><path d="M50,40 Q30,20 0,30 Q20,38 30,45 Q10,42 0,50 Q30,46 45,52 Z"/><path d="M50,40 Q70,20 100,30 Q80,38 70,45 Q90,42 100,50 Q70,46 55,52 Z"/><ellipse cx="50" cy="46" rx="14" ry="10"/><circle cx="50" cy="32" r="8" fill="rgba(220,210,190,0.5)"/><path d="M56,32 L64,36 L56,38 Z" fill="rgba(218,158,72,0.7)"/></g>
 
-    <!-- second smaller caribou — mid left, walking direction flipped -->
-    <g opacity=".12" fill="rgba(186,88,44,0.9)" transform="translate(28,240) scale(0.48)">
-      <ellipse cx="50" cy="52" rx="28" ry="16"/>
-      <ellipse cx="22" cy="38" rx="10" ry="8"/>
-      <path d="M26,30 L22,14 M22,14 L16,8 M22,14 L26,6 M22,14 L18,18" stroke="rgba(186,88,44,0.9)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-      <path d="M20,30 L16,12 M16,12 L10,6 M16,12 L20,4" stroke="rgba(186,88,44,0.9)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-      <line x1="32" y1="65" x2="28" y2="84" stroke="rgba(186,88,44,0.9)" stroke-width="3" stroke-linecap="round"/>
-      <line x1="44" y1="66" x2="42" y2="86" stroke="rgba(186,88,44,0.9)" stroke-width="3" stroke-linecap="round"/>
-      <line x1="58" y1="66" x2="56" y2="86" stroke="rgba(186,88,44,0.9)" stroke-width="3" stroke-linecap="round"/>
-      <line x1="70" y1="65" x2="74" y2="84" stroke="rgba(186,88,44,0.9)" stroke-width="3" stroke-linecap="round"/>
-    </g>
+    <g opacity=".12" fill="rgba(75,60,140,0.5)" transform="translate(900,250) scale(0.6)"><ellipse cx="30" cy="20" rx="12" ry="8"/><ellipse cx="55" cy="35" rx="10" ry="7"/><ellipse cx="25" cy="50" rx="14" ry="9"/><ellipse cx="60" cy="60" rx="11" ry="8"/><ellipse cx="40" cy="75" rx="9" ry="6"/></g>
 
-    <!-- 🍁 MAPLE LEAF — top right -->
-    <g transform="translate(1080,55) scale(0.9)" opacity=".2">
-      <path d="M60,0 L54,20 L66,18 L48,38 L58,36 L40,60 L42,48 L30,52 L32,38 L20,44 L28,30 L14,32 L32,14 L22,10 L40,8 L38,0 L50,12 Z"
-            fill="rgba(186,88,44,0.85)" stroke="none"/>
-      <line x1="40" y1="60" x2="40" y2="78" stroke="rgba(186,88,44,0.6)" stroke-width="3" stroke-linecap="round"/>
-    </g>
+    <g opacity=".14" fill="rgba(120,160,100,0.7)" transform="translate(1100,600) scale(0.8)"><rect x="18" y="40" width="8" height="80" rx="4" fill="rgba(140,100,40,0.6)"/><path d="M22,40 Q5,20 0,10 Q15,25 22,35" fill="rgba(120,160,100,0.7)"/><path d="M22,40 Q40,15 50,5 Q35,22 22,35" fill="rgba(120,160,100,0.7)"/><path d="M22,40 Q60,30 70,25 Q50,35 22,38" fill="rgba(120,160,100,0.7)"/><path d="M22,40 Q10,55 5,65 Q15,52 22,42" fill="rgba(120,160,100,0.6)"/></g>
 
-    <!-- second maple leaf smaller -->
-    <g transform="translate(1120,165) scale(0.5)" opacity=".13">
-      <path d="M60,0 L54,20 L66,18 L48,38 L58,36 L40,60 L42,48 L30,52 L32,38 L20,44 L28,30 L14,32 L32,14 L22,10 L40,8 L38,0 L50,12 Z" fill="rgba(186,88,44,0.85)"/>
-      <line x1="40" y1="60" x2="40" y2="78" stroke="rgba(186,88,44,0.6)" stroke-width="3" stroke-linecap="round"/>
-    </g>
+    <g transform="translate(150,120) scale(0.9)" opacity=".12"><circle cx="40" cy="40" r="25" fill="rgba(210,160,80,0.4)" stroke="rgba(210,160,80,0.3)" stroke-width="1"/><circle cx="40" cy="40" r="18" fill="rgba(210,160,80,0.2)"/><circle cx="40" cy="40" r="10" fill="rgba(210,160,80,0.3)"/><line x1="40" y1="5" x2="40" y2="15" stroke="rgba(210,160,80,0.3)" stroke-width="1.5"/><line x1="40" y1="65" x2="40" y2="75" stroke="rgba(210,160,80,0.3)" stroke-width="1.5"/><line x1="5" y1="40" x2="15" y2="40" stroke="rgba(210,160,80,0.3)" stroke-width="1.5"/><line x1="65" y1="40" x2="75" y2="40" stroke="rgba(210,160,80,0.3)" stroke-width="1.5"/><line x1="15" y1="15" x2="22" y2="22" stroke="rgba(210,160,80,0.3)" stroke-width="1.2"/><line x1="58" y1="58" x2="65" y2="65" stroke="rgba(210,160,80,0.3)" stroke-width="1.2"/><line x1="58" y1="22" x2="65" y2="15" stroke="rgba(210,160,80,0.3)" stroke-width="1.2"/><line x1="15" y1="65" x2="22" y2="58" stroke="rgba(210,160,80,0.3)" stroke-width="1.2"/></g>
 
-    <!-- ❄️ SNOWFLAKE — upper centre -->
-    <g transform="translate(580,35)" opacity=".16" stroke="rgba(200,218,240,0.9)" stroke-width="1.2" stroke-linecap="round" fill="none">
-      <line x1="20" y1="0"  x2="20" y2="40"/>
-      <line x1="0"  y1="20" x2="40" y2="20"/>
-      <line x1="6"  y1="6"  x2="34" y2="34"/>
-      <line x1="34" y1="6"  x2="6"  y2="34"/>
-      <line x1="20" y1="0"  x2="14" y2="8"/>
-      <line x1="20" y1="0"  x2="26" y2="8"/>
-      <line x1="20" y1="40" x2="14" y2="32"/>
-      <line x1="20" y1="40" x2="26" y2="32"/>
-      <line x1="0"  y1="20" x2="8"  y2="14"/>
-      <line x1="0"  y1="20" x2="8"  y2="26"/>
-      <line x1="40" y1="20" x2="32" y2="14"/>
-      <line x1="40" y1="20" x2="32" y2="26"/>
-      <circle cx="20" cy="20" r="3" fill="rgba(200,218,240,0.3)" stroke="rgba(200,218,240,0.9)" stroke-width="1"/>
-    </g>
+    <g opacity=".1" fill="rgba(160,120,80,0.5)"><polygon points="480,800 540,680 600,800"/><polygon points="530,800 600,700 670,800"/><polygon points="580,800 660,720 740,800"/><polygon points="540,680 528,710 552,710" fill="rgba(230,200,150,0.4)"/><polygon points="600,700 588,728 612,728" fill="rgba(230,200,150,0.4)"/><polygon points="660,720 648,746 672,746" fill="rgba(230,200,150,0.4)"/></g>
 
-    <!-- smaller snowflake right -->
-    <g transform="translate(1060,330) scale(0.65)" opacity=".12" stroke="rgba(200,218,240,0.9)" stroke-width="1.2" stroke-linecap="round" fill="none">
-      <line x1="20" y1="0"  x2="20" y2="40"/>
-      <line x1="0"  y1="20" x2="40" y2="20"/>
-      <line x1="6"  y1="6"  x2="34" y2="34"/>
-      <line x1="34" y1="6"  x2="6"  y2="34"/>
-      <circle cx="20" cy="20" r="3" fill="rgba(200,218,240,0.25)" stroke="rgba(200,218,240,0.9)" stroke-width="1"/>
-    </g>
-
-    <!-- 🌲 PINE TREE — bottom left -->
-    <g transform="translate(34,580)" opacity=".15" fill="rgba(60,90,60,0.8)">
-      <polygon points="30,0 54,30 42,30 58,58 38,58 44,80 16,80 22,58 2,58 18,30 6,30"/>
-      <rect x="26" y="80" width="8" height="14" fill="rgba(100,70,40,0.7)"/>
-    </g>
-
-    <!-- second pine -->
-    <g transform="translate(10,620) scale(0.65)" opacity=".1" fill="rgba(60,90,60,0.8)">
-      <polygon points="30,0 54,30 42,30 58,58 38,58 44,80 16,80 22,58 2,58 18,30 6,30"/>
-      <rect x="26" y="80" width="8" height="14" fill="rgba(100,70,40,0.7)"/>
-    </g>
-
-    <!-- 🦅 EAGLE silhouette — upper right area -->
-    <g transform="translate(920,80) scale(0.8)" opacity=".14" fill="rgba(186,88,44,0.75)">
-      <!-- wings spread -->
-      <path d="M60,30 Q40,10 0,20 Q20,28 30,35 Q10,32 0,40 Q30,36 45,42 Z"/>
-      <path d="M60,30 Q80,10 120,20 Q100,28 90,35 Q110,32 120,40 Q90,36 75,42 Z"/>
-      <!-- body -->
-      <ellipse cx="60" cy="36" rx="14" ry="10"/>
-      <!-- head -->
-      <circle cx="60" cy="22" r="8" fill="rgba(220,210,190,0.5)"/>
-      <!-- beak -->
-      <path d="M66,22 L74,26 L66,28 Z" fill="rgba(218,158,72,0.7)"/>
-      <!-- tail -->
-      <path d="M52,44 Q60,55 68,44" fill="rgba(186,88,44,0.6)"/>
-    </g>
-
-    <!-- 🐋 WHALE — bottom right (BC coast / Pacific) -->
-    <g transform="translate(880,680) scale(0.85)" opacity=".14" fill="rgba(60,90,140,0.7)">
-      <path d="M0,30 Q30,10 80,20 Q110,24 130,18 Q120,32 110,34 Q130,36 140,30 Q135,48 110,46 Q80,50 30,42 Q10,48 0,42 Z"/>
-      <!-- tail fluke -->
-      <path d="M0,36 Q-12,28 -18,20 Q-8,30 0,36 Z" fill="rgba(60,90,140,0.6)"/>
-      <path d="M0,36 Q-12,44 -18,52 Q-8,42 0,36 Z" fill="rgba(60,90,140,0.6)"/>
-      <!-- white belly -->
-      <path d="M20,34 Q60,40 100,36 Q80,44 40,42 Z" fill="rgba(200,220,240,0.3)"/>
-      <!-- eye -->
-      <circle cx="115" cy="26" r="3" fill="rgba(220,230,245,0.6)"/>
-    </g>
-
-    <!-- MOUNTAINS — bottom centre (Rockies / Andes) -->
-    <g opacity=".1" fill="rgba(100,130,170,0.6)">
-      <polygon points="480,800 540,680 600,800"/>
-      <polygon points="530,800 600,700 670,800"/>
-      <polygon points="580,800 660,720 740,800"/>
-      <!-- snow caps -->
-      <polygon points="540,680 528,710 552,710" fill="rgba(220,235,250,0.5)"/>
-      <polygon points="600,700 588,728 612,728" fill="rgba(220,235,250,0.5)"/>
-      <polygon points="660,720 648,746 672,746" fill="rgba(220,235,250,0.5)"/>
-    </g>
-
-    <!-- centre vignette -->
-    <radialGradient id="cv" cx="50%" cy="50%" r="50%">
-      <stop offset="0%"   stop-color="rgba(6,9,15,0.84)"/>
-      <stop offset="100%" stop-color="rgba(6,9,15,0)"/>
-    </radialGradient>
+    <radialGradient id="cv" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="rgba(26,18,9,0.84)"/><stop offset="100%" stop-color="rgba(26,18,9,0)"/></radialGradient>
     <rect width="1200" height="800" fill="url(#cv)"/>
   </svg>
 </div>
 
-<!-- quadrant labels -->
-<div class="quad-label" id="ql-n">North · Pacific Northwest</div>
-<div class="quad-label" id="ql-s">South · Mesoamerica</div>
-<div class="quad-label" id="ql-w">West · Coastal Pacific</div>
-<div class="quad-label" id="ql-e">East · Appalachian</div>
+<div class="quad-label" id="ql-n">North · Southwest & Pacific</div>
+<div class="quad-label" id="ql-s">South · Amazon & Andes</div>
+<div class="quad-label" id="ql-w">West · Desert & Coast</div>
+<div class="quad-label" id="ql-e">East · Appalachia & Cities</div>
 
-<!-- ══ PAGE ══ -->
 <div id="page">
   <header id="room-header">
     <div>
@@ -540,190 +154,50 @@ h1{font-family:var(--font-d);font-size:clamp(26px,4vw,44px);font-weight:300;font
   <div class="room-divider"></div>
 
   <div id="wall">
-
-    <!-- ══════════════════════════════════════════
-      HOW TO ADD A NEW BOX
-      Copy START BOX to END BOX block.
-      Change: loc, season, img, perfume, city, ig, sub, notes.
-      Image naming: IMG_widecurrent_1.jpg, IMG_widecurrent_2.jpg etc.
-    ══════════════════════════════════════════ -->
-
-    <!-- ▼ START BOX 1 — Kelowna, December -->
-    <div class="box"
-         onclick="openLightbox({
-           loc:'Kelowna',
-           season:'December',
-           img:'IMG_widecurrent_1.jpg',
-           perfume:'Angels\' Share · Kilian',
-           city:'Kelowna, Canada',
-           tag:'The Wide Current · Americas',
-           ig:'https://instagram.com/kwissbae',
-           sub:'https://substack.com/',
-           hotspots:[
-             { top:'4%',  left:'29%', label:'Hair',    note:'Blonde sleek. Against white — everything is contrast.' },
-             { top:'14%', left:'24%', label:'Makeup',  note:'Placeholder — your note here.' },
-             { top:'16%', left:'37%', label:'Ear Muffs', note:'Blush fur ear muffs. Cold made cute.' },
-             { top:'38%', left:'22%', label:'Outfit',  note:'All white ski suit. The mountain wanted to match.' },
-             { top:'55%', left:'40%', label:'Gloves',  note:'Black leather gloves. The one break in the white.' },
-             { top:'58%', left:'38%', label:'Bag',     note:'White fur hobo. Placeholder — your note here.' },
-             { top:'90%', left:'26%', label:'Boots',   note:'Placeholder — your note here.' },
-             { top:'52%', left:'68%', label:'Perfume', note:'Angels\' Share. Warm cognac and oak in -10°C. The irony was the point.' }
-           ]
-         })"
-         aria-label="Open Kelowna look">
-      <div class="box-band">
-        <span class="loc">Kelowna</span>
-        <span class="season">December</span>
-      </div>
-      <div class="box-window">
-        <img src="IMG_widecurrent_1.jpg" alt="Kelowna, December — Big White"/>
-        <span class="perfume-badge">Angels' Share · Kilian</span>
-      </div>
-      <div class="box-foot">
-        <p class="city-name">Kelowna, Canada</p>
-        <p class="continent-tag">The Wide Current · Americas</p>
-      </div>
+    <div class="box" onclick="openLightbox({loc:'Kelowna',season:'December',img:'IMG_widecurrent_1.jpg',perfume:'Angels\\' Share · Kilian',city:'Kelowna, Canada',tag:'The Wide Current · Americas',ig:'https://instagram.com/kwissbae',sub:'https://substack.com/',hotspots:[{top:'4%',left:'29%',label:'Hair',note:'Blonde sleek. Against white — everything is contrast.'},{top:'14%',left:'24%',label:'Makeup',note:'Placeholder — your note here.'},{top:'16%',left:'37%',label:'Ear Muffs',note:'Blush fur ear muffs. Cold made cute.'},{top:'38%',left:'22%',label:'Outfit',note:'All white ski suit. The mountain wanted to match.'},{top:'55%',left:'40%',label:'Gloves',note:'Black leather gloves. The one break in the white.'},{top:'58%',left:'38%',label:'Bag',note:'Placeholder — your note here.'},{top:'90%',left:'26%',label:'Boots',note:'Placeholder — your note here.'},{top:'52%',left:'68%',label:'Perfume',note:'Angels\\' Share. Warm cognac and oak in -10°C. The irony was the point.'}]})" aria-label="Open Kelowna look">
+      <div class="box-band"><span class="loc">Kelowna</span><span class="season">December</span></div>
+      <div class="box-window"><img src="IMG_widecurrent_1.jpg" alt="Kelowna, December — Big White"/><span class="perfume-badge">Angels' Share · Kilian</span></div>
+      <div class="box-foot"><p class="city-name">Kelowna, Canada</p><p class="continent-tag">The Wide Current · Americas</p></div>
       <span class="box-hint">click to open</span>
     </div>
-    <!-- ▲ END BOX 1 -->
 
-    <!-- placeholder 2 -->
     <div class="box" style="opacity:.22;cursor:default;pointer-events:none">
       <div class="box-band"><span class="loc">Coming</span><span class="season">—</span></div>
-      <div class="box-window" style="display:flex;align-items:center;justify-content:center;min-height:240px">
-        <span style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:rgba(186,88,44,.26)">next drop</span>
-      </div>
-      <div class="box-foot"><p class="city-name" style="color:rgba(200,218,240,.18)">The Wide Current</p><p class="continent-tag">Americas</p></div>
+      <div class="box-window" style="display:flex;align-items:center;justify-content:center;min-height:240px"><span style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:rgba(210,120,70,.26)">next drop</span></div>
+      <div class="box-foot"><p class="city-name" style="color:rgba(200,180,150,.18)">The Wide Current</p><p class="continent-tag">Americas</p></div>
     </div>
 
-    <!-- placeholder 3 -->
     <div class="box" style="opacity:.12;cursor:default;pointer-events:none">
       <div class="box-band"><span class="loc">Coming</span><span class="season">—</span></div>
-      <div class="box-window" style="display:flex;align-items:center;justify-content:center;min-height:240px">
-        <span style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:rgba(186,88,44,.16)">next drop</span>
-      </div>
-      <div class="box-foot"><p class="city-name" style="color:rgba(200,218,240,.12)">The Wide Current</p><p class="continent-tag">Americas</p></div>
+      <div class="box-window" style="display:flex;align-items:center;justify-content:center;min-height:240px"><span style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:rgba(210,120,70,.16)">next drop</span></div>
+      <div class="box-foot"><p class="city-name" style="color:rgba(200,180,150,.12)">The Wide Current</p><p class="continent-tag">Americas</p></div>
     </div>
-
   </div>
 </div>
 
-<!-- ══ LIGHTBOX ══ -->
 <div id="lb-overlay" onclick="closeLbOutside(event)">
   <div id="lb">
     <button id="lb-close" onclick="closeLb()">close ✕</button>
-    <div id="lb-band">
-      <span id="lb-loc"></span>
-      <span id="lb-season"></span>
-    </div>
-    <div id="lb-photo-wrap">
-      <img id="lb-img" src="" alt=""/>
-    </div>
+    <div id="lb-band"><span id="lb-loc"></span><span id="lb-season"></span></div>
+    <div id="lb-photo-wrap"><img id="lb-img" src="" alt=""/></div>
     <div id="lb-footer">
       <p id="lb-city" class="lb-city"></p>
-      <p id="lb-tag"  class="lb-sub-tag"></p>
+      <p id="lb-tag" class="lb-sub-tag"></p>
       <div class="lb-links">
-        <a id="lb-ig"  class="lb-link" href="#" target="_blank" rel="noopener">
-          <span class="li-icon">📷</span>
-          <span>See other variations of this look<span class="li-sub">Instagram</span></span>
-        </a>
-        <a id="lb-sub" class="lb-link" href="#" target="_blank" rel="noopener">
-          <span class="li-icon">✦</span>
-          <span>Read the full story<span class="li-sub">Substack</span></span>
-        </a>
+        <a id="lb-ig" class="lb-link" href="#" target="_blank" rel="noopener"><span class="li-icon">📷</span><span>See other variations of this look<span class="li-sub">Instagram</span></span></a>
+        <a id="lb-sub" class="lb-link" href="#" target="_blank" rel="noopener"><span class="li-icon">✦</span><span>Read the full story<span class="li-sub">Substack</span></span></a>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-/* ══ SNOWFALL ══ */
-(function(){
-  const c = document.getElementById('snowfall');
-  for(let i=0;i<55;i++){
-    const f = document.createElement('div');
-    f.className = 'flake';
-    const sz = 1.5 + Math.random()*3.5;
-    f.style.width  = sz+'px';
-    f.style.height = sz+'px';
-    f.style.left   = Math.random()*100+'vw';
-    f.style.setProperty('--dur',   (4+Math.random()*5)+'s');
-    f.style.setProperty('--delay', (Math.random()*4)+'s');
-    f.style.setProperty('--drift', (Math.random()*60-30)+'px');
-    f.style.opacity = 0.3+Math.random()*0.6;
-    c.appendChild(f);
-  }
-  setTimeout(()=>c.remove(), 9500);
-})();
+(function(){const c=document.getElementById('golden-dust');for(let i=0;i<60;i++){const p=document.createElement('div');p.className='dust-particle';const sz=1+Math.random()*4;p.style.width=sz+'px';p.style.height=sz+'px';p.style.left=Math.random()*100+'vw';p.style.bottom='-10px';p.style.setProperty('--dur',(3+Math.random()*5)+'s');p.style.setProperty('--delay',(Math.random()*3)+'s');p.style.setProperty('--drift',(Math.random()*80-40)+'px');p.style.opacity=0.2+Math.random()*0.7;c.appendChild(p)}setTimeout(()=>c.remove(),9500)})();
 
-/* ══ LIGHTBOX ══ */
-function openLightbox(data){
-  document.getElementById('lb-loc').textContent    = data.loc;
-  document.getElementById('lb-season').textContent = data.season;
-  document.getElementById('lb-city').textContent   = data.city;
-  document.getElementById('lb-tag').textContent    = data.tag;
-  document.getElementById('lb-ig').href            = data.ig;
-  document.getElementById('lb-sub').href           = data.sub;
-
-  const img = document.getElementById('lb-img');
-  img.src = data.img; img.alt = data.city;
-
-  const wrap = document.getElementById('lb-photo-wrap');
-  wrap.querySelectorAll('.hotspot,.hs-tip').forEach(el=>el.remove());
-
-  function place(){
-    const nW=img.naturalWidth||1, nH=img.naturalHeight||1;
-    const wW=wrap.offsetWidth, wH=img.offsetHeight;
-    const sc=Math.min(wW/nW,wH/nH);
-    const rW=nW*sc, rH=nH*sc;
-    const oX=(wW-rW)/2, oY=(wH-rH)/2;
-
-    data.hotspots.forEach((hs,i)=>{
-      const px = oX + (parseFloat(hs.left)/100)*rW;
-      const py = oY + (parseFloat(hs.top) /100)*rH;
-
-      const dot = document.createElement('div');
-      dot.className='hotspot';
-      dot.style.left=px+'px'; dot.style.top=py+'px';
-
-      const tip = document.createElement('div');
-      tip.className='hs-tip';
-      tip.innerHTML=`<span class="tip-label">${hs.label}</span><span class="tip-note">${hs.note}</span>`;
-
-      const toggle=(e)=>{
-        e.stopPropagation();
-        const open=tip.classList.contains('show');
-        wrap.querySelectorAll('.hs-tip').forEach(t=>t.classList.remove('show'));
-        if(!open){
-          const tw=162,ww=wrap.offsetWidth,wh=img.offsetHeight;
-          let tl=px+16, tt=py-14;
-          if(tl+tw>ww-4) tl=px-tw-8;
-          if(tl<4) tl=4;
-          if(tt<4) tt=py+30;
-          if(tt+70>wh) tt=py-70;
-          tip.style.left=tl+'px'; tip.style.top=tt+'px';
-          tip.classList.add('show');
-        }
-      };
-      dot.addEventListener('mouseenter',toggle);
-      dot.addEventListener('click',toggle);
-      wrap.appendChild(dot); wrap.appendChild(tip);
-    });
-  }
-
-  img.complete&&img.naturalWidth ? place() : (img.onload=place);
-  document.getElementById('lb-overlay').classList.add('open');
-  document.body.style.overflow='hidden';
-}
-
-function closeLb(){
-  document.getElementById('lb-overlay').classList.remove('open');
-  document.body.style.overflow='';
-}
-function closeLbOutside(e){
-  if(e.target===document.getElementById('lb-overlay')) closeLb();
-}
-document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeLb(); });
+function openLightbox(data){document.getElementById('lb-loc').textContent=data.loc;document.getElementById('lb-season').textContent=data.season;document.getElementById('lb-city').textContent=data.city;document.getElementById('lb-tag').textContent=data.tag;document.getElementById('lb-ig').href=data.ig;document.getElementById('lb-sub').href=data.sub;const img=document.getElementById('lb-img');img.src=data.img;img.alt=data.city;const wrap=document.getElementById('lb-photo-wrap');wrap.querySelectorAll('.hotspot,.hs-tip').forEach(el=>el.remove());function place(){const nW=img.naturalWidth||1,nH=img.naturalHeight||1;const wW=wrap.offsetWidth,wH=img.offsetHeight;const sc=Math.min(wW/nW,wH/nH);const rW=nW*sc,rH=nH*sc;const oX=(wW-rW)/2,oY=(wH-rH)/2;data.hotspots.forEach((hs,i)=>{const px=oX+(parseFloat(hs.left)/100)*rW;const py=oY+(parseFloat(hs.top)/100)*rH;const dot=document.createElement('div');dot.className='hotspot';dot.style.left=px+'px';dot.style.top=py+'px';const tip=document.createElement('div');tip.className='hs-tip';tip.innerHTML='<span class="tip-label">'+hs.label+'</span><span class="tip-note">'+hs.note+'</span>';const toggle=(e)=>{e.stopPropagation();const open=tip.classList.contains('show');wrap.querySelectorAll('.hs-tip').forEach(t=>t.classList.remove('show'));if(!open){const tw=162,ww=wrap.offsetWidth,wh=img.offsetHeight;let tl=px+16,tt=py-14;if(tl+tw>ww-4)tl=px-tw-8;if(tl<4)tl=4;if(tt<4)tt=py+30;if(tt+70>wh)tt=py-70;tip.style.left=tl+'px';tip.style.top=tt+'px';tip.classList.add('show')}};dot.addEventListener('mouseenter',toggle);dot.addEventListener('click',toggle);wrap.appendChild(dot);wrap.appendChild(tip)})}img.complete&&img.naturalWidth?place():(img.onload=place);document.getElementById('lb-overlay').classList.add('open');document.body.style.overflow='hidden'}
+function closeLb(){document.getElementById('lb-overlay').classList.remove('open');document.body.style.overflow=''}
+function closeLbOutside(e){if(e.target===document.getElementById('lb-overlay'))closeLb()}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLb()});
 </script>
 </body>
 </html>
