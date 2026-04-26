@@ -1,439 +1,169 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Glam Wing — MetaVoxa</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet"/>
-
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{width:100%;height:100%;overflow:hidden;background:#1a1208}
-
-/* ── MAP WRAPPER ── */
-#map-wrap{
-  position:fixed;inset:0;
-  display:flex;align-items:center;justify-content:center;
-  overflow:hidden;
-}
-
-/* ── MAP IMAGE ── */
-#map-img{
-  width:100%;height:100%;
-  object-fit:cover;
-  object-position:center;
-  display:block;
-  animation:map-unfurl 2.2s cubic-bezier(0.16,1,0.3,1) forwards;
-  transform-origin:center center;
-}
-@keyframes map-unfurl{
-  0%  {transform:scale(1.08);filter:brightness(0.6) saturate(0.7)}
-  60% {transform:scale(1.02);filter:brightness(0.92) saturate(0.95)}
-  100%{transform:scale(1);   filter:brightness(1)   saturate(1)}
-}
-
-/* ── VIGNETTE ── */
-#vignette{
-  position:fixed;inset:0;pointer-events:none;z-index:2;
-  background:radial-gradient(ellipse 90% 85% at 50% 50%,
-    transparent 55%,
-    rgba(8,5,2,0.35) 78%,
-    rgba(8,5,2,0.72) 100%
-  );
-}
-
-/* ── SVG OVERLAY (continent zones) ── */
-#map-svg{
-  position:fixed;inset:0;
-  width:100%;height:100%;
-  z-index:3;
-  overflow:visible;
-}
-
-/* continent zone base */
-.continent-zone{
-  fill:transparent;
-  cursor:pointer;
-  transition:fill 0.35s ease;
-}
-.continent-zone:hover{
-  fill:rgba(212,168,67,0.13);
-  animation:cont-pulse 1.8s ease-in-out infinite;
-}
-@keyframes cont-pulse{
-  0%,100%{fill:rgba(212,168,67,0.1)}
-  50%    {fill:rgba(212,168,67,0.2)}
-}
-
-/* Terra Somnia — locked */
-.terra-zone{
-  fill:transparent;
-  cursor:not-allowed;
-  transition:fill 0.3s;
-}
-.terra-zone:hover{ fill:rgba(160,150,130,0.12); }
-
-/* continent label that appears on hover */
-.cont-label{
-  pointer-events:none;
-  opacity:0;
-  transform:translateY(4px);
-  transition:opacity 0.3s ease, transform 0.3s ease;
-  font-family:'Cormorant Garamond',Georgia,serif;
-}
-.continent-group:hover .cont-label,
-.continent-group:focus-within .cont-label{
-  opacity:1;
-  transform:translateY(0);
-}
-.continent-group{ outline:none; }
-
-/* ── GEYSERS ── */
-.geyser{
-  position:fixed;
-  width:3px;
-  pointer-events:none;
-  z-index:4;
-  overflow:visible;
-}
-.geyser-wisp{
-  position:absolute;
-  bottom:0;left:50%;
-  width:28px;
-  transform:translateX(-50%);
-}
-.wisp-strand{
-  position:absolute;
-  bottom:0;
-  width:2px;
-  border-radius:2px;
-  background:linear-gradient(to top, rgba(255,252,245,0.55), rgba(255,252,245,0));
-  transform-origin:bottom center;
-  animation:wisp-rise var(--dur,4s) ease-in-out var(--delay,0s) infinite;
-}
-@keyframes wisp-rise{
-  0%  {height:0;    opacity:0;   transform:translateX(var(--dx,0px)) scaleX(1)}
-  15% {height:12px; opacity:0.6; transform:translateX(var(--dx,0px)) scaleX(0.9)}
-  60% {height:48px; opacity:0.35;transform:translateX(calc(var(--dx,0px) * 1.8)) scaleX(0.6)}
-  85% {height:68px; opacity:0.15;transform:translateX(calc(var(--dx,0px) * 2.4)) scaleX(0.3)}
-  100%{height:76px; opacity:0;   transform:translateX(calc(var(--dx,0px) * 3)) scaleX(0.1)}
-}
-
-/* ── TERRA SOMNIA TOOLTIP ── */
-#terra-tip{
-  position:fixed;
-  pointer-events:none;
-  z-index:10;
-  opacity:0;
-  transform:translateY(6px);
-  transition:opacity 0.25s,transform 0.25s;
-  text-align:center;
-}
-#terra-tip.show{opacity:1;transform:none}
-#terra-tip .tip-name{
-  font-family:'Cormorant Garamond',Georgia,serif;
-  font-size:clamp(13px,1.8vw,17px);
-  font-style:italic;
-  color:rgba(210,200,180,0.82);
-  letter-spacing:0.06em;
-  display:block;margin-bottom:3px;
-}
-#terra-tip .tip-sub{
-  font-family:'Outfit',system-ui,sans-serif;
-  font-size:clamp(9px,1.1vw,11px);
-  letter-spacing:0.16em;
-  color:rgba(180,170,150,0.5);
-  text-transform:uppercase;
-  display:block;
-}
-
-/* ── BACK TO LOBBY ── */
-#back-lobby{
-  position:fixed;bottom:20px;left:22px;
-  z-index:10;
-  font-family:'Outfit',system-ui,sans-serif;
-  font-size:clamp(9px,1.1vw,11px);
-  letter-spacing:0.14em;
-  color:rgba(212,168,67,0.38);
-  text-decoration:none;
-  text-transform:uppercase;
-  transition:color 0.2s;
-  opacity:0;
-  animation:fade-in-ui 0.6s ease forwards;
-  animation-delay:2.4s;
-}
-#back-lobby:hover{color:rgba(212,168,67,0.85)}
-
-/* ── HOUSE NAV (top right) ── */
-#house-nav{
-  position:fixed;top:18px;right:20px;
-  z-index:10;
-  display:flex;gap:10px;
-  opacity:0;
-  animation:fade-in-ui 0.6s ease forwards;
-  animation-delay:2.6s;
-}
-.nav-pill{
-  font-family:'Outfit',system-ui,sans-serif;
-  font-size:clamp(9px,1.1vw,10px);
-  letter-spacing:0.12em;
-  color:rgba(212,168,67,0.35);
-  text-decoration:none;
-  text-transform:uppercase;
-  border:.5px solid rgba(212,168,67,0.18);
-  border-radius:4px;padding:4px 10px;
-  transition:all 0.2s;
-  background:rgba(10,7,3,0.55);
-  backdrop-filter:blur(4px);
-}
-.nav-pill:hover{color:rgba(212,168,67,0.85);border-color:rgba(212,168,67,0.45)}
-
-@keyframes fade-in-ui{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
-
-/* ── MOBILE: allow scroll on small screens ── */
-@media(max-width:600px){
-  html,body{overflow:auto;height:auto}
-  #map-wrap{position:relative;height:56vw;min-height:240px}
-  #map-img{object-fit:cover}
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Glam Wing — MetaVoxa</title>
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { width: 100%; height: 100%; overflow: hidden; background: #050914; font-family: 'Georgia', 'Times New Roman', serif; color: #f0ead8; -webkit-tap-highlight-color: transparent; }
+        
+        .map-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; }
+        .map-image { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; object-position: center center; transform: scale(1.08); animation: mapUnroll 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+        @keyframes mapUnroll { 0% { transform: scale(1.08); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
+        
+        .vignette { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; background: radial-gradient(ellipse at center, transparent 50%, rgba(5, 9, 20, 0.4) 80%, rgba(5, 9, 20, 0.7) 100%); z-index: 2; }
+        
+        .continent-zone { position: absolute; cursor: pointer; z-index: 10; transition: all 0.4s ease; }
+        .continent-zone::before { content: ''; position: absolute; top: -10%; left: -10%; width: 120%; height: 120%; border-radius: 50%; background: radial-gradient(ellipse at center, rgba(210, 175, 100, 0) 0%, rgba(210, 175, 100, 0) 100%); transition: all 0.6s ease; pointer-events: none; filter: blur(20px); }
+        .continent-zone:hover::before, .continent-zone.active::before { background: radial-gradient(ellipse at center, rgba(210, 175, 100, 0.25) 0%, rgba(210, 175, 100, 0.05) 50%, rgba(210, 175, 100, 0) 70%); animation: glowPulse 2.5s ease-in-out infinite; }
+        @keyframes glowPulse { 0%, 100% { opacity: 0.6; transform: scale(1); } 50% { opacity: 1; transform: scale(1.05); } }
+        
+        .continent-label { position: absolute; bottom: 10%; left: 50%; transform: translateX(-50%) translateY(10px); font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; color: rgba(240, 234, 216, 0.6); background: rgba(5, 9, 20, 0.6); padding: 4px 12px; border-radius: 20px; border: 1px solid rgba(210, 175, 100, 0.2); opacity: 0; transition: all 0.4s ease; pointer-events: none; white-space: nowrap; }
+        .continent-zone:hover .continent-label, .continent-zone.active .continent-label { opacity: 1; transform: translateX(-50%) translateY(0); color: rgba(210, 175, 100, 0.95); border-color: rgba(210, 175, 100, 0.5); box-shadow: 0 0 20px rgba(210, 175, 100, 0.15); }
+        
+        .zone-kaelum { top: 23%; left: 37%; width: 21%; height: 25%; clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 70% 100%, 50% 80%, 20% 80%, 0% 60%); }
+        .zone-solenne { top: 28%; left: 59%; width: 24%; height: 28%; clip-path: polygon(0% 0%, 100% 0%, 100% 80%, 70% 80%, 50% 60%, 20% 60%, 0% 40%); }
+        .zone-oria { top: 42%; left: 42%; width: 21%; height: 38%; clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 60% 100%, 40% 85%, 0% 85%); }
+        .zone-wide-current { top: 50%; left: 20%; width: 17%; height: 28%; clip-path: polygon(0% 0%, 100% 0%, 100% 80%, 60% 80%, 40% 60%, 0% 60%); }
+        .zone-terra-somnia { top: 68%; left: 71%; width: 15%; height: 20%; cursor: default; clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 60% 100%, 40% 80%, 0% 80%); }
+        .zone-terra-somnia:hover::before, .zone-terra-somnia.active::before { background: radial-gradient(ellipse at center, rgba(128, 128, 128, 0.2) 0%, rgba(128, 128, 128, 0.05) 50%, transparent 70%); animation: none; }
+        .zone-terra-somnia .continent-label { font-style: italic; letter-spacing: 3px; }
+        
+        .pin-marker { position: absolute; width: 24px; height: 24px; z-index: 8; pointer-events: none; }
+        .pin-marker::after { content: ''; position: absolute; top: 50%; left: 50%; width: 12px; height: 12px; transform: translate(-50%, -50%); background: rgba(210, 175, 100, 0.9); border-radius: 50% 50% 50% 0; transform: translate(-50%, -50%) rotate(-45deg); box-shadow: 0 0 8px rgba(210, 175, 100, 0.5); transition: all 0.3s ease; }
+        .pin-marker:hover::after, .pin-marker.bounce::after { animation: pinBounce 0.6s ease; }
+        @keyframes pinBounce { 0%, 100% { transform: translate(-50%, -50%) rotate(-45deg) scale(1); } 30% { transform: translate(-50%, -60%) rotate(-45deg) scale(1.2); } 60% { transform: translate(-50%, -45%) rotate(-45deg) scale(0.9); } }
+        
+        .pin-1 { top: 28%; left: 28%; } .pin-2 { top: 19%; left: 38%; } .pin-3 { top: 22%; left: 41%; } .pin-4 { top: 18%; left: 55%; } .pin-5 { top: 26%; left: 75%; } .pin-6 { top: 40%; left: 85%; } .pin-7 { top: 68%; left: 88%; } .pin-8 { top: 55%; left: 31%; } .pin-9 { top: 47%; left: 27%; } .pin-10 { top: 52%; left: 20%; }
+        
+        .geyser { position: absolute; width: 3px; z-index: 5; pointer-events: none; }
+        .geyser-wisp { position: absolute; width: 2px; background: linear-gradient(to top, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100%); border-radius: 50%; animation: smokeRise 4s ease-in-out infinite; }
+        @keyframes smokeRise { 0% { height: 0; opacity: 0; transform: translateX(0) scale(1); } 20% { opacity: 0.6; } 80% { opacity: 0.3; } 100% { height: 80px; opacity: 0; transform: translateX(15px) scale(2); } }
+        .geyser-1 { top: 10%; left: 13%; } .geyser-2 { top: 12%; left: 35%; } .geyser-3 { top: 8%; left: 56%; } .geyser-4 { top: 15%; left: 71%; } .geyser-5 { top: 63%; left: 49%; }
+        .geyser .wisp-1 { animation-delay: 0s; left: 0; } .geyser .wisp-2 { animation-delay: 1.2s; left: 3px; } .geyser .wisp-3 { animation-delay: 2.4s; left: -2px; }
+        
+        .terra-tooltip { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); background: rgba(5, 9, 20, 0.9); border: 1px solid rgba(128, 128, 128, 0.4); padding: 12px 20px; border-radius: 8px; font-size: 0.8rem; letter-spacing: 1px; color: rgba(200, 200, 200, 0.8); opacity: 0; pointer-events: none; transition: all 0.3s ease; white-space: nowrap; z-index: 20; }
+        .zone-terra-somnia:hover .terra-tooltip, .zone-terra-somnia.active .terra-tooltip { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        
+        .back-lobby { position: fixed; bottom: 20px; left: 20px; z-index: 30; display: flex; align-items: center; gap: 8px; text-decoration: none; color: rgba(240, 234, 216, 0.5); font-size: 0.75rem; letter-spacing: 1px; transition: all 0.3s ease; padding: 8px 12px; border-radius: 20px; background: rgba(5, 9, 20, 0.4); border: 1px solid rgba(240, 234, 216, 0.1); }
+        .back-lobby:hover { color: rgba(210, 175, 100, 0.9); border-color: rgba(210, 175, 100, 0.3); background: rgba(5, 9, 20, 0.6); }
+        .back-lobby svg { width: 16px; height: 16px; fill: currentColor; }
+        
+        .audio-toggle { position: fixed; bottom: 20px; right: 20px; z-index: 30; width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(240, 234, 216, 0.2); background: rgba(5, 9, 20, 0.4); color: rgba(240, 234, 216, 0.5); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; font-size: 0.9rem; }
+        .audio-toggle:hover { border-color: rgba(210, 175, 100, 0.4); color: rgba(210, 175, 100, 0.8); }
+        .audio-toggle.active { border-color: rgba(210, 175, 100, 0.5); color: rgba(210, 175, 100, 0.9); box-shadow: 0 0 15px rgba(210, 175, 100, 0.1); }
+        
+        @media (max-width: 768px) { .map-image { object-position: center center; } .continent-label { font-size: 0.7rem; padding: 3px 8px; } .pin-marker { width: 18px; height: 18px; } .pin-marker::after { width: 9px; height: 9px; } .back-lobby { bottom: 15px; left: 15px; font-size: 0.7rem; } .audio-toggle { bottom: 15px; right: 15px; width: 32px; height: 32px; } }
+        @media (prefers-reduced-motion: reduce) { .map-image { animation: none; transform: scale(1); opacity: 1; } .continent-zone::before { animation: none; } .geyser-wisp { animation: none; opacity: 0.3; height: 40px; } }
+    </style>
 </head>
 <body>
-
-<div id="map-wrap">
-  <!-- ══ MAP IMAGE ══
-       DEPLOY NOTE: place your map image at the same folder as this file.
-       Rename it to: glam-map.jpg
-       Then this src works automatically. ══ -->
-  <img id="map-img" src="IMG_glam.jpg" alt="Glam Wing — MetaVoxa world map"/>
-</div>
-
-<!-- Vignette -->
-<div id="vignette"></div>
-
-<!-- ══ CONTINENT OVERLAY SVG ══
-     All positions are in % of viewport using preserveAspectRatio.
-     The map image is 1386 × 780 — all polygon points are
-     expressed as percentages of that native size so they scale
-     correctly regardless of screen size.
-     ══ -->
-<svg id="map-svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice"
-     xmlns="http://www.w3.org/2000/svg">
-
-  <!-- ── THE WIDE CURRENT (Americas) ── -->
-  <g class="continent-group" tabindex="0"
-     onclick="goToRoom('wide-current')"
-     onkeydown="if(event.key==='Enter')goToRoom('wide-current')"
-     aria-label="Enter The Wide Current">
-    <polygon class="continent-zone"
-      points="
-        5,14  14,10  22,14  26,18  28,28
-        27,42  24,52  22,68  20,78
-        14,82  10,76   8,64   6,50
-        4,36   4,22
-      "/>
-    <!-- hover label -->
-    <text class="cont-label"
-          x="7" y="48"
-          font-size="2.2" fill="rgba(212,168,67,0.92)"
-          font-style="italic" letter-spacing="0.06em">The Wide</text>
-    <text class="cont-label"
-          x="7" y="51.5"
-          font-size="2.2" fill="rgba(212,168,67,0.92)"
-          font-style="italic" letter-spacing="0.06em">Current</text>
-    <text class="cont-label"
-          x="7" y="54.5"
-          font-size="1.4" fill="rgba(212,168,67,0.5)"
-          letter-spacing="0.14em">ENTER ROOM →</text>
-  </g>
-
-  <!-- ── ORIA (Africa) ── -->
-  <g class="continent-group" tabindex="0"
-     onclick="goToRoom('oria')"
-     onkeydown="if(event.key==='Enter')goToRoom('oria')"
-     aria-label="Enter Oria">
-    <polygon class="continent-zone"
-      points="
-        40,28  46,24  52,26  56,30  58,38
-        60,50  58,62  54,72  50,78
-        44,76  40,68  38,56  38,44
-        38,34
-      "/>
-    <text class="cont-label"
-          x="43" y="48"
-          font-size="2.4" fill="rgba(212,168,67,0.92)"
-          font-style="italic" letter-spacing="0.06em">Oria</text>
-    <text class="cont-label"
-          x="41" y="51.5"
-          font-size="1.4" fill="rgba(212,168,67,0.5)"
-          letter-spacing="0.14em">ENTER ROOM →</text>
-  </g>
-
-  <!-- ── KAELUM (Europe) ── -->
-  <g class="continent-group" tabindex="0"
-     onclick="goToRoom('kaelum')"
-     onkeydown="if(event.key==='Enter')goToRoom('kaelum')"
-     aria-label="Enter Kaelum">
-    <polygon class="continent-zone"
-      points="
-        40,8   46,6   54,8   60,12  62,18
-        60,26  56,32  50,34  44,32
-        40,26  38,20  38,14
-      "/>
-    <text class="cont-label"
-          x="44" y="18"
-          font-size="2.4" fill="rgba(212,168,67,0.92)"
-          font-style="italic" letter-spacing="0.06em">Kaelum</text>
-    <text class="cont-label"
-          x="42" y="21.5"
-          font-size="1.4" fill="rgba(212,168,67,0.5)"
-          letter-spacing="0.14em">ENTER ROOM →</text>
-  </g>
-
-  <!-- ── SOLENNE (Asia) ── -->
-  <g class="continent-group" tabindex="0"
-     onclick="goToRoom('solenne')"
-     onkeydown="if(event.key==='Enter')goToRoom('solenne')"
-     aria-label="Enter Solenne">
-    <polygon class="continent-zone"
-      points="
-        60,6   70,4   80,6   88,10  92,18
-        90,28  86,36  80,42  72,46
-        64,44  60,36  58,26  58,16
-      "/>
-    <text class="cont-label"
-          x="68" y="22"
-          font-size="2.4" fill="rgba(212,168,67,0.92)"
-          font-style="italic" letter-spacing="0.06em">Solenne</text>
-    <text class="cont-label"
-          x="66" y="25.5"
-          font-size="1.4" fill="rgba(212,168,67,0.5)"
-          letter-spacing="0.14em">ENTER ROOM →</text>
-  </g>
-
-  <!-- ── TERRA SOMNIA (Oceania) — LOCKED ── -->
-  <g class="continent-group"
-     onmouseenter="showTerraTip(event)"
-     onmouseleave="hideTerraTip()"
-     onmousemove="moveTerraTip(event)"
-     aria-label="Terra Somnia — sealed">
-    <polygon class="terra-zone"
-      points="
-        76,56  82,54  88,56  92,62  92,70
-        88,78  82,82  76,80  72,74  72,66
-      "/>
-  </g>
-
-</svg>
-
-<!-- ══ GEYSERS ══ -->
-<!-- Positioned as % of viewport — tweak top/left to match smoke columns in image -->
-
-<!-- Geyser 1 — left of centre, upper (near yacht area) -->
-<div class="geyser" style="left:35%;top:28%">
-  <div class="geyser-wisp">
-    <div class="wisp-strand" style="left:8px;  --dur:3.8s;--delay:0s;  --dx:-3px"></div>
-    <div class="wisp-strand" style="left:13px; --dur:4.4s;--delay:.6s; --dx:2px"></div>
-    <div class="wisp-strand" style="left:18px; --dur:3.2s;--delay:1.1s;--dx:4px"></div>
-  </div>
-</div>
-
-<!-- Geyser 2 — right side, upper (near Solenne) -->
-<div class="geyser" style="left:72%;top:14%">
-  <div class="geyser-wisp">
-    <div class="wisp-strand" style="left:6px;  --dur:4.1s;--delay:.3s; --dx:-2px"></div>
-    <div class="wisp-strand" style="left:12px; --dur:3.6s;--delay:.9s; --dx:3px"></div>
-    <div class="wisp-strand" style="left:19px; --dur:4.8s;--delay:1.6s;--dx:-1px"></div>
-  </div>
-</div>
-
-<!-- Geyser 3 — Oria area, mid right -->
-<div class="geyser" style="left:56%;top:52%">
-  <div class="geyser-wisp">
-    <div class="wisp-strand" style="left:7px;  --dur:5.2s;--delay:.2s; --dx:2px"></div>
-    <div class="wisp-strand" style="left:14px; --dur:3.9s;--delay:1s;  --dx:-3px"></div>
-    <div class="wisp-strand" style="left:20px; --dur:4.5s;--delay:1.8s;--dx:1px"></div>
-  </div>
-</div>
-
-<!-- Geyser 4 — Wide Current, left side -->
-<div class="geyser" style="left:10%;top:20%">
-  <div class="geyser-wisp">
-    <div class="wisp-strand" style="left:5px;  --dur:4.7s;--delay:.7s; --dx:-4px"></div>
-    <div class="wisp-strand" style="left:12px; --dur:3.4s;--delay:1.4s;--dx:2px"></div>
-    <div class="wisp-strand" style="left:17px; --dur:5s;  --delay:2s;  --dx:-1px"></div>
-  </div>
-</div>
-
-<!-- Geyser 5 — lower centre -->
-<div class="geyser" style="left:46%;top:68%">
-  <div class="geyser-wisp">
-    <div class="wisp-strand" style="left:8px;  --dur:4.3s;--delay:.5s; --dx:3px"></div>
-    <div class="wisp-strand" style="left:15px; --dur:3.7s;--delay:1.2s;--dx:-2px"></div>
-    <div class="wisp-strand" style="left:21px; --dur:4.9s;--delay:1.9s;--dx:1px"></div>
-  </div>
-</div>
-
-<!-- Terra Somnia tooltip -->
-<div id="terra-tip">
-  <span class="tip-name">Terra Somnia</span>
-  <span class="tip-sub">Uncharted · Not yet</span>
-</div>
-
-<!-- Back to Lobby -->
-<a id="back-lobby" href="/index.html">← Lobby</a>
-
-<!-- House nav -->
-<div id="house-nav">
-  <a class="nav-pill" href="/observatory.html">Observatory</a>
-  <a class="nav-pill" href="/salon.html">Salon</a>
-  <a class="nav-pill" href="/study-wing.html">Study Wing</a>
-</div>
-
-<script>
-/* ── ROOM NAVIGATION ── */
-function goToRoom(name) {
-  // brief flash before navigate — feels intentional
-  document.getElementById('map-img').style.transition = 'filter 0.4s, transform 0.4s';
-  document.getElementById('map-img').style.filter = 'brightness(1.12) saturate(1.1)';
-  document.getElementById('map-img').style.transform = 'scale(1.015)';
-  setTimeout(() => { window.location.href = '/' + name + '.html'; }, 380);
-}
-
-/* ── TERRA SOMNIA TOOLTIP ── */
-function showTerraTip(e) {
-  document.getElementById('terra-tip').classList.add('show');
-  moveTerraTip(e);
-}
-function hideTerraTip() {
-  document.getElementById('terra-tip').classList.remove('show');
-}
-function moveTerraTip(e) {
-  const tip = document.getElementById('terra-tip');
-  const x = e.clientX, y = e.clientY;
-  const tw = 160, th = 44;
-  let left = x - tw / 2;
-  let top  = y - th - 18;
-  if (left < 8) left = 8;
-  if (left + tw > window.innerWidth - 8) left = window.innerWidth - tw - 8;
-  if (top < 8) top = y + 20;
-  tip.style.left = left + 'px';
-  tip.style.top  = top  + 'px';
-}
-
-/* ── KEYBOARD NAV for continent groups ── */
-document.querySelectorAll('.continent-group[tabindex]').forEach(g => {
-  g.addEventListener('focus', () => {
-    const z = g.querySelector('.continent-zone');
-    if (z) z.style.fill = 'rgba(212,168,67,0.15)';
-  });
-  g.addEventListener('blur', () => {
-    const z = g.querySelector('.continent-zone');
-    if (z) z.style.fill = '';
-  });
-});
-</script>
+    <div class="map-container">
+        <img src="A48B31C2-54C3-4B7E-B208-EF06228C3B49.jpg" alt="Glam Wing Map" class="map-image" id="mapImage">
+        <div class="vignette"></div>
+        
+        <div class="geyser geyser-1"><div class="geyser-wisp wisp-1"></div><div class="geyser-wisp wisp-2"></div><div class="geyser-wisp wisp-3"></div></div>
+        <div class="geyser geyser-2"><div class="geyser-wisp wisp-1"></div><div class="geyser-wisp wisp-2"></div><div class="geyser-wisp wisp-3"></div></div>
+        <div class="geyser geyser-3"><div class="geyser-wisp wisp-1"></div><div class="geyser-wisp wisp-2"></div><div class="geyser-wisp wisp-3"></div></div>
+        <div class="geyser geyser-4"><div class="geyser-wisp wisp-1"></div><div class="geyser-wisp wisp-2"></div><div class="geyser-wisp wisp-3"></div></div>
+        <div class="geyser geyser-5"><div class="geyser-wisp wisp-1"></div><div class="geyser-wisp wisp-2"></div><div class="geyser-wisp wisp-3"></div></div>
+        
+        <div class="pin-marker pin-1"></div><div class="pin-marker pin-2"></div><div class="pin-marker pin-3"></div><div class="pin-marker pin-4"></div><div class="pin-marker pin-5"></div>
+        <div class="pin-marker pin-6"></div><div class="pin-marker pin-7"></div><div class="pin-marker pin-8"></div><div class="pin-marker pin-9"></div><div class="pin-marker pin-10"></div>
+        
+        <a href="oria.html" class="continent-zone zone-oria" data-continent="oria"><span class="continent-label">Oria</span></a>
+        <a href="kaelum.html" class="continent-zone zone-kaelum" data-continent="kaelum"><span class="continent-label">Kaelum</span></a>
+        <a href="solenne.html" class="continent-zone zone-solenne" data-continent="solenne"><span class="continent-label">Solenne</span></a>
+        <a href="wide-current.html" class="continent-zone zone-wide-current" data-continent="wide-current"><span class="continent-label">The Wide Current</span></a>
+        
+        <div class="continent-zone zone-terra-somnia" data-continent="terra-somnia">
+            <span class="continent-label">Terra Somnia</span>
+            <div class="terra-tooltip">Terra Somnia — Uncharted. Not yet.</div>
+        </div>
+    </div>
+    
+    <a href="index.html" class="back-lobby" aria-label="Back to Lobby">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L2 12h3v8h6v-6h2v6h6v-8h3L12 2z"/></svg>
+        <span>Lobby</span>
+    </a>
+    
+    <button class="audio-toggle" id="audioToggle" aria-label="Toggle ambient sound">🔇</button>
+    
+    <script>
+        const isMobile = window.matchMedia('(max-width: 768px)').matches || 'ontouchstart' in window;
+        const zones = document.querySelectorAll('.continent-zone');
+        
+        zones.forEach(zone => {
+            if (isMobile) {
+                zone.addEventListener('touchstart', function(e) {
+                    zones.forEach(z => { if (z !== this) z.classList.remove('active'); });
+                    this.classList.toggle('active');
+                    if (this.dataset.continent === 'terra-somnia') e.preventDefault();
+                }, { passive: false });
+                
+                document.addEventListener('touchstart', function(e) {
+                    if (!e.target.closest('.continent-zone')) zones.forEach(z => z.classList.remove('active'));
+                });
+            }
+            
+            zone.addEventListener('mouseenter', function() {
+                const continent = this.dataset.continent;
+                const pinMap = { 'oria': [4, 5], 'kaelum': [1, 2, 3], 'solenne': [4, 5], 'wide-current': [0, 7, 8, 9], 'terra-somnia': [6] };
+                const indices = pinMap[continent] || [];
+                const allPins = document.querySelectorAll('.pin-marker');
+                indices.map(i => allPins[i]).filter(Boolean).forEach(pin => {
+                    pin.classList.add('bounce');
+n                    setTimeout(() => pin.classList.remove('bounce'), 600);
+                });
+            });
+        });
+        
+        let audioContext = null, oscillators = [], isPlaying = false;
+        const audioToggle = document.getElementById('audioToggle');
+        
+        function initAudio() {
+            if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            [55, 82.5, 110].forEach((freq, i) => {
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.type = i === 0 ? 'sine' : 'triangle';
+                osc.frequency.value = freq;
+                gain.gain.value = 0.015;
+                osc.connect(gain);
+                gain.connect(audioContext.destination);
+                osc.start();
+                oscillators.push({ osc, gain });
+            });
+            setInterval(() => {
+                oscillators.forEach(({ gain }) => {
+                    gain.gain.setTargetAtTime(0.015 + (Math.random() - 0.5) * 0.005, audioContext.currentTime, 2);
+                });
+            }, 3000);
+        }
+        
+        function stopAudio() { oscillators.forEach(({ osc }) => { try { osc.stop(); } catch(e) {} }); oscillators = []; }
+        
+        audioToggle.addEventListener('click', () => {
+            if (isPlaying) { stopAudio(); audioToggle.textContent = '🔇'; audioToggle.classList.remove('active'); isPlaying = false; }
+            else { initAudio(); audioToggle.textContent = '🔊'; audioToggle.classList.add('active'); isPlaying = true; }
+        });
+        
+        const mapImage = document.getElementById('mapImage');
+        mapImage.addEventListener('error', () => {
+            document.body.style.background = 'linear-gradient(135deg, #1a1510 0%, #2d2418 50%, #1a1510 100%)';
+            mapImage.style.display = 'none';
+            const fallback = document.createElement('div');
+            fallback.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;color:rgba(240,234,216,0.6);font-size:1.2rem;letter-spacing:2px;';
+            fallback.innerHTML = '<p>Glam Wing Map</p><p style=\"font-size:0.8rem;margin-top:10px;opacity:0.5;\">Please ensure the map image is in the same folder as this file</p>';
+            document.querySelector('.map-container').appendChild(fallback);
+        });
+        
+        setTimeout(() => {
+            document.querySelectorAll('.pin-marker').forEach((pin, i) => {
+                setTimeout(() => { pin.classList.add('bounce'); setTimeout(() => pin.classList.remove('bounce'), 600); }, i * 150);
+            });
+        }, 2500);
+    </script>
 </body>
 </html>
