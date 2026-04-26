@@ -10,31 +10,45 @@
 
 <style>
 :root{
-  --deep:#0a1628;--current:#c4a35a;--current-mid:rgba(196,163,90,0.55);--current-dim:rgba(196,163,90,0.28);--current-faint:rgba(196,163,90,0.08);
-  --land:#8b4513;--land-mid:rgba(139,69,19,0.5);--land-dim:rgba(139,69,19,0.25);
-  --sky:#4a6741;--sky-mid:rgba(74,103,65,0.45);--sky-dim:rgba(74,103,65,0.2);
-  --light:#f4e4c1;--light-mid:rgba(244,228,193,0.5);--light-dim:rgba(244,228,193,0.22);
-  --bg:#0a1628;--slate:#0d1b2a;--text:rgba(244,228,193,0.92);--text-muted:rgba(200,190,170,0.45);
-  --box-bg:#0c1d30;
-  --font-d:'Cormorant Garamond',Georgia,serif;--font-b:'Outfit',system-ui,sans-serif;
+  --deep:#0a1628;
+  --current:#d4af37;
+  --current-mid:rgba(212,175,55,0.6);
+  --current-dim:rgba(212,175,55,0.3);
+  --current-faint:rgba(212,175,55,0.1);
+  --land:#a0522d;
+  --land-mid:rgba(160,82,45,0.5);
+  --land-dim:rgba(160,82,45,0.25);
+  --sky:#5a7a52;
+  --sky-mid:rgba(90,122,82,0.45);
+  --sky-dim:rgba(90,122,82,0.2);
+  --light:#f5e6c8;
+  --light-mid:rgba(245,230,200,0.55);
+  --light-dim:rgba(245,230,200,0.25);
+  --bg:#0a1628;
+  --slate:#0d1b2a;
+  --text:rgba(245,230,200,0.92);
+  --text-muted:rgba(200,190,170,0.5);
+  --box-bg:#0f1f35;
+  --font-d:'Cormorant Garamond',Georgia,serif;
+  --font-b:'Outfit',system-ui,sans-serif;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:var(--font-b);font-weight:300;min-height:100vh;overflow-x:hidden}
 
-#water-veil{position:fixed;inset:0;z-index:200;pointer-events:none;background:var(--deep);animation:veil-clear 5s ease forwards}
+#water-veil{position:fixed;inset:0;z-index:200;pointer-events:none;background:var(--deep);animation:veil-clear 4s ease forwards}
 @keyframes veil-clear{0%{opacity:1}60%{opacity:1}100%{opacity:0}}
 #water-ripple{position:fixed;inset:0;z-index:201;pointer-events:none;overflow:hidden}
-.ripple-ring{position:absolute;border-radius:50%;border:1px solid rgba(196,163,90,0.15);animation:ripple-expand var(--dur,4s) ease-out var(--delay,0s) forwards}
-@keyframes ripple-expand{0%{width:0;height:0;opacity:0.6;left:50%;top:50%;transform:translate(-50%,-50%)}100%{width:200vmax;height:200vmax;opacity:0;left:50%;top:50%;transform:translate(-50%,-50%)}}
-#surface-light{position:fixed;top:0;left:0;right:0;height:40vh;z-index:199;pointer-events:none;background:linear-gradient(to bottom,rgba(244,228,193,0.08) 0%,rgba(196,163,90,0.04) 40%,transparent 80%);animation:surface-fade 4s ease forwards}
+.ripple-ring{position:absolute;border-radius:50%;border:2px solid rgba(212,175,55,0.25);animation:ripple-expand var(--dur,4s) ease-out var(--delay,0s) forwards}
+@keyframes ripple-expand{0%{width:0;height:0;opacity:0.8;left:50%;top:50%;transform:translate(-50%,-50%)}100%{width:200vmax;height:200vmax;opacity:0;left:50%;top:50%;transform:translate(-50%,-50%)}}
+#surface-light{position:fixed;top:0;left:0;right:0;height:35vh;z-index:199;pointer-events:none;background:linear-gradient(to bottom,rgba(212,175,55,0.1) 0%,rgba(245,230,200,0.05) 40%,transparent 80%);animation:surface-fade 3.5s ease forwards}
 @keyframes surface-fade{0%{opacity:0;transform:translateY(-20px)}50%{opacity:1}100%{opacity:0;transform:translateY(0)}}
 
 #americas-wall{position:fixed;inset:0;z-index:0;overflow:hidden}
-#americas-wall::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 100%, rgba(139,69,19,0.12) 0%,transparent 60%),radial-gradient(ellipse 50% 45% at 20% 20%, rgba(74,103,65,0.08) 0%,transparent 55%),radial-gradient(ellipse 55% 50% at 80% 20%, rgba(196,163,90,0.06) 0%,transparent 55%),radial-gradient(ellipse 45% 40% at 50% 50%, rgba(10,22,40,0.4) 0%,transparent 55%),linear-gradient(180deg,#0a1628 0%,#0d1b2a 40%,#0c1d30 70%,#0a1628 100%)}
+#americas-wall::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 100%, rgba(160,82,45,0.15) 0%,transparent 60%),radial-gradient(ellipse 50% 45% at 20% 20%, rgba(90,122,82,0.1) 0%,transparent 55%),radial-gradient(ellipse 55% 50% at 80% 20%, rgba(212,175,55,0.08) 0%,transparent 55%),radial-gradient(ellipse 45% 40% at 50% 50%, rgba(10,22,40,0.3) 0%,transparent 55%),linear-gradient(180deg,#0a1628 0%,#0d1b2a 40%,#0f1f35 70%,#0a1628 100%)}
 #wall-svg{position:absolute;inset:0;width:100%;height:100%;opacity:1}
 
-.quad-label{position:fixed;font-family:var(--font-d);font-style:italic;font-size:clamp(9px,1vw,11px);letter-spacing:.18em;color:rgba(196,163,90,0.18);text-transform:uppercase;pointer-events:none;z-index:1}
+.quad-label{position:fixed;font-family:var(--font-d);font-style:italic;font-size:clamp(9px,1vw,11px);letter-spacing:.18em;color:rgba(212,175,55,0.25);text-transform:uppercase;pointer-events:none;z-index:1}
 #ql-n{top:14px;left:50%;transform:translateX(-50%)}#ql-s{bottom:14px;left:50%;transform:translateX(-50%)}#ql-w{top:50%;left:16px;transform:translateY(-50%) rotate(-90deg)}#ql-e{top:50%;right:16px;transform:translateY(-50%) rotate(90deg)}
 
 #page{position:relative;z-index:2;min-height:100vh}
@@ -43,50 +57,51 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-b);font-weigh
 h1{font-family:var(--font-d);font-size:clamp(26px,4vw,44px);font-weight:300;font-style:italic;color:var(--text);letter-spacing:.04em;line-height:1.1}
 .room-sub{font-size:clamp(10px,1.2vw,12px);letter-spacing:.14em;color:var(--text-muted);text-transform:uppercase;margin-top:4px}
 #back-map{font-family:var(--font-b);font-size:clamp(9px,1.1vw,10px);letter-spacing:.15em;color:var(--current-dim);text-decoration:none;text-transform:uppercase;border:.5px solid var(--current-dim);border-radius:4px;padding:6px 14px;transition:all .22s;white-space:nowrap;align-self:center}
-#back-map:hover{color:var(--current);border-color:var(--current-mid)}
-.room-divider{height:.5px;background:linear-gradient(to right,transparent,var(--current-dim) 30%,var(--current-mid) 50%,var(--current-dim) 70%,transparent);margin:20px 32px 0;opacity:0;animation:rise .6s ease forwards;animation-delay:.65s}
+#back-map:hover{color:var(--current);border-color:var(--current-mid);background:rgba(212,175,55,0.05)}
+.room-divider{height:1px;background:linear-gradient(to right,transparent,var(--current-dim) 30%,var(--current-mid) 50%,var(--current-dim) 70%,transparent);margin:20px 32px 0;opacity:0;animation:rise .6s ease forwards;animation-delay:.65s}
 
 #wall{position:relative;z-index:2;padding:28px 28px 80px;display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:22px;max-width:1200px;margin:0 auto}
-.pack{position:relative;background:var(--box-bg);border:1px solid rgba(196,163,90,0.35);border-radius:5px;cursor:pointer;transition:transform .32s cubic-bezier(.2,0,.2,1),border-color .28s,box-shadow .28s;opacity:0;animation:pack-appear .5s ease forwards}
-.pack:hover{transform:translateY(-10px) scale(1.015);border-color:var(--current);box-shadow:0 18px 52px rgba(196,163,90,.12),0 0 0 .5px rgba(196,163,90,.2)}
+
+.pack{position:relative;background:var(--box-bg);border:1.5px solid rgba(212,175,55,0.4);border-radius:6px;cursor:pointer;transition:transform .32s cubic-bezier(.2,0,.2,1),border-color .28s,box-shadow .28s;opacity:0;animation:pack-appear .5s ease forwards}
+.pack:hover{transform:translateY(-10px) scale(1.015);border-color:var(--current);box-shadow:0 18px 52px rgba(212,175,55,.15),0 0 0 .5px rgba(212,175,55,.25)}
 .pack:nth-child(1){animation-delay:.8s}.pack:nth-child(2){animation-delay:.98s}.pack:nth-child(3){animation-delay:1.16s}.pack:nth-child(n+4){animation-delay:1.3s}
 @keyframes pack-appear{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
-.pack-band{display:flex;justify-content:space-between;align-items:center;background:rgba(196,163,90,.07);border-bottom:.5px solid rgba(196,163,90,.15);padding:7px 11px}
-.pack-band .loc{font-size:10px;letter-spacing:.14em;color:rgba(244,228,193,0.85);text-transform:uppercase;font-weight:500}
-.pack-band .season{font-size:9px;letter-spacing:.1em;color:rgba(200,190,170,.3);text-transform:uppercase}
-.pack-window{margin:8px;border:.5px solid rgba(196,163,90,.14);border-radius:3px;overflow:hidden;aspect-ratio:3/4;background:#0a1420;position:relative}
+.pack-band{display:flex;justify-content:space-between;align-items:center;background:rgba(212,175,55,.08);border-bottom:1px solid rgba(212,175,55,.2);padding:8px 12px}
+.pack-band .loc{font-size:10px;letter-spacing:.14em;color:rgba(245,230,200,0.9);text-transform:uppercase;font-weight:500}
+.pack-band .season{font-size:9px;letter-spacing:.1em;color:rgba(200,190,170,.35);text-transform:uppercase}
+.pack-window{margin:10px;border:1px solid rgba(212,175,55,.18);border-radius:4px;overflow:hidden;aspect-ratio:3/4;background:#0a1420;position:relative}
 .pack-window img{width:100%;height:100%;object-fit:contain;object-position:center center;display:block;transition:transform .4s ease}
 .pack:hover .pack-window img{transform:scale(1.04)}
-.perfume-badge{position:absolute;bottom:6px;right:6px;background:rgba(10,20,32,.9);border:.5px solid rgba(196,163,90,.3);border-radius:3px;padding:3px 7px;font-size:8px;letter-spacing:.07em;color:rgba(196,163,90,.75);font-family:var(--font-d);font-style:italic}
-.pack-foot{padding:8px 11px 10px;border-top:.5px solid rgba(196,163,90,.1)}
+.perfume-badge{position:absolute;bottom:6px;right:6px;background:rgba(10,20,32,.9);border:1px solid rgba(212,175,55,.35);border-radius:3px;padding:3px 7px;font-size:8px;letter-spacing:.07em;color:rgba(212,175,55,.8);font-family:var(--font-d);font-style:italic}
+.pack-foot{padding:10px 12px 12px;border-top:1px solid rgba(212,175,55,.12)}
 .pack-foot .city-name{font-family:var(--font-d);font-size:clamp(13px,1.6vw,15px);font-style:italic;color:var(--text);margin-bottom:2px}
 .pack-foot .continent-tag{font-size:8.5px;letter-spacing:.14em;color:var(--text-muted);text-transform:uppercase}
 .pack-hint{position:absolute;bottom:-22px;left:50%;transform:translateX(-50%);font-size:8px;letter-spacing:.12em;color:var(--current-dim);text-transform:uppercase;white-space:nowrap;opacity:0;transition:opacity .2s;pointer-events:none}
 .pack:hover .pack-hint{opacity:1}
 
-#lb-overlay{position:fixed;inset:0;background:rgba(8,14,24,.93);backdrop-filter:blur(10px);z-index:100;display:none;align-items:center;justify-content:center;padding:16px;animation:lb-in .3s ease}
+#lb-overlay{position:fixed;inset:0;background:rgba(6,12,22,.95);backdrop-filter:blur(12px);z-index:100;display:none;align-items:center;justify-content:center;padding:16px;animation:lb-in .3s ease}
 #lb-overlay.open{display:flex}
 @keyframes lb-in{from{opacity:0}to{opacity:1}}
-#lb{position:relative;background:var(--box-bg);border:1px solid rgba(196,163,90,.4);border-radius:6px;max-width:500px;width:100%;max-height:94vh;overflow-y:auto;animation:lb-rise .36s cubic-bezier(.2,0,.2,1)}
+#lb{position:relative;background:var(--box-bg);border:2px solid rgba(212,175,55,.45);border-radius:8px;max-width:500px;width:100%;max-height:94vh;overflow-y:auto;animation:lb-rise .36s cubic-bezier(.2,0,.2,1)}
 @keyframes lb-rise{from{opacity:0;transform:scale(.93) translateY(18px)}to{opacity:1;transform:none}}
-#lb-close{position:absolute;top:11px;right:13px;background:none;border:none;font-size:11px;letter-spacing:.1em;color:rgba(200,190,170,.2);cursor:pointer;font-family:var(--font-b);z-index:10;transition:color .2s}
-#lb-close:hover{color:rgba(200,190,170,.7)}
-#lb-band{display:flex;justify-content:space-between;align-items:center;background:rgba(196,163,90,.07);border-bottom:.5px solid rgba(196,163,90,.15);padding:9px 42px 9px 14px}
-#lb-loc{font-size:11px;letter-spacing:.16em;color:rgba(244,228,193,0.9);text-transform:uppercase;font-weight:500}
-#lb-season{font-size:10px;letter-spacing:.1em;color:rgba(200,190,170,.32);text-transform:uppercase}
-#lb-photo-wrap{position:relative;margin:10px;border:.5px solid rgba(196,163,90,.14);border-radius:3px;overflow:hidden;background:#0a1420}
+#lb-close{position:absolute;top:11px;right:13px;background:none;border:none;font-size:12px;letter-spacing:.1em;color:rgba(200,190,170,.3);cursor:pointer;font-family:var(--font-b);z-index:10;transition:color .2s}
+#lb-close:hover{color:rgba(212,175,55,.9)}
+#lb-band{display:flex;justify-content:space-between;align-items:center;background:rgba(212,175,55,.1);border-bottom:1px solid rgba(212,175,55,.2);padding:10px 42px 10px 14px}
+#lb-loc{font-size:11px;letter-spacing:.16em;color:rgba(245,230,200,0.9);text-transform:uppercase;font-weight:500}
+#lb-season{font-size:10px;letter-spacing:.1em;color:rgba(200,190,170,.35);text-transform:uppercase}
+#lb-photo-wrap{position:relative;margin:12px;border:1px solid rgba(212,175,55,.18);border-radius:4px;overflow:hidden;background:#0a1420}
 #lb-photo-wrap img{width:100%;display:block;max-height:60vh;object-fit:contain;object-position:center}
 .hotspot{position:absolute;width:44px;height:44px;border-radius:50%;background:transparent;border:none;cursor:crosshair;z-index:5;transform:translate(-50%,-50%)}
-.hs-tip{position:absolute;background:rgba(10,20,32,.97);border:.5px solid rgba(196,163,90,.4);border-radius:5px;padding:9px 13px;width:158px;pointer-events:none;opacity:0;transform:translateY(5px);transition:opacity .22s,transform .22s;z-index:20;font-family:var(--font-b)}
+.hs-tip{position:absolute;background:rgba(10,20,32,.97);border:1px solid rgba(212,175,55,.45);border-radius:6px;padding:10px 14px;width:170px;pointer-events:none;opacity:0;transform:translateY(5px);transition:opacity .22s,transform .22s;z-index:20;font-family:var(--font-b)}
 .hs-tip.show{opacity:1;transform:translateY(0)}
-.tip-label{font-size:8.5px;letter-spacing:.16em;color:var(--current);text-transform:uppercase;display:block;margin-bottom:4px;font-weight:500}
-.tip-note{font-family:var(--font-d);font-style:italic;font-size:13.5px;color:rgba(200,190,170,.72);line-height:1.55}
-#lb-footer{padding:13px 14px 18px;border-top:.5px solid rgba(196,163,90,.12)}
-.lb-city{font-family:var(--font-d);font-size:19px;font-style:italic;color:var(--text);margin-bottom:2px}
+.tip-label{font-size:9px;letter-spacing:.16em;color:var(--current);text-transform:uppercase;display:block;margin-bottom:4px;font-weight:500}
+.tip-note{font-family:var(--font-d);font-style:italic;font-size:14px;color:rgba(200,190,170,.75);line-height:1.55}
+#lb-footer{padding:14px 14px 18px;border-top:1px solid rgba(212,175,55,.15)}
+.lb-city{font-family:var(--font-d);font-size:20px;font-style:italic;color:var(--text);margin-bottom:2px}
 .lb-sub-tag{font-size:9px;letter-spacing:.15em;color:var(--text-muted);text-transform:uppercase;margin-bottom:15px}
 .lb-links{display:flex;flex-direction:column;gap:8px}
-.lb-link{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.04);border:.5px solid rgba(255,255,255,.07);border-radius:6px;padding:10px 14px;text-decoration:none;font-size:clamp(11px,1.4vw,12.5px);color:rgba(200,190,170,.38);letter-spacing:.04em;transition:all .22s}
-.lb-link:hover{border-color:var(--current-mid);color:var(--current)}
+.lb-link{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:6px;padding:10px 14px;text-decoration:none;font-size:clamp(11px,1.4vw,12.5px);color:rgba(200,190,170,.4);letter-spacing:.04em;transition:all .22s}
+.lb-link:hover{border-color:var(--current-mid);color:var(--current);background:rgba(212,175,55,0.05)}
 .lb-link .li-icon{font-size:15px;flex-shrink:0}
 .lb-link .li-sub{font-size:9px;color:rgba(200,190,170,.2);letter-spacing:.1em;display:block;margin-top:1px}
 @keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
@@ -100,10 +115,10 @@ h1{font-family:var(--font-d);font-size:clamp(26px,4vw,44px);font-weight:300;font
 <div id="americas-wall">
   <svg id="wall-svg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
     <defs>
-      <pattern id="pat-north" x="0" y="0" width="80" height="40" patternUnits="userSpaceOnUse"><g stroke="rgba(196,163,90,0.12)" stroke-width=".6" fill="none"><path d="M0,20 Q20,5 40,20 Q60,35 80,20" stroke-width=".5"/><path d="M0,30 Q20,15 40,30 Q60,45 80,30" stroke-width=".4"/><path d="M0,10 Q20,-5 40,10 Q60,25 80,10" stroke-width=".4"/><circle cx="40" cy="20" r="2" fill="rgba(196,163,90,0.06)"/></g></pattern>
-      <pattern id="pat-south" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse"><g stroke="rgba(139,69,19,0.1)" stroke-width=".7" fill="none"><ellipse cx="30" cy="30" rx="25" ry="15"/><ellipse cx="30" cy="30" rx="18" ry="10"/><ellipse cx="30" cy="30" rx="10" ry="5" fill="rgba(139,69,19,0.05)"/><line x1="0" y1="30" x2="60" y2="30" stroke-width=".4"/></g></pattern>
-      <pattern id="pat-west" x="0" y="0" width="72" height="36" patternUnits="userSpaceOnUse"><g stroke="rgba(74,103,65,0.12)" stroke-width=".7" fill="none"><path d="M0,18 Q18,0 36,18 Q54,36 72,18" stroke-width=".5"/><path d="M0,27 Q18,9 36,27 Q54,45 72,27" stroke-width=".4"/><circle cx="36" cy="18" r="2.5" fill="rgba(74,103,65,0.06)"/></g></pattern>
-      <pattern id="pat-east" x="0" y="0" width="56" height="56" patternUnits="userSpaceOnUse"><g stroke="rgba(196,163,90,0.1)" stroke-width=".6" fill="none"><rect x="4" y="4" width="48" height="48" rx="24"/><rect x="12" y="12" width="32" height="32" rx="16"/><circle cx="28" cy="28" r="6" fill="rgba(196,163,90,0.05)"/><line x1="4" y1="28" x2="52" y2="28" stroke-width=".4"/><line x1="28" y1="4" x2="28" y2="52" stroke-width=".4"/></g></pattern>
+      <pattern id="pat-north" x="0" y="0" width="80" height="40" patternUnits="userSpaceOnUse"><g stroke="rgba(212,175,55,0.15)" stroke-width=".8" fill="none"><path d="M0,20 Q20,5 40,20 Q60,35 80,20"/><path d="M0,30 Q20,15 40,30 Q60,45 80,30" stroke-width=".6"/><path d="M0,10 Q20,-5 40,10 Q60,25 80,10" stroke-width=".6"/><circle cx="40" cy="20" r="2.5" fill="rgba(212,175,55,0.08)"/></g></pattern>
+      <pattern id="pat-south" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse"><g stroke="rgba(160,82,45,0.12)" stroke-width=".8" fill="none"><ellipse cx="30" cy="30" rx="25" ry="15"/><ellipse cx="30" cy="30" rx="18" ry="10"/><ellipse cx="30" cy="30" rx="10" ry="5" fill="rgba(160,82,45,0.06)"/><line x1="0" y1="30" x2="60" y2="30" stroke-width=".5"/></g></pattern>
+      <pattern id="pat-west" x="0" y="0" width="72" height="36" patternUnits="userSpaceOnUse"><g stroke="rgba(90,122,82,0.14)" stroke-width=".8" fill="none"><path d="M0,18 Q18,0 36,18 Q54,36 72,18"/><path d="M0,27 Q18,9 36,27 Q54,45 72,27" stroke-width=".6"/><circle cx="36" cy="18" r="3" fill="rgba(90,122,82,0.08)"/></g></pattern>
+      <pattern id="pat-east" x="0" y="0" width="56" height="56" patternUnits="userSpaceOnUse"><g stroke="rgba(212,175,55,0.12)" stroke-width=".7" fill="none"><rect x="4" y="4" width="48" height="48" rx="24"/><rect x="12" y="12" width="32" height="32" rx="16"/><circle cx="28" cy="28" r="6" fill="rgba(212,175,55,0.06)"/><line x1="4" y1="28" x2="52" y2="28" stroke-width=".5"/><line x1="28" y1="4" x2="28" y2="52" stroke-width=".5"/></g></pattern>
       <linearGradient id="fn" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="white" stop-opacity="1"/><stop offset="65%" stop-color="white" stop-opacity="0"/></linearGradient>
       <linearGradient id="fs" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="white" stop-opacity="1"/><stop offset="65%" stop-color="white" stop-opacity="0"/></linearGradient>
       <linearGradient id="fw" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="white" stop-opacity="1"/><stop offset="65%" stop-color="white" stop-opacity="0"/></linearGradient>
@@ -117,10 +132,10 @@ h1{font-family:var(--font-d);font-size:clamp(26px,4vw,44px);font-weight:300;font
     <rect y="400" width="1200" height="400" fill="url(#pat-south)" mask="url(#ms)" opacity=".95"/>
     <rect width="600" height="800" fill="url(#pat-west)" mask="url(#mw)" opacity=".95"/>
     <rect x="600" width="600" height="800" fill="url(#pat-east)" mask="url(#me)" opacity=".95"/>
-    <g opacity=".08" stroke="rgba(196,163,90,0.5)" stroke-width="1" fill="none"><path d="M0,200 Q300,100 600,200 Q900,300 1200,200"/><path d="M0,400 Q300,300 600,400 Q900,500 1200,400"/><path d="M0,600 Q300,500 600,600 Q900,700 1200,600"/></g>
-    <g opacity=".1" fill="rgba(139,69,19,0.4)"><circle cx="200" cy="200" r="3"/><circle cx="400" cy="400" r="4"/><circle cx="600" cy="300" r="2.5"/><circle cx="800" cy="500" r="3.5"/><circle cx="1000" cy="250" r="2"/><circle cx="300" cy="600" r="3"/></g>
-    <g opacity=".06" fill="rgba(244,228,193,0.3)"><ellipse cx="600" cy="100" rx="200" ry="30"/><ellipse cx="400" cy="150" rx="150" ry="20"/><ellipse cx="800" cy="120" rx="180" ry="25"/></g>
-    <radialGradient id="cv" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="rgba(10,22,40,0.85)"/><stop offset="100%" stop-color="rgba(10,22,40,0)"/></radialGradient>
+    <g opacity=".1" stroke="rgba(212,175,55,0.6)" stroke-width="1.2" fill="none"><path d="M0,200 Q300,100 600,200 Q900,300 1200,200"/><path d="M0,400 Q300,300 600,400 Q900,500 1200,400"/><path d="M0,600 Q300,500 600,600 Q900,700 1200,600"/></g>
+    <g opacity=".12" fill="rgba(160,82,45,0.5)"><circle cx="200" cy="200" r="4"/><circle cx="400" cy="400" r="5"/><circle cx="600" cy="300" r="3.5"/><circle cx="800" cy="500" r="4.5"/><circle cx="1000" cy="250" r="3"/><circle cx="300" cy="600" r="4"/></g>
+    <g opacity=".08" fill="rgba(245,230,200,0.4)"><ellipse cx="600" cy="100" rx="200" ry="30"/><ellipse cx="400" cy="150" rx="150" ry="20"/><ellipse cx="800" cy="120" rx="180" ry="25"/></g>
+    <radialGradient id="cv" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="rgba(10,22,40,0.82)"/><stop offset="100%" stop-color="rgba(10,22,40,0)"/></radialGradient>
     <rect width="1200" height="800" fill="url(#cv)"/>
   </svg>
 </div>
@@ -142,23 +157,23 @@ h1{font-family:var(--font-d);font-size:clamp(26px,4vw,44px);font-weight:300;font
   <div class="room-divider"></div>
 
   <div id="wall">
-    <div class="pack" onclick="openLightbox({loc:'Kelowna',season:'December',img:'IMG_widecurrent_1.jpg',perfume:'Angels\\' Share · Kilian',city:'Kelowna, Canada',tag:'The Wide Current · Americas',ig:'https://instagram.com/kwissbae',sub:'https://substack.com/',hotspots:[{top:'4%',left:'29%',label:'Hair',note:'Blonde sleek. Against white — everything is contrast.'},{top:'14%',left:'24%',label:'Makeup',note:'Placeholder — your note here.'},{top:'16%',left:'37%',label:'Ear Muffs',note:'Blush fur ear muffs. Cold made cute.'},{top:'38%',left:'22%',label:'Outfit',note:'All white ski suit. The mountain wanted to match.'},{top:'55%',left:'40%',label:'Gloves',note:'Black leather gloves. The one break in the white.'},{top:'58%',left:'38%',label:'Bag',note:'Placeholder — your note here.'},{top:'90%',left:'26%',label:'Boots',note:'Placeholder — your note here.'},{top:'52%',left:'68%',label:'Perfume',note:'Angels\\' Share. Warm cognac and oak in -10°C. The irony was the point.'}]})" aria-label="Open Kelowna look">
+    <div class="pack" id="pack1" aria-label="Open Kelowna look">
       <div class="pack-band"><span class="loc">Kelowna</span><span class="season">December</span></div>
       <div class="pack-window"><img src="IMG_widecurrent_1.jpg" alt="Kelowna, December — Big White"/><span class="perfume-badge">Angels' Share · Kilian</span></div>
       <div class="pack-foot"><p class="city-name">Kelowna, Canada</p><p class="continent-tag">The Wide Current · Americas</p></div>
       <span class="pack-hint">click to open</span>
     </div>
 
-    <div class="pack" style="opacity:.22;cursor:default;pointer-events:none">
+    <div class="pack" style="opacity:.25;cursor:default;pointer-events:none">
       <div class="pack-band"><span class="loc">Coming</span><span class="season">—</span></div>
-      <div class="pack-window" style="display:flex;align-items:center;justify-content:center;min-height:240px"><span style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:rgba(196,163,90,.26)">next drop</span></div>
-      <div class="pack-foot"><p class="city-name" style="color:rgba(200,190,170,.18)">The Wide Current</p><p class="continent-tag">Americas</p></div>
+      <div class="pack-window" style="display:flex;align-items:center;justify-content:center;min-height:240px"><span style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:rgba(212,175,55,.3)">next drop</span></div>
+      <div class="pack-foot"><p class="city-name" style="color:rgba(200,190,170,.2)">The Wide Current</p><p class="continent-tag">Americas</p></div>
     </div>
 
-    <div class="pack" style="opacity:.12;cursor:default;pointer-events:none">
+    <div class="pack" style="opacity:.15;cursor:default;pointer-events:none">
       <div class="pack-band"><span class="loc">Coming</span><span class="season">—</span></div>
-      <div class="pack-window" style="display:flex;align-items:center;justify-content:center;min-height:240px"><span style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:rgba(196,163,90,.16)">next drop</span></div>
-      <div class="pack-foot"><p class="city-name" style="color:rgba(200,190,170,.12)">The Wide Current</p><p class="continent-tag">Americas</p></div>
+      <div class="pack-window" style="display:flex;align-items:center;justify-content:center;min-height:240px"><span style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:rgba(212,175,55,.2)">next drop</span></div>
+      <div class="pack-foot"><p class="city-name" style="color:rgba(200,190,170,.15)">The Wide Current</p><p class="continent-tag">Americas</p></div>
     </div>
   </div>
 </div>
@@ -182,10 +197,14 @@ h1{font-family:var(--font-d);font-size:clamp(26px,4vw,44px);font-weight:300;font
 <script>
 (function(){const c=document.getElementById('water-ripple');for(let i=0;i<8;i++){const r=document.createElement('div');r.className='ripple-ring';r.style.setProperty('--dur',(3+Math.random()*3)+'s');r.style.setProperty('--delay',(i*0.6)+'s');c.appendChild(r)}setTimeout(()=>c.remove(),8000)})();
 
-function openLightbox(data){document.getElementById('lb-loc').textContent=data.loc;document.getElementById('lb-season').textContent=data.season;document.getElementById('lb-city').textContent=data.city;document.getElementById('lb-tag').textContent=data.tag;document.getElementById('lb-ig').href=data.ig;document.getElementById('lb-sub').href=data.sub;const img=document.getElementById('lb-img');img.src=data.img;img.alt=data.city;const wrap=document.getElementById('lb-photo-wrap');wrap.querySelectorAll('.hotspot,.hs-tip').forEach(el=>el.remove());function place(){const nW=img.naturalWidth||1,nH=img.naturalHeight||1;const wW=wrap.offsetWidth,wH=img.offsetHeight;const sc=Math.min(wW/nW,wH/nH);const rW=nW*sc,rH=nH*sc;const oX=(wW-rW)/2,oY=(wH-rH)/2;data.hotspots.forEach((hs,i)=>{const px=oX+(parseFloat(hs.left)/100)*rW;const py=oY+(parseFloat(hs.top)/100)*rH;const dot=document.createElement('div');dot.className='hotspot';dot.style.left=px+'px';dot.style.top=py+'px';const tip=document.createElement('div');tip.className='hs-tip';tip.innerHTML='<span class="tip-label">'+hs.label+'</span><span class="tip-note">'+hs.note+'</span>';const toggle=(e)=>{e.stopPropagation();const open=tip.classList.contains('show');wrap.querySelectorAll('.hs-tip').forEach(t=>t.classList.remove('show'));if(!open){const tw=162,ww=wrap.offsetWidth,wh=img.offsetHeight;let tl=px+16,tt=py-14;if(tl+tw>ww-4)tl=px-tw-8;if(tl<4)tl=4;if(tt<4)tt=py+30;if(tt+70>wh)tt=py-70;tip.style.left=tl+'px';tip.style.top=tt+'px';tip.classList.add('show')}};dot.addEventListener('mouseenter',toggle);dot.addEventListener('click',toggle);wrap.appendChild(dot);wrap.appendChild(tip)})}img.complete&&img.naturalWidth?place():(img.onload=place);document.getElementById('lb-overlay').classList.add('open');document.body.style.overflow='hidden'}
+const packData={pack1:{loc:'Kelowna',season:'December',img:'IMG_widecurrent_1.jpg',perfume:\"Angels' Share · Kilian\",city:'Kelowna, Canada',tag:'The Wide Current · Americas',ig:'https://instagram.com/kwissbae',sub:'https://substack.com/',hotspots:[{top:'4%',left:'29%',label:'Hair',note:'Blonde sleek. Against white — everything is contrast.'},{top:'14%',left:'24%',label:'Makeup',note:'Placeholder — your note here.'},{top:'16%',left:'37%',label:'Ear Muffs',note:'Blush fur ear muffs. Cold made cute.'},{top:'38%',left:'22%',label:'Outfit',note:'All white ski suit. The mountain wanted to match.'},{top:'55%',left:'40%',label:'Gloves',note:'Black leather gloves. The one break in the white.'},{top:'58%',left:'38%',label:'Bag',note:'Placeholder — your note here.'},{top:'90%',left:'26%',label:'Boots',note:'Placeholder — your note here.'},{top:'52%',left:'68%',label:'Perfume',note:\"Angels' Share. Warm cognac and oak in -10°C. The irony was the point.\"}]}};
+
+document.getElementById('pack1').addEventListener('click',function(){openLightbox(packData.pack1)});
+
+function openLightbox(data){document.getElementById('lb-loc').textContent=data.loc;document.getElementById('lb-season').textContent=data.season;document.getElementById('lb-city').textContent=data.city;document.getElementById('lb-tag').textContent=data.tag;document.getElementById('lb-ig').href=data.ig;document.getElementById('lb-sub').href=data.sub;const img=document.getElementById('lb-img');img.src=data.img;img.alt=data.city;const wrap=document.getElementById('lb-photo-wrap');wrap.querySelectorAll('.hotspot,.hs-tip').forEach(function(el){el.remove()});function place(){const nW=img.naturalWidth||1,nH=img.naturalHeight||1;const wW=wrap.offsetWidth,wH=img.offsetHeight;const sc=Math.min(wW/nW,wH/nH);const rW=nW*sc,rH=nH*sc;const oX=(wW-rW)/2,oY=(wH-rH)/2;data.hotspots.forEach(function(hs){const px=oX+(parseFloat(hs.left)/100)*rW;const py=oY+(parseFloat(hs.top)/100)*rH;const dot=document.createElement('div');dot.className='hotspot';dot.style.left=px+'px';dot.style.top=py+'px';const tip=document.createElement('div');tip.className='hs-tip';tip.innerHTML='<span class=\"tip-label\">'+hs.label+'</span><span class=\"tip-note\">'+hs.note+'</span>';function toggle(e){e.stopPropagation();const open=tip.classList.contains('show');wrap.querySelectorAll('.hs-tip').forEach(function(t){t.classList.remove('show')});if(!open){const tw=170,ww=wrap.offsetWidth,wh=img.offsetHeight;let tl=px+16,tt=py-14;if(tl+tw>ww-4)tl=px-tw-8;if(tl<4)tl=4;if(tt<4)tt=py+30;if(tt+70>wh)tt=py-70;tip.style.left=tl+'px';tip.style.top=tt+'px';tip.classList.add('show')}}dot.addEventListener('mouseenter',toggle);dot.addEventListener('click',toggle);wrap.appendChild(dot);wrap.appendChild(tip)})}if(img.complete&&img.naturalWidth){place()}else{img.onload=place}document.getElementById('lb-overlay').classList.add('open');document.body.style.overflow='hidden'}
 function closeLb(){document.getElementById('lb-overlay').classList.remove('open');document.body.style.overflow=''}
 function closeLbOutside(e){if(e.target===document.getElementById('lb-overlay'))closeLb()}
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLb()});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeLb()});
 </script>
 </body>
 </html>
