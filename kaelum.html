@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Kaelum — Glam Wing · MetaVoxa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+
+<style>
+/* ══════════════════════════════════════
+   KAELUM — EUROPE
+   Palette: cathedral stone, aged gold,
+   slate blue, autumn amber.
+   Holds: Germany, France, Italy, UK,
+   Scandinavia, Eastern Europe — all of it.
+══════════════════════════════════════ */
+:root{
+  --bg:           #08090c;
+  --gold:         rgba(195,155,80,1);
+  --gold-mid:     rgba(195,155,80,0.55);
+  --gold-dim:     rgba(195,155,80,0.26);
+  --slate:        rgba(65,88,118,1);
+  --slate-mid:    rgba(65,88,118,0.5);
+  --slate-dim:    rgba(65,88,118,0.24);
+  --amber:        rgba(185,118,40,1);
+  --amber-mid:    rgba(185,118,40,0.52);
+  --amber-dim:    rgba(185,118,40,0.24);
+  --text:         rgba(238,232,218,0.92);
+  --text-muted:   rgba(200,188,162,0.42);
+  --box-bg:       #0c0d11;
+  --font-d:       'Cormorant Garamond',Georgia,serif;
+  --font-b:       'Outfit',system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-b);
+  font-weight:300;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ══ ENTRY — AUTUMN LEAVES FALLING ══
+   Cool grey darkness.
+   Golden-amber leaves drift down slowly
+   from the top — like Unter den Linden
+   in October. Unhurried. Old world.
+══ */
+#stone-veil{
+  position:fixed;inset:0;z-index:200;
+  pointer-events:none;
+  background:#06070a;
+  animation:veil-clear 5.8s ease forwards;
+}
+@keyframes veil-clear{
+  0%  {opacity:1}
+  52% {opacity:1}
+  100%{opacity:0}
+}
+
+/* cathedral light seeping in from above */
+#cathedral-light{
+  position:fixed;top:0;left:0;right:0;
+  height:50vh;z-index:199;pointer-events:none;
+  background:linear-gradient(to bottom,
+    rgba(185,118,40,0.14)  0%,
+    rgba(195,155,80,0.08)  30%,
+    rgba(65,88,118,0.04)   60%,
+    transparent            85%
+  );
+  animation:cath-fade 5s ease forwards;
+}
+@keyframes cath-fade{
+  0%  {opacity:0;transform:translateY(-18px)}
+  35% {opacity:1}
+  100%{opacity:0;transform:translateY(0)}
+}
+
+/* falling leaves container */
+#leaves{position:fixed;inset:0;z-index:201;pointer-events:none;overflow:hidden}
+.leaf{
+  position:absolute;
+  top:-40px;
+  animation:leaf-fall var(--dur,7s) ease-in-out var(--delay,0s) forwards;
+  transform-origin:center center;
+}
+@keyframes leaf-fall{
+  0%  {transform:translateY(0)      translateX(0)              rotate(0deg);   opacity:0}
+  6%  {opacity:0.85}
+  45% {transform:translateY(45vh)   translateX(var(--sx,20px))  rotate(120deg); opacity:0.7}
+  78% {transform:translateY(80vh)   translateX(var(--ex,40px))  rotate(260deg); opacity:0.45}
+  95% {opacity:0.2}
+  100%{transform:translateY(108vh)  translateX(var(--ex2,50px)) rotate(360deg); opacity:0}
+}
+
+/* ══ EUROPE WALL ══ */
+#europe-wall{
+  position:fixed;inset:0;z-index:0;overflow:hidden;
+}
+#europe-wall::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 72% 52% at 14% 18%, rgba(185,118,40,0.13) 0%,transparent 58%),
+    radial-gradient(ellipse 58% 48% at 86% 22%, rgba(65,88,118,0.12) 0%,transparent 55%),
+    radial-gradient(ellipse 62% 48% at 82% 84%, rgba(195,155,80,0.1) 0%,transparent 55%),
+    radial-gradient(ellipse 52% 42% at 14% 82%, rgba(65,88,118,0.09) 0%,transparent 55%),
+    radial-gradient(ellipse 42% 38% at 50% 50%, rgba(8,9,12,0.52) 0%,transparent 58%),
+    linear-gradient(168deg,#0e0f14 0%,#08090c 35%,#0a0b0f 65%,#0d0e13 100%);
+}
+#wall-svg{position:absolute;inset:0;width:100%;height:100%}
+
+.quad-label{
+  position:fixed;font-family:var(--font-d);font-style:italic;
+  font-size:clamp(9px,1vw,11px);letter-spacing:.18em;
+  color:rgba(195,155,80,0.15);text-transform:uppercase;
+  pointer-events:none;z-index:1;
+}
+#ql-n{top:14px;left:50%;transform:translateX(-50%)}
+#ql-s{bottom:14px;left:50%;transform:translateX(-50%)}
+#ql-w{top:50%;left:16px;transform:translateY(-50%) rotate(-90deg)}
+#ql-e{top:50%;right:16px;transform:translateY(-50%) rotate(90deg)}
+
+/* ══ PAGE ══ */
+#page{position:relative;z-index:2;min-height:100vh}
+
+#room-header{
+  padding:30px 32px 0;
+  display:flex;align-items:flex-end;justify-content:space-between;
+  flex-wrap:wrap;gap:12px;
+  opacity:0;animation:rise .7s ease forwards;animation-delay:.55s;
+}
+.room-eyebrow{font-size:clamp(9px,1.1vw,10px);letter-spacing:.22em;color:var(--amber-mid);text-transform:uppercase;margin-bottom:5px}
+h1{font-family:var(--font-d);font-size:clamp(26px,4vw,44px);font-weight:300;font-style:italic;color:var(--text);letter-spacing:.04em;line-height:1.1}
+.room-sub{font-size:clamp(10px,1.2vw,12px);letter-spacing:.14em;color:var(--text-muted);text-transform:uppercase;margin-top:4px}
+
+#back-map{
+  font-family:var(--font-b);font-size:clamp(9px,1.1vw,10px);letter-spacing:.15em;
+  color:var(--gold-dim);text-decoration:none;text-transform:uppercase;
+  border:.5px solid var(--gold-dim);border-radius:4px;padding:6px 14px;
+  transition:all .22s;white-space:nowrap;align-self:center;
+}
+#back-map:hover{color:var(--gold);border-color:var(--gold-mid)}
+
+.room-divider{
+  height:.5px;
+  background:linear-gradient(to right,transparent,var(--amber-dim) 25%,var(--gold-mid) 50%,var(--amber-dim) 75%,transparent);
+  margin:20px 32px 0;
+  opacity:0;animation:rise .6s ease forwards;animation-delay:.7s;
+}
+
+/* ══ WALL ══ */
+#wall{
+  position:relative;z-index:2;
+  padding:28px 28px 80px;
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(210px,1fr));
+  gap:22px;
+  max-width:1200px;margin:0 auto;
+}
+
+/* ── BOX ── */
+.box{
+  position:relative;
+  background:var(--box-bg);
+  border:1px solid rgba(195,155,80,0.38);
+  border-radius:5px;
+  cursor:pointer;
+  transition:transform .32s cubic-bezier(.2,0,.2,1),border-color .28s,box-shadow .28s;
+  opacity:0;
+  animation:box-appear .5s ease forwards;
+}
+.box:hover{
+  transform:translateY(-10px) scale(1.015);
+  border-color:var(--gold);
+  box-shadow:0 18px 52px rgba(195,155,80,.16),0 0 0 .5px rgba(195,155,80,.26);
+}
+.box:nth-child(1){animation-delay:.85s}
+.box:nth-child(2){animation-delay:1.05s}
+.box:nth-child(3){animation-delay:1.25s}
+.box:nth-child(n+4){animation-delay:1.4s}
+@keyframes box-appear{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+
+.box-band{
+  display:flex;justify-content:space-between;align-items:center;
+  background:rgba(195,155,80,.08);border-bottom:.5px solid rgba(195,155,80,.16);
+  padding:7px 11px;
+}
+.box-band .loc{font-size:10px;letter-spacing:.14em;color:rgba(238,225,195,.9);text-transform:uppercase;font-weight:500}
+.box-band .season{font-size:9px;letter-spacing:.1em;color:rgba(200,188,162,.32);text-transform:uppercase}
+
+.box-window{
+  margin:8px;border:.5px solid rgba(195,155,80,.16);border-radius:3px;
+  overflow:hidden;aspect-ratio:3/4;background:#080910;position:relative;
+}
+.box-window img{
+  width:100%;height:100%;
+  object-fit:contain;object-position:center center;
+  display:block;transition:transform .4s ease;
+}
+.box:hover .box-window img{transform:scale(1.04)}
+
+.perfume-badge{
+  position:absolute;bottom:6px;right:6px;
+  background:rgba(8,9,12,.9);border:.5px solid rgba(195,155,80,.35);
+  border-radius:3px;padding:3px 7px;
+  font-size:8px;letter-spacing:.07em;color:rgba(195,155,80,.8);
+  font-family:var(--font-d);font-style:italic;
+}
+
+.box-foot{padding:8px 11px 10px;border-top:.5px solid rgba(195,155,80,.1)}
+.box-foot .city-name{font-family:var(--font-d);font-size:clamp(13px,1.6vw,15px);font-style:italic;color:var(--text);margin-bottom:2px}
+.box-foot .continent-tag{font-size:8.5px;letter-spacing:.14em;color:var(--text-muted);text-transform:uppercase}
+
+.box-hint{
+  position:absolute;bottom:-22px;left:50%;transform:translateX(-50%);
+  font-size:8px;letter-spacing:.12em;color:var(--gold-dim);text-transform:uppercase;
+  white-space:nowrap;opacity:0;transition:opacity .2s;pointer-events:none;
+}
+.box:hover .box-hint{opacity:1}
+
+/* ══ LIGHTBOX ══ */
+#lb-overlay{
+  position:fixed;inset:0;
+  background:rgba(4,5,8,.94);
+  backdrop-filter:blur(10px);z-index:100;
+  display:none;align-items:center;justify-content:center;padding:16px;
+  animation:lb-in .3s ease;
+}
+#lb-overlay.open{display:flex}
+@keyframes lb-in{from{opacity:0}to{opacity:1}}
+
+#lb{
+  position:relative;background:var(--box-bg);
+  border:1px solid rgba(195,155,80,.4);border-radius:6px;
+  max-width:500px;width:100%;max-height:94vh;overflow-y:auto;
+  animation:lb-rise .36s cubic-bezier(.2,0,.2,1);
+}
+@keyframes lb-rise{from{opacity:0;transform:scale(.93) translateY(18px)}to{opacity:1;transform:none}}
+
+#lb-close{
+  position:absolute;top:11px;right:13px;
+  background:none;border:none;font-size:11px;letter-spacing:.1em;
+  color:rgba(200,188,162,.22);cursor:pointer;font-family:var(--font-b);z-index:10;
+  transition:color .2s;
+}
+#lb-close:hover{color:rgba(195,155,80,.85)}
+
+#lb-band{
+  display:flex;justify-content:space-between;align-items:center;
+  background:rgba(195,155,80,.08);border-bottom:.5px solid rgba(195,155,80,.16);
+  padding:9px 42px 9px 14px;
+}
+#lb-loc{font-size:11px;letter-spacing:.16em;color:rgba(238,225,195,.9);text-transform:uppercase;font-weight:500}
+#lb-season{font-size:10px;letter-spacing:.1em;color:rgba(200,188,162,.32);text-transform:uppercase}
+
+#lb-photo-wrap{
+  position:relative;margin:10px;
+  border:.5px solid rgba(195,155,80,.16);border-radius:3px;overflow:hidden;
+  background:#08090e;
+}
+#lb-photo-wrap img{width:100%;display:block;max-height:60vh;object-fit:contain;object-position:center}
+
+.hotspot{
+  position:absolute;width:44px;height:44px;border-radius:50%;
+  background:transparent;border:none;cursor:crosshair;z-index:5;
+  transform:translate(-50%,-50%);
+}
+
+.hs-tip{
+  position:absolute;
+  background:rgba(8,9,12,.97);border:.5px solid rgba(195,155,80,.42);
+  border-radius:5px;padding:9px 13px;width:162px;
+  pointer-events:none;opacity:0;transform:translateY(5px);
+  transition:opacity .22s,transform .22s;z-index:20;
+  font-family:var(--font-b);
+}
+.hs-tip.show{opacity:1;transform:translateY(0)}
+.tip-label{font-size:8.5px;letter-spacing:.16em;color:var(--amber);text-transform:uppercase;display:block;margin-bottom:4px;font-weight:500}
+.tip-note{font-family:var(--font-d);font-style:italic;font-size:13.5px;color:rgba(200,188,162,.75);line-height:1.55}
+
+#lb-footer{padding:13px 14px 18px;border-top:.5px solid rgba(195,155,80,.12)}
+.lb-city{font-family:var(--font-d);font-size:19px;font-style:italic;color:var(--text);margin-bottom:2px}
+.lb-sub-tag{font-size:9px;letter-spacing:.15em;color:var(--text-muted);text-transform:uppercase;margin-bottom:15px}
+.lb-links{display:flex;flex-direction:column;gap:8px}
+.lb-link{
+  display:flex;align-items:center;gap:10px;
+  background:rgba(255,255,255,.04);border:.5px solid rgba(255,255,255,.07);
+  border-radius:6px;padding:10px 14px;text-decoration:none;
+  font-size:clamp(11px,1.4vw,12.5px);color:rgba(200,188,162,.38);
+  letter-spacing:.04em;transition:all .22s;
+}
+.lb-link:hover{border-color:var(--gold-mid);color:var(--gold)}
+.lb-link .li-icon{font-size:15px;flex-shrink:0}
+.lb-link .li-sub{font-size:9px;color:rgba(200,188,162,.2);letter-spacing:.1em;display:block;margin-top:1px}
+
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@media(max-width:600px){
+  #wall{grid-template-columns:repeat(2,1fr);gap:12px;padding:16px 12px 56px}
+  #room-header{padding:20px 16px 0}
+  .room-divider{margin:16px}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ ENTRY ══ -->
+<div id="stone-veil"></div>
+<div id="cathedral-light"></div>
+<div id="leaves"></div>
+
+<!-- ══ EUROPE WALL ══ -->
+<div id="europe-wall">
+  <svg id="wall-svg" viewBox="0 0 1200 800"
+       preserveAspectRatio="xMidYMid slice"
+       xmlns="http://www.w3.org/2000/svg">
+    <defs>
+
+      <!-- NORTH: Nordic/Viking knotwork interlace -->
+      <pattern id="pat-north" x="0" y="0" width="56" height="56" patternUnits="userSpaceOnUse">
+        <g fill="none" stroke="rgba(195,155,80,0.15)" stroke-width=".8">
+          <rect x="6" y="6" width="44" height="44" rx="4"/>
+          <path d="M6,18 Q18,6 28,18 Q38,6 50,18"/>
+          <path d="M6,38 Q18,50 28,38 Q38,50 50,38"/>
+          <circle cx="28" cy="28" r="8" stroke="rgba(195,155,80,0.1)"/>
+          <circle cx="28" cy="28" r="3" fill="rgba(195,155,80,0.1)" stroke="none"/>
+          <line x1="6"  y1="28" x2="20" y2="28" stroke-width=".5"/>
+          <line x1="36" y1="28" x2="50" y2="28" stroke-width=".5"/>
+          <line x1="28" y1="6"  x2="28" y2="20" stroke-width=".5"/>
+          <line x1="28" y1="36" x2="28" y2="50" stroke-width=".5"/>
+        </g>
+      </pattern>
+
+      <!-- SOUTH: Roman/Greek mosaic tessellation -->
+      <pattern id="pat-south" x="0" y="0" width="48" height="48" patternUnits="userSpaceOnUse">
+        <g fill="none" stroke="rgba(185,118,40,0.14)" stroke-width=".7">
+          <rect x="2"  y="2"  width="20" height="20"/>
+          <rect x="26" y="2"  width="20" height="20"/>
+          <rect x="2"  y="26" width="20" height="20"/>
+          <rect x="26" y="26" width="20" height="20"/>
+          <line x1="12" y1="2"  x2="12" y2="22"/>
+          <line x1="2"  y1="12" x2="22" y2="12"/>
+          <line x1="36" y1="26" x2="36" y2="46"/>
+          <line x1="26" y1="36" x2="46" y2="36"/>
+          <circle cx="12" cy="12" r="2" fill="rgba(185,118,40,0.1)" stroke="none"/>
+          <circle cx="36" cy="36" r="2" fill="rgba(185,118,40,0.1)" stroke="none"/>
+        </g>
+      </pattern>
+
+      <!-- EAST: Byzantine cross lattice -->
+      <pattern id="pat-east" x="0" y="0" width="52" height="52" patternUnits="userSpaceOnUse">
+        <g fill="none" stroke="rgba(65,88,118,0.16)" stroke-width=".8">
+          <!-- cross -->
+          <rect x="21" y="4"  width="10" height="44"/>
+          <rect x="4"  y="21" width="44" height="10"/>
+          <!-- corner squares -->
+          <rect x="4"  y="4"  width="14" height="14"/>
+          <rect x="34" y="4"  width="14" height="14"/>
+          <rect x="4"  y="34" width="14" height="14"/>
+          <rect x="34" y="34" width="14" height="14"/>
+          <!-- centres -->
+          <circle cx="11" cy="11" r="3" fill="rgba(65,88,118,0.1)" stroke="none"/>
+          <circle cx="41" cy="11" r="3" fill="rgba(65,88,118,0.1)" stroke="none"/>
+          <circle cx="11" cy="41" r="3" fill="rgba(65,88,118,0.1)" stroke="none"/>
+          <circle cx="41" cy="41" r="3" fill="rgba(65,88,118,0.1)" stroke="none"/>
+          <circle cx="26" cy="26" r="4" fill="rgba(65,88,118,0.12)" stroke="rgba(65,88,118,0.18)"/>
+        </g>
+      </pattern>
+
+      <!-- WEST: Gothic rose window / Celtic knotwork -->
+      <pattern id="pat-west" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
+        <g fill="none" stroke="rgba(195,155,80,0.13)" stroke-width=".8">
+          <circle cx="30" cy="30" r="26"/>
+          <circle cx="30" cy="30" r="18"/>
+          <circle cx="30" cy="30" r="10"/>
+          <circle cx="30" cy="30" r="3" fill="rgba(195,155,80,0.1)" stroke="none"/>
+          <!-- petals -->
+          <path d="M30,4  Q38,12 30,20 Q22,12 30,4Z"  fill="rgba(195,155,80,0.06)"/>
+          <path d="M56,30 Q48,38 40,30 Q48,22 56,30Z" fill="rgba(195,155,80,0.06)"/>
+          <path d="M30,56 Q22,48 30,40 Q38,48 30,56Z" fill="rgba(195,155,80,0.06)"/>
+          <path d="M4,30  Q12,22 20,30 Q12,38 4,30Z"  fill="rgba(195,155,80,0.06)"/>
+          <!-- diagonal petals -->
+          <path d="M49,11 Q44,22 33,17 Q38,6 49,11Z"  fill="rgba(195,155,80,0.05)"/>
+          <path d="M49,49 Q38,44 33,33 Q44,38 49,49Z" fill="rgba(195,155,80,0.05)"/>
+          <path d="M11,49 Q16,38 27,43 Q22,54 11,49Z" fill="rgba(195,155,80,0.05)"/>
+          <path d="M11,11 Q22,16 27,27 Q16,22 11,11Z" fill="rgba(195,155,80,0.05)"/>
+        </g>
+      </pattern>
+
+      <!-- fades -->
+      <linearGradient id="fn" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="white" stop-opacity="1"/><stop offset="62%" stop-color="white" stop-opacity="0"/></linearGradient>
+      <linearGradient id="fs" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="white" stop-opacity="1"/><stop offset="62%" stop-color="white" stop-opacity="0"/></linearGradient>
+      <linearGradient id="fw" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="white" stop-opacity="1"/><stop offset="62%" stop-color="white" stop-opacity="0"/></linearGradient>
+      <linearGradient id="fe" x1="1" y1="0" x2="0" y2="0"><stop offset="0%" stop-color="white" stop-opacity="1"/><stop offset="62%" stop-color="white" stop-opacity="0"/></linearGradient>
+      <mask id="mn"><rect width="1200" height="400" fill="url(#fn)"/></mask>
+      <mask id="ms"><rect y="400" width="1200" height="400" fill="url(#fs)"/></mask>
+      <mask id="mw"><rect width="600" height="800" fill="url(#fw)"/></mask>
+      <mask id="me"><rect x="600" width="600" height="800" fill="url(#fe)"/></mask>
+    </defs>
+
+    <!-- quadrant patterns -->
+    <rect width="1200" height="400" fill="url(#pat-north)" mask="url(#mn)" opacity=".95"/>
+    <rect y="400" width="1200" height="400" fill="url(#pat-south)" mask="url(#ms)" opacity=".95"/>
+    <rect width="600" height="800" fill="url(#pat-west)" mask="url(#mw)" opacity=".95"/>
+    <rect x="600" width="600" height="800" fill="url(#pat-east)" mask="url(#me)" opacity=".95"/>
+
+    <!-- ══ REGIONAL SHAPES ══ -->
+
+    <!-- 🗼 EIFFEL TOWER — top left -->
+    <g transform="translate(44,28)" opacity=".14"
+       stroke="rgba(195,155,80,0.7)" stroke-width="1.2" fill="none" stroke-linecap="round">
+      <!-- legs -->
+      <line x1="14" y1="95" x2="34" y2="30"/>
+      <line x1="74" y1="95" x2="54" y2="30"/>
+      <line x1="22" y1="95" x2="38" y2="30"/>
+      <line x1="66" y1="95" x2="50" y2="30"/>
+      <!-- arch at base -->
+      <path d="M14,65 Q44,50 74,65"/>
+      <path d="M20,48 Q44,38 68,48"/>
+      <!-- middle platform -->
+      <line x1="30" y1="30" x2="58" y2="30"/>
+      <!-- upper section -->
+      <line x1="34" y1="30" x2="40" y2="8"/>
+      <line x1="54" y1="30" x2="48" y2="8"/>
+      <!-- top platform -->
+      <line x1="38" y1="8" x2="50" y2="8"/>
+      <!-- spire -->
+      <line x1="44" y1="8" x2="44" y2="0"/>
+    </g>
+
+    <!-- 🏛 ROMAN ARCH — left side -->
+    <g transform="translate(18,240)" opacity=".13"
+       stroke="rgba(185,118,40,0.65)" stroke-width="1.1" fill="none">
+      <line x1="8"  y1="80" x2="8"  y2="20"/>
+      <line x1="52" y1="80" x2="52" y2="20"/>
+      <path d="M8,20 Q30,0 52,20"/>
+      <line x1="4"  y1="80" x2="56" y2="80"/>
+      <!-- column detail -->
+      <line x1="8"  y1="72" x2="52" y2="72" stroke-width=".6"/>
+      <line x1="8"  y1="28" x2="52" y2="28" stroke-width=".6"/>
+      <rect x="2" y="76" width="10" height="4" fill="rgba(185,118,40,0.1)" stroke-width=".6"/>
+      <rect x="48" y="76" width="10" height="4" fill="rgba(185,118,40,0.1)" stroke-width=".6"/>
+    </g>
+
+    <!-- 🏰 CASTLE TURRET — bottom left (Rhine) -->
+    <g transform="translate(30,580)" opacity=".13" fill="rgba(65,88,118,0.6)" stroke="rgba(65,88,118,0.4)" stroke-width=".8">
+      <!-- main tower -->
+      <rect x="10" y="20" width="40" height="60"/>
+      <!-- battlements -->
+      <rect x="8"  y="12" width="10" height="12"/>
+      <rect x="22" y="12" width="10" height="12"/>
+      <rect x="36" y="12" width="10" height="12"/>
+      <!-- window -->
+      <rect x="24" y="38" width="12" height="18" rx="6" fill="rgba(65,88,118,0.3)"/>
+      <!-- door -->
+      <rect x="22" y="62" width="16" height="18" rx="4" fill="rgba(8,9,12,0.5)"/>
+      <!-- flag -->
+      <line x1="30" y1="4" x2="30" y2="12" stroke="rgba(195,155,80,0.6)" stroke-width="1"/>
+      <polygon points="30,4 42,7 30,10" fill="rgba(195,155,80,0.4)" stroke="none"/>
+    </g>
+
+    <!-- 🍂 AUTUMN OAK LEAF — top right -->
+    <g transform="translate(1060,38) scale(0.9)" opacity=".18">
+      <path d="M30,0 Q26,8 18,6 Q22,14 14,16 Q20,20 16,28 Q24,26 26,34 Q30,28 34,34 Q36,26 44,28 Q40,20 46,16 Q38,14 42,6 Q34,8 30,0Z"
+            fill="rgba(185,118,40,0.75)" stroke="rgba(185,118,40,0.4)" stroke-width=".6"/>
+      <line x1="30" y1="0" x2="30" y2="34" stroke="rgba(238,225,195,0.3)" stroke-width=".7" fill="none"/>
+      <line x1="30" y1="34" x2="28" y2="52" stroke="rgba(185,118,40,0.5)" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+    </g>
+
+    <!-- Second leaf — different shape -->
+    <g transform="translate(1105,88) scale(0.65) rotate(25 25 25)" opacity=".13">
+      <path d="M25,0 Q20,10 10,8 Q15,18 6,22 Q14,24 12,34 Q20,30 22,40 Q25,32 28,40 Q30,30 38,34 Q36,24 44,22 Q35,18 40,8 Q30,10 25,0Z"
+            fill="rgba(195,155,80,0.7)" stroke="none"/>
+      <line x1="25" y1="0" x2="25" y2="40" stroke="rgba(238,225,195,0.25)" stroke-width=".7" fill="none"/>
+      <line x1="25" y1="40" x2="22" y2="56" stroke="rgba(185,118,40,0.45)" stroke-width="1" stroke-linecap="round" fill="none"/>
+    </g>
+
+    <!-- 🌺 FLEUR-DE-LIS — upper centre -->
+    <g transform="translate(565,30) scale(0.85)" opacity=".14"
+       fill="rgba(195,155,80,0.6)" stroke="rgba(195,155,80,0.35)" stroke-width=".6">
+      <!-- centre petal -->
+      <path d="M20,0 Q14,12 20,24 Q26,12 20,0Z"/>
+      <!-- side petals -->
+      <path d="M20,12 Q8,6 4,14 Q10,18 20,16Z"/>
+      <path d="M20,12 Q32,6 36,14 Q30,18 20,16Z"/>
+      <!-- crossbar -->
+      <rect x="12" y="22" width="16" height="4" rx="2"/>
+      <!-- stem -->
+      <path d="M20,26 Q18,32 20,40 Q22,32 20,26Z"/>
+    </g>
+
+    <!-- 🍷 WINE / GRAPE VINE — right side (France/Italy) -->
+    <g transform="translate(1138,320)" opacity=".12"
+       stroke="rgba(65,88,118,0.6)" stroke-width="1" fill="none" stroke-linecap="round">
+      <!-- main vine -->
+      <path d="M20,0 Q12,30 18,60 Q10,90 16,120"/>
+      <!-- tendrils -->
+      <path d="M18,20 Q30,14 36,22" stroke-width=".8"/>
+      <path d="M16,50 Q4,44 2,54"   stroke-width=".8"/>
+      <path d="M17,80 Q30,76 34,86"  stroke-width=".8"/>
+      <!-- grape clusters -->
+      <circle cx="36" cy="22" r="3" fill="rgba(65,88,118,0.3)"/>
+      <circle cx="40" cy="26" r="2.5" fill="rgba(65,88,118,0.25)"/>
+      <circle cx="34" cy="28" r="2.5" fill="rgba(65,88,118,0.25)"/>
+      <circle cx="2"  cy="54" r="3" fill="rgba(65,88,118,0.28)"/>
+      <circle cx="6"  cy="58" r="2.5" fill="rgba(65,88,118,0.22)"/>
+      <!-- leaves -->
+      <path d="M18,20 Q10,10 14,4 Q20,10 18,20Z" fill="rgba(65,88,118,0.15)" stroke-width=".6"/>
+      <path d="M17,80 Q26,70 30,76 Q24,84 17,80Z" fill="rgba(65,88,118,0.12)" stroke-width=".6"/>
+    </g>
+
+    <!-- GOTHIC ARCH — bottom right -->
+    <g transform="translate(1050,580)" opacity=".12"
+       stroke="rgba(195,155,80,0.55)" stroke-width="1" fill="none">
+      <line x1="10" y1="90" x2="10" y2="25"/>
+      <line x1="50" y1="90" x2="50" y2="25"/>
+      <!-- pointed gothic arch -->
+      <path d="M10,25 Q10,5 30,5 Q50,5 50,25"/>
+      <!-- tracery inside arch -->
+      <path d="M18,25 Q18,12 30,12 Q42,12 42,25" stroke-width=".7"/>
+      <circle cx="30" cy="18" r="5" stroke-width=".6"/>
+      <!-- base -->
+      <line x1="4" y1="90" x2="56" y2="90" stroke-width=".8"/>
+    </g>
+
+    <!-- MOUNTAINS — bottom centre (Alps) -->
+    <g opacity=".09" fill="rgba(100,120,150,0.5)">
+      <polygon points="480,800 550,695 620,800"/>
+      <polygon points="535,800 615,705 695,800"/>
+      <polygon points="590,800 678,718 766,800"/>
+      <polygon points="550,695 536,722 564,722" fill="rgba(228,232,238,0.4)"/>
+      <polygon points="615,705 601,730 629,730" fill="rgba(228,232,238,0.4)"/>
+      <polygon points="678,718 664,742 692,742" fill="rgba(228,232,238,0.4)"/>
+    </g>
+
+    <!-- centre vignette -->
+    <radialGradient id="cv" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"   stop-color="rgba(8,9,12,0.87)"/>
+      <stop offset="100%" stop-color="rgba(8,9,12,0)"/>
+    </radialGradient>
+    <rect width="1200" height="800" fill="url(#cv)"/>
+  </svg>
+</div>
+
+<!-- quadrant labels -->
+<div class="quad-label" id="ql-n">North · Scandinavia · Nordic</div>
+<div class="quad-label" id="ql-s">South · Mediterranean · Rome · Greece</div>
+<div class="quad-label" id="ql-w">West · Gothic · Celtic · Atlantic</div>
+<div class="quad-label" id="ql-e">East · Byzantine · Eastern Europe</div>
+
+<!-- ══ PAGE ══ -->
+<div id="page">
+  <header id="room-header">
+    <div>
+      <p class="room-eyebrow">Glam Wing · Kaelum</p>
+      <h1>The Old Continent</h1>
+      <p class="room-sub">Europe · The collection</p>
+    </div>
+    <a id="back-map" href="glam-wing.html">← Back to the map</a>
+  </header>
+  <div class="room-divider"></div>
+
+  <!-- ══ WALL ══ -->
+  <div id="wall">
+
+    <!-- ▼ START BOX 1 — Germany, Autumn -->
+    <div class="box" data-key="germany" aria-label="Open Germany look">
+      <div class="box-band">
+        <span class="loc">Germany</span>
+        <span class="season">Autumn</span>
+      </div>
+      <div class="box-window">
+        <img src="IMG_kaelum_1.jpg" alt="Germany, Autumn"/>
+        <span class="perfume-badge">Libre Intense · YSL</span>
+      </div>
+      <div class="box-foot">
+        <p class="city-name">Germany</p>
+        <p class="continent-tag">Kaelum · Europe</p>
+      </div>
+      <span class="box-hint">click to open</span>
+    </div>
+    <!-- ▲ END BOX 1 -->
+
+    <!-- placeholder 2 -->
+    <div class="box" style="opacity:.22;cursor:default;pointer-events:none">
+      <div class="box-band"><span class="loc">Coming</span><span class="season">—</span></div>
+      <div class="box-window" style="display:flex;align-items:center;justify-content:center;min-height:240px">
+        <span style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:rgba(195,155,80,.25)">next drop</span>
+      </div>
+      <div class="box-foot"><p class="city-name" style="color:rgba(238,232,218,.18)">Kaelum</p><p class="continent-tag">Europe</p></div>
+    </div>
+
+    <!-- placeholder 3 -->
+    <div class="box" style="opacity:.12;cursor:default;pointer-events:none">
+      <div class="box-band"><span class="loc">Coming</span><span class="season">—</span></div>
+      <div class="box-window" style="display:flex;align-items:center;justify-content:center;min-height:240px">
+        <span style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:rgba(195,155,80,.15)">next drop</span>
+      </div>
+      <div class="box-foot"><p class="city-name" style="color:rgba(238,232,218,.12)">Kaelum</p><p class="continent-tag">Europe</p></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ LIGHTBOX ══ -->
+<div id="lb-overlay">
+  <div id="lb">
+    <button id="lb-close">close ✕</button>
+    <div id="lb-band">
+      <span id="lb-loc"></span>
+      <span id="lb-season"></span>
+    </div>
+    <div id="lb-photo-wrap">
+      <img id="lb-img" src="" alt=""/>
+    </div>
+    <div id="lb-footer">
+      <p id="lb-city"  class="lb-city"></p>
+      <p id="lb-tag"   class="lb-sub-tag"></p>
+      <div class="lb-links">
+        <a id="lb-ig"  class="lb-link" href="#" target="_blank" rel="noopener">
+          <span class="li-icon">📷</span>
+          <span>See other variations of this look<span class="li-sub">Instagram</span></span>
+        </a>
+        <a id="lb-sub" class="lb-link" href="#" target="_blank" rel="noopener">
+          <span class="li-icon">✦</span>
+          <span>Read the full story<span class="li-sub">Substack</span></span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ══ AUTUMN LEAVES ══ */
+(function(){
+  var c = document.getElementById('leaves');
+  var colours = [
+    'rgba(185,118,40,', 'rgba(195,155,80,', 'rgba(160,80,30,',
+    'rgba(210,140,50,', 'rgba(140,80,25,'
+  ];
+  /* leaf SVG paths — variety of shapes */
+  var paths = [
+    'M10,0 Q6,6 2,4 Q5,9 1,12 Q6,11 5,16 Q10,13 11,18 Q12,13 17,16 Q16,11 21,12 Q17,9 20,4 Q16,6 10,0Z',
+    'M8,0 Q5,5 0,5 Q4,10 0,15 Q6,14 8,20 Q10,14 16,15 Q12,10 16,5 Q11,5 8,0Z',
+    'M12,0 Q8,8 2,6 Q6,12 0,18 Q8,16 10,24 Q12,16 20,18 Q14,12 18,6 Q12,8 12,0Z'
+  ];
+  for(var i=0;i<28;i++){
+    var leaf = document.createElement('div');
+    leaf.className = 'leaf';
+    var col  = colours[i % colours.length];
+    var op   = (0.5+Math.random()*0.45).toFixed(2);
+    var sz   = 14 + Math.random()*18;
+    var path = paths[i % paths.length];
+    leaf.innerHTML = '<svg width="'+sz+'" height="'+sz+'" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="'+path+'" fill="'+col+op+')" stroke="none"/></svg>';
+    leaf.style.left  = (Math.random()*105-2)+'vw';
+    leaf.style.setProperty('--dur',   (5.5+Math.random()*5)+'s');
+    leaf.style.setProperty('--delay', (Math.random()*4.5)+'s');
+    leaf.style.setProperty('--sx',    (Math.random()*60-30)+'px');
+    leaf.style.setProperty('--ex',    (Math.random()*100-50)+'px');
+    leaf.style.setProperty('--ex2',   (Math.random()*120-60)+'px');
+    c.appendChild(leaf);
+  }
+  setTimeout(function(){ c.remove(); }, 11000);
+})();
+
+/* ══ LOOK DATA ══ */
+var LOOKS = {
+  germany: {
+    loc:     'Germany',
+    season:  'Autumn',
+    img:     'IMG_kaelum_1.jpg',
+    city:    'Germany',
+    tag:     'Kaelum · Europe',
+    ig:      'https://instagram.com/kwissbae',
+    sub:     'https://substack.com/',
+    hotspots:[
+      { top:'4%',  left:'28%', label:'Hair',    note:'Placeholder — your note here.' },
+      { top:'14%', left:'23%', label:'Makeup',  note:'Placeholder — your note here.' },
+      { top:'17%', left:'38%', label:'Jewelry', note:'Placeholder — your note here.' },
+      { top:'40%', left:'21%', label:'Outfit',  note:'Placeholder — your note here.' },
+      { top:'56%', left:'38%', label:'Bag',     note:'Placeholder — your note here.' },
+      { top:'91%', left:'25%', label:'Shoes',   note:'Placeholder — your note here.' },
+      { top:'54%', left:'68%', label:'Perfume', note:'Libre Intense by YSL.' }
+    ]
+  }
+  /* ADD NEW LOOK:
+  ,yourcitykey: {
+    loc:'Paris', season:'Spring',
+    img:'IMG_kaelum_2.jpg',
+    city:'Paris, France',
+    tag:'Kaelum · Europe',
+    ig:'https://instagram.com/kwissbae',
+    sub:'https://your-substack.com',
+    hotspots:[
+      { top:'4%',  left:'28%', label:'Hair',    note:'Your note.' },
+      { top:'14%', left:'23%', label:'Makeup',  note:'Your note.' },
+      { top:'17%', left:'38%', label:'Jewelry', note:'Your note.' },
+      { top:'40%', left:'21%', label:'Outfit',  note:'Your note.' },
+      { top:'56%', left:'38%', label:'Bag',     note:'Your note.' },
+      { top:'91%', left:'25%', label:'Shoes',   note:'Your note.' },
+      { top:'54%', left:'68%', label:'Perfume', note:'Your note.' }
+    ]
+  }
+  */
+};
+
+/* ══ WIRE BOXES ══ */
+document.querySelectorAll('.box[data-key]').forEach(function(box){
+  box.addEventListener('click', function(){
+    var data = LOOKS[box.getAttribute('data-key')];
+    if(data) openLightbox(data);
+  });
+});
+
+/* ══ LIGHTBOX ══ */
+function openLightbox(data){
+  document.getElementById('lb-loc').textContent    = data.loc;
+  document.getElementById('lb-season').textContent = data.season;
+  document.getElementById('lb-city').textContent   = data.city;
+  document.getElementById('lb-tag').textContent    = data.tag;
+  document.getElementById('lb-ig').href            = data.ig;
+  document.getElementById('lb-sub').href           = data.sub;
+
+  var img = document.getElementById('lb-img');
+  img.src = data.img; img.alt = data.city;
+
+  var wrap = document.getElementById('lb-photo-wrap');
+  wrap.querySelectorAll('.hotspot,.hs-tip').forEach(function(el){ el.remove(); });
+
+  /* show overlay first — image needs layout to calculate positions */
+  document.getElementById('lb-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  function place(){
+    var nW=img.naturalWidth||1, nH=img.naturalHeight||1;
+    var wW=wrap.offsetWidth, wH=img.offsetHeight;
+    var sc=Math.min(wW/nW,wH/nH);
+    var rW=nW*sc, rH=nH*sc;
+    var oX=(wW-rW)/2, oY=(wH-rH)/2;
+    data.hotspots.forEach(function(hs){
+      var px=oX+(parseFloat(hs.left)/100)*rW;
+      var py=oY+(parseFloat(hs.top) /100)*rH;
+      var dot=document.createElement('div');
+      dot.className='hotspot';
+      dot.style.left=px+'px'; dot.style.top=py+'px';
+      var tip=document.createElement('div');
+      tip.className='hs-tip';
+      tip.innerHTML='<span class="tip-label">'+hs.label+'</span><span class="tip-note">'+hs.note+'</span>';
+      function toggle(e){
+        e.stopPropagation();
+        var open=tip.classList.contains('show');
+        wrap.querySelectorAll('.hs-tip').forEach(function(t){ t.classList.remove('show'); });
+        if(!open){
+          var tw=162,ww=wrap.offsetWidth,wh=img.offsetHeight;
+          var tl=px+16, tt=py-14;
+          if(tl+tw>ww-4) tl=px-tw-8;
+          if(tl<4) tl=4;
+          if(tt<4) tt=py+30;
+          if(tt+70>wh) tt=py-70;
+          tip.style.left=tl+'px'; tip.style.top=tt+'px';
+          tip.classList.add('show');
+        }
+      }
+      dot.addEventListener('mouseenter',toggle);
+      dot.addEventListener('click',toggle);
+      wrap.appendChild(dot); wrap.appendChild(tip);
+    });
+  }
+
+  function doPlace(){
+    requestAnimationFrame(function(){
+      requestAnimationFrame(place);
+    });
+  }
+  img.complete&&img.naturalWidth ? doPlace() : (img.onload=doPlace);
+}
+
+document.getElementById('lb-close').addEventListener('click',closeLb);
+document.getElementById('lb-overlay').addEventListener('click',function(e){
+  if(e.target===document.getElementById('lb-overlay')) closeLb();
+});
+document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeLb(); });
+function closeLb(){
+  document.getElementById('lb-overlay').classList.remove('open');
+  document.body.style.overflow='';
+}
+</script>
+</body>
+</html>
