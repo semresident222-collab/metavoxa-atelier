@@ -646,8 +646,7 @@
   {number:"359",title:"The first thought is the most honest. The second is already edited.",body:"The impulse before the management. The response before the revision. The feeling before the framing. The first thought is the unprocessed truth of your current state. Catching it — before the editing mind arrives — is one of the most useful things you can practice. What is your first thought about your life right now, before you edit it into something more manageable?",deeper:"The first thought is the raw truth. Everything after is the story you tell about it.",connections:[],substackUrl:""},
   {number:"360",title:"You are not the archive of what happened to you. You are the one deciding what to do with it.",body:"The history is fixed. The meaning is not. What you do with what you\'ve been through — how you carry it, what you build from it, who you become in relationship to it — this is where the agency lives. Not in what happened. In what you do with what happened. What are you doing with what happened to you? Is it what you want to do with it?",deeper:"The past is finished. Your relationship to it is still being written.",connections:[],substackUrl:""}
 ];
-}
-        const yearConfig={2026:{name:"Reader",index:0},2027:{name:"Writer",index:1},2028:{name:"Researcher",index:2},2029:{name:"Explorer",index:3},2030:{name:"Reader",index:4,note:"(not the same person)"}};
+const yearConfig={2026:{name:"Reader",index:0},2027:{name:"Writer",index:1},2028:{name:"Researcher",index:2},2029:{name:"Explorer",index:3},2030:{name:"Reader",index:4,note:"(not the same person)"}};
         let currentIndex=0,selectedYear=2026,isTyping=false;
         function getTodayIndex(){const now=new Date(),start=new Date(2026,0,1),diff=now-start,dayIndex=Math.floor(diff/(1000*60*60*24));return Math.max(0,Math.min(dayIndex,364));}
         function getYearFromIndex(index){const yearOffset=Math.floor(index/365),baseYear=2026;return baseYear+yearOffset;}
