@@ -368,13 +368,16 @@ body{background:var(--sky);color:var(--text);font-family:var(--font-b);font-weig
       <text x="604" y="288" text-anchor="start" font-family="Cormorant Garamond,Georgia,serif" font-size="13" letter-spacing=".06em" fill="rgba(217,184,124,.65)">Thoughts</text>
     </g>
 
-    <!-- GLAM WING (sealed) -->
-    <g class="sealed-node" aria-label="Glam Wing — sealed">
-      <circle cx="645" cy="180" r="34" fill="url(#gsm)" opacity=".45"/>
-      <line x1="613" y1="180" x2="677" y2="180" stroke="rgba(255,248,200,.22)" stroke-width=".5"/>
-      <line x1="645" y1="148" x2="645" y2="212" stroke="rgba(255,248,200,.22)" stroke-width=".5"/>
-      <circle cx="645" cy="180" r="4.1" fill="rgba(255,252,228,.55)"/>
-      <text x="643" y="160" text-anchor="middle" font-family="Cormorant Garamond,Georgia,serif" font-size="11" letter-spacing=".06em" opacity=".42" fill="rgba(217,184,124,.8)">Glam Wing</text>
+    <!-- GLAM WING — NOW LIVE -->
+    <g id="node-glam" class="cnode" onclick="handleNodeClick('glam')" tabindex="0" role="button" aria-label="Glam Wing">
+      <circle cx="645" cy="180" r="34" fill="url(#glg)"/>
+      <circle cx="645" cy="180" r="16" fill="url(#gmd)"/>
+      <line x1="611" y1="180" x2="679" y2="180" stroke="rgba(255,248,204,.48)" stroke-width=".75"/>
+      <line x1="645" y1="146" x2="645" y2="214" stroke="rgba(255,248,204,.48)" stroke-width=".75"/>
+      <line x1="621" y1="156" x2="669" y2="204" stroke="rgba(255,248,204,.18)" stroke-width=".5"/>
+      <line x1="669" y1="156" x2="621" y2="204" stroke="rgba(255,248,204,.18)" stroke-width=".5"/>
+      <circle cx="645" cy="180" r="5.2" fill="rgba(255,253,238,.98)"/>
+      <text x="643" y="160" text-anchor="middle" font-family="Cormorant Garamond,Georgia,serif" font-size="13" letter-spacing=".06em" fill="rgba(217,184,124,.72)">Glam Wing</text>
     </g>
 
     <!-- PAGE HEADER -->
@@ -416,9 +419,12 @@ body{background:var(--sky);color:var(--text);font-family:var(--font-b);font-weig
         <p class="btn-here">· you are here ·</p>
       </div>
     </div>
-    <div class="wcard sealed" id="card-glam">
-      <div><p class="wnum">Wing IV</p><p class="wtitle">Glam Wing</p><p class="wdesc">Five continents. Fashion archive world.</p><span class="sealed-pill">sealed</span></div>
-      <div class="card-actions"><button class="btn-briefing" disabled>Sealed</button></div>
+    <div class="wcard" id="card-glam">
+      <div><p class="wnum">Wing IV · open</p><p class="wtitle">Glam Wing</p><p class="wdesc">Five continents. Fashion archive world.</p></div>
+      <div class="card-actions">
+        <button class="btn-briefing" onclick="openPanel('glam',this.closest('.wcard'))">Read Briefing</button>
+        <a class="btn-enter" href="/glam-wing.html">Enter Room →</a>
+      </div>
     </div>
   </div>
   <div id="panel">
@@ -429,13 +435,13 @@ body{background:var(--sky);color:var(--text);font-family:var(--font-b);font-weig
   <div id="bkey">
     <p class="klabel">Chase the pattern</p>
     <div class="klinks">
-      <a class="klink" href="/index.html">Lobby</a>
       <a class="klink" href="/atrium.html">Atrium</a>
       <a class="klink" href="/study-wing.html">Study Wing</a>
       <a class="klink" href="/salon.html">Salon</a>
       <a class="klink" href="/reading-room.html">Reading Room</a>
       <a class="klink" href="/pattern-thoughts.html">Pattern Thoughts</a>
       <a class="klink" href="/star-of-the-month.html">Star of the Month</a>
+      <a class="klink" href="/glam-wing.html">Glam Wing</a>
       <a class="klink cur" href="/observatory.html">Observatory ·</a>
     </div>
   </div>
@@ -460,10 +466,16 @@ const PANELS={
     ['Who it\'s for','Built specifically for ADHD brains, impatient visitors, and people who need the legend before they explore. Answers first. Wandering later, if at all. Both paths are valid.'],
     ['Why it exists','MetaVoxa has an architecture. Five wings. A Substack. A Lobby. An Atrium. The Observatory makes that logic immediately legible — no navigation required to reverse-engineer it.'],
     ['You are here','The Observatory is the brightest node in the constellation. The whole house is mapped above you. You\'re already inside.']
-  ],link:'You are here',href:null}
+  ],link:'You are here',href:null},
+  glam:{title:'Glam Wing — full briefing',rows:[
+    ['What it is','Five continents. Fashion archive world. A curated space for visual culture, style systems, and the politics of appearance across geographies.'],
+    ['How it works','The Glam Wing operates as a living archive — images, essays, and references mapped across continental fashion traditions. It connects the aesthetic to the structural.'],
+    ['Why it exists','MetaVoxa needed a room for the visual and the material — where fashion is read as culture, power, and identity, not just consumption. The Glam Wing treats style as research.'],
+    ['Right now','The Glam Wing is now live and open. Enter to explore the archive.']
+  ],link:'Enter the Glam Wing →',href:'/glam-wing.html'}
 };
-const SI={salon:'salon',chat:'salon','real-time':'salon',realtime:'salon',messages:'salon',writer:'salon',reader:'salon',researcher:'salon',explorer:'salon',fire:'salon',rain:'salon',ambient:'salon',live:'salon',conversation:'salon',fade:'salon',study:'study',reading:'study',books:'study',essays:'study',pattern:'study',thoughts:'study',star:'study',archive:'study',library:'study',substack:'study',newsletter:'study',observatory:'obs',map:'obs',explain:'obs',briefing:'obs',guide:'obs',help:'obs',wings:'obs',house:'obs',system:'obs',works:'obs',navigate:'obs'};
-const NM={study:['node-study','node-reading','node-pattern','node-star'],salon:['node-salon'],obs:['node-obs']};
+const SI={salon:'salon',chat:'salon','real-time':'salon',realtime:'salon',messages:'salon',writer:'salon',reader:'salon',researcher:'salon',explorer:'salon',fire:'salon',rain:'salon',ambient:'salon',live:'salon',conversation:'salon',fade:'salon',study:'study',reading:'study',books:'study',essays:'study',pattern:'study',thoughts:'study',star:'study',archive:'study',library:'study',substack:'study',newsletter:'study',observatory:'obs',map:'obs',explain:'obs',briefing:'obs',guide:'obs',help:'obs',wings:'obs',house:'obs',system:'obs',works:'obs',navigate:'obs',glam:'glam',fashion:'glam',archive:'glam',style:'glam',visual:'glam',continents:'glam'};
+const NM={study:['node-study','node-reading','node-pattern','node-star'],salon:['node-salon'],obs:['node-obs'],glam:['node-glam']};
 let stimer=null;
 
 function openPanel(k,card){
