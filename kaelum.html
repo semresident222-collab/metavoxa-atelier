@@ -44,12 +44,7 @@ body{
   overflow-x:hidden;
 }
 
-/* ══ ENTRY — AUTUMN LEAVES FALLING ══
-   Cool grey darkness.
-   Golden-amber leaves drift down slowly
-   from the top — like Unter den Linden
-   in October. Unhurried. Old world.
-══ */
+/* ══ ENTRY — AUTUMN LEAVES FALLING ══ */
 #stone-veil{
   position:fixed;inset:0;z-index:200;
   pointer-events:none;
@@ -62,7 +57,6 @@ body{
   100%{opacity:0}
 }
 
-/* cathedral light seeping in from above */
 #cathedral-light{
   position:fixed;top:0;left:0;right:0;
   height:50vh;z-index:199;pointer-events:none;
@@ -80,7 +74,6 @@ body{
   100%{opacity:0;transform:translateY(0)}
 }
 
-/* falling leaves container */
 #leaves{position:fixed;inset:0;z-index:201;pointer-events:none;overflow:hidden}
 .leaf{
   position:absolute;
@@ -178,10 +171,27 @@ h1{font-family:var(--font-d);font-size:clamp(26px,4vw,44px);font-weight:300;font
   border-color:var(--gold);
   box-shadow:0 18px 52px rgba(195,155,80,.16),0 0 0 .5px rgba(195,155,80,.26);
 }
+/* staggered delays for 20 boxes */
 .box:nth-child(1){animation-delay:.85s}
-.box:nth-child(2){animation-delay:1.05s}
-.box:nth-child(3){animation-delay:1.25s}
-.box:nth-child(n+4){animation-delay:1.4s}
+.box:nth-child(2){animation-delay:1.00s}
+.box:nth-child(3){animation-delay:1.10s}
+.box:nth-child(4){animation-delay:1.18s}
+.box:nth-child(5){animation-delay:1.24s}
+.box:nth-child(6){animation-delay:1.29s}
+.box:nth-child(7){animation-delay:1.33s}
+.box:nth-child(8){animation-delay:1.36s}
+.box:nth-child(9){animation-delay:1.38s}
+.box:nth-child(10){animation-delay:1.40s}
+.box:nth-child(11){animation-delay:1.42s}
+.box:nth-child(12){animation-delay:1.44s}
+.box:nth-child(13){animation-delay:1.46s}
+.box:nth-child(14){animation-delay:1.48s}
+.box:nth-child(15){animation-delay:1.50s}
+.box:nth-child(16){animation-delay:1.52s}
+.box:nth-child(17){animation-delay:1.54s}
+.box:nth-child(18){animation-delay:1.56s}
+.box:nth-child(19){animation-delay:1.58s}
+.box:nth-child(20){animation-delay:1.60s}
 @keyframes box-appear{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
 
 .box-band{
@@ -202,6 +212,16 @@ h1{font-family:var(--font-d);font-size:clamp(26px,4vw,44px);font-weight:300;font
   display:block;transition:transform .4s ease;
 }
 .box:hover .box-window img{transform:scale(1.04)}
+
+/* placeholder styling inside window */
+.box-window .placeholder-label{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Cormorant Garamond',serif;
+  font-style:italic;font-size:13px;
+  color:rgba(195,155,80,.25);
+  pointer-events:none;
+}
 
 .perfume-badge{
   position:absolute;bottom:6px;right:6px;
@@ -304,6 +324,7 @@ h1{font-family:var(--font-d);font-size:clamp(26px,4vw,44px);font-weight:300;font
   .room-divider{margin:16px}
 }
 </style>
+<base target="_blank">
 </head>
 <body>
 
@@ -353,15 +374,12 @@ h1{font-family:var(--font-d);font-size:clamp(26px,4vw,44px);font-weight:300;font
       <!-- EAST: Byzantine cross lattice -->
       <pattern id="pat-east" x="0" y="0" width="52" height="52" patternUnits="userSpaceOnUse">
         <g fill="none" stroke="rgba(65,88,118,0.16)" stroke-width=".8">
-          <!-- cross -->
           <rect x="21" y="4"  width="10" height="44"/>
           <rect x="4"  y="21" width="44" height="10"/>
-          <!-- corner squares -->
           <rect x="4"  y="4"  width="14" height="14"/>
           <rect x="34" y="4"  width="14" height="14"/>
           <rect x="4"  y="34" width="14" height="14"/>
           <rect x="34" y="34" width="14" height="14"/>
-          <!-- centres -->
           <circle cx="11" cy="11" r="3" fill="rgba(65,88,118,0.1)" stroke="none"/>
           <circle cx="41" cy="11" r="3" fill="rgba(65,88,118,0.1)" stroke="none"/>
           <circle cx="11" cy="41" r="3" fill="rgba(65,88,118,0.1)" stroke="none"/>
@@ -377,12 +395,10 @@ h1{font-family:var(--font-d);font-size:clamp(26px,4vw,44px);font-weight:300;font
           <circle cx="30" cy="30" r="18"/>
           <circle cx="30" cy="30" r="10"/>
           <circle cx="30" cy="30" r="3" fill="rgba(195,155,80,0.1)" stroke="none"/>
-          <!-- petals -->
           <path d="M30,4  Q38,12 30,20 Q22,12 30,4Z"  fill="rgba(195,155,80,0.06)"/>
           <path d="M56,30 Q48,38 40,30 Q48,22 56,30Z" fill="rgba(195,155,80,0.06)"/>
           <path d="M30,56 Q22,48 30,40 Q38,48 30,56Z" fill="rgba(195,155,80,0.06)"/>
           <path d="M4,30  Q12,22 20,30 Q12,38 4,30Z"  fill="rgba(195,155,80,0.06)"/>
-          <!-- diagonal petals -->
           <path d="M49,11 Q44,22 33,17 Q38,6 49,11Z"  fill="rgba(195,155,80,0.05)"/>
           <path d="M49,49 Q38,44 33,33 Q44,38 49,49Z" fill="rgba(195,155,80,0.05)"/>
           <path d="M11,49 Q16,38 27,43 Q22,54 11,49Z" fill="rgba(195,155,80,0.05)"/>
@@ -401,33 +417,24 @@ h1{font-family:var(--font-d);font-size:clamp(26px,4vw,44px);font-weight:300;font
       <mask id="me"><rect x="600" width="600" height="800" fill="url(#fe)"/></mask>
     </defs>
 
-    <!-- quadrant patterns -->
     <rect width="1200" height="400" fill="url(#pat-north)" mask="url(#mn)" opacity=".95"/>
     <rect y="400" width="1200" height="400" fill="url(#pat-south)" mask="url(#ms)" opacity=".95"/>
     <rect width="600" height="800" fill="url(#pat-west)" mask="url(#mw)" opacity=".95"/>
     <rect x="600" width="600" height="800" fill="url(#pat-east)" mask="url(#me)" opacity=".95"/>
 
-    <!-- ══ REGIONAL SHAPES ══ -->
-
     <!-- 🗼 EIFFEL TOWER — top left -->
     <g transform="translate(44,28)" opacity=".14"
        stroke="rgba(195,155,80,0.7)" stroke-width="1.2" fill="none" stroke-linecap="round">
-      <!-- legs -->
       <line x1="14" y1="95" x2="34" y2="30"/>
       <line x1="74" y1="95" x2="54" y2="30"/>
       <line x1="22" y1="95" x2="38" y2="30"/>
       <line x1="66" y1="95" x2="50" y2="30"/>
-      <!-- arch at base -->
       <path d="M14,65 Q44,50 74,65"/>
       <path d="M20,48 Q44,38 68,48"/>
-      <!-- middle platform -->
       <line x1="30" y1="30" x2="58" y2="30"/>
-      <!-- upper section -->
       <line x1="34" y1="30" x2="40" y2="8"/>
       <line x1="54" y1="30" x2="48" y2="8"/>
-      <!-- top platform -->
       <line x1="38" y1="8" x2="50" y2="8"/>
-      <!-- spire -->
       <line x1="44" y1="8" x2="44" y2="0"/>
     </g>
 
@@ -438,26 +445,20 @@ h1{font-family:var(--font-d);font-size:clamp(26px,4vw,44px);font-weight:300;font
       <line x1="52" y1="80" x2="52" y2="20"/>
       <path d="M8,20 Q30,0 52,20"/>
       <line x1="4"  y1="80" x2="56" y2="80"/>
-      <!-- column detail -->
       <line x1="8"  y1="72" x2="52" y2="72" stroke-width=".6"/>
       <line x1="8"  y1="28" x2="52" y2="28" stroke-width=".6"/>
       <rect x="2" y="76" width="10" height="4" fill="rgba(185,118,40,0.1)" stroke-width=".6"/>
       <rect x="48" y="76" width="10" height="4" fill="rgba(185,118,40,0.1)" stroke-width=".6"/>
     </g>
 
-    <!-- 🏰 CASTLE TURRET — bottom left (Rhine) -->
+    <!-- 🏰 CASTLE TURRET — bottom left -->
     <g transform="translate(30,580)" opacity=".13" fill="rgba(65,88,118,0.6)" stroke="rgba(65,88,118,0.4)" stroke-width=".8">
-      <!-- main tower -->
       <rect x="10" y="20" width="40" height="60"/>
-      <!-- battlements -->
       <rect x="8"  y="12" width="10" height="12"/>
       <rect x="22" y="12" width="10" height="12"/>
       <rect x="36" y="12" width="10" height="12"/>
-      <!-- window -->
       <rect x="24" y="38" width="12" height="18" rx="6" fill="rgba(65,88,118,0.3)"/>
-      <!-- door -->
       <rect x="22" y="62" width="16" height="18" rx="4" fill="rgba(8,9,12,0.5)"/>
-      <!-- flag -->
       <line x1="30" y1="4" x2="30" y2="12" stroke="rgba(195,155,80,0.6)" stroke-width="1"/>
       <polygon points="30,4 42,7 30,10" fill="rgba(195,155,80,0.4)" stroke="none"/>
     </g>
@@ -470,7 +471,7 @@ h1{font-family:var(--font-d);font-size:clamp(26px,4vw,44px);font-weight:300;font
       <line x1="30" y1="34" x2="28" y2="52" stroke="rgba(185,118,40,0.5)" stroke-width="1.2" stroke-linecap="round" fill="none"/>
     </g>
 
-    <!-- Second leaf — different shape -->
+    <!-- Second leaf -->
     <g transform="translate(1105,88) scale(0.65) rotate(25 25 25)" opacity=".13">
       <path d="M25,0 Q20,10 10,8 Q15,18 6,22 Q14,24 12,34 Q20,30 22,40 Q25,32 28,40 Q30,30 38,34 Q36,24 44,22 Q35,18 40,8 Q30,10 25,0Z"
             fill="rgba(195,155,80,0.7)" stroke="none"/>
@@ -481,33 +482,25 @@ h1{font-family:var(--font-d);font-size:clamp(26px,4vw,44px);font-weight:300;font
     <!-- 🌺 FLEUR-DE-LIS — upper centre -->
     <g transform="translate(565,30) scale(0.85)" opacity=".14"
        fill="rgba(195,155,80,0.6)" stroke="rgba(195,155,80,0.35)" stroke-width=".6">
-      <!-- centre petal -->
       <path d="M20,0 Q14,12 20,24 Q26,12 20,0Z"/>
-      <!-- side petals -->
       <path d="M20,12 Q8,6 4,14 Q10,18 20,16Z"/>
       <path d="M20,12 Q32,6 36,14 Q30,18 20,16Z"/>
-      <!-- crossbar -->
       <rect x="12" y="22" width="16" height="4" rx="2"/>
-      <!-- stem -->
       <path d="M20,26 Q18,32 20,40 Q22,32 20,26Z"/>
     </g>
 
-    <!-- 🍷 WINE / GRAPE VINE — right side (France/Italy) -->
+    <!-- 🍷 WINE / GRAPE VINE — right side -->
     <g transform="translate(1138,320)" opacity=".12"
        stroke="rgba(65,88,118,0.6)" stroke-width="1" fill="none" stroke-linecap="round">
-      <!-- main vine -->
       <path d="M20,0 Q12,30 18,60 Q10,90 16,120"/>
-      <!-- tendrils -->
       <path d="M18,20 Q30,14 36,22" stroke-width=".8"/>
       <path d="M16,50 Q4,44 2,54"   stroke-width=".8"/>
       <path d="M17,80 Q30,76 34,86"  stroke-width=".8"/>
-      <!-- grape clusters -->
       <circle cx="36" cy="22" r="3" fill="rgba(65,88,118,0.3)"/>
       <circle cx="40" cy="26" r="2.5" fill="rgba(65,88,118,0.25)"/>
       <circle cx="34" cy="28" r="2.5" fill="rgba(65,88,118,0.25)"/>
       <circle cx="2"  cy="54" r="3" fill="rgba(65,88,118,0.28)"/>
       <circle cx="6"  cy="58" r="2.5" fill="rgba(65,88,118,0.22)"/>
-      <!-- leaves -->
       <path d="M18,20 Q10,10 14,4 Q20,10 18,20Z" fill="rgba(65,88,118,0.15)" stroke-width=".6"/>
       <path d="M17,80 Q26,70 30,76 Q24,84 17,80Z" fill="rgba(65,88,118,0.12)" stroke-width=".6"/>
     </g>
@@ -517,12 +510,9 @@ h1{font-family:var(--font-d);font-size:clamp(26px,4vw,44px);font-weight:300;font
        stroke="rgba(195,155,80,0.55)" stroke-width="1" fill="none">
       <line x1="10" y1="90" x2="10" y2="25"/>
       <line x1="50" y1="90" x2="50" y2="25"/>
-      <!-- pointed gothic arch -->
       <path d="M10,25 Q10,5 30,5 Q50,5 50,25"/>
-      <!-- tracery inside arch -->
       <path d="M18,25 Q18,12 30,12 Q42,12 42,25" stroke-width=".7"/>
       <circle cx="30" cy="18" r="5" stroke-width=".6"/>
-      <!-- base -->
       <line x1="4" y1="90" x2="56" y2="90" stroke-width=".8"/>
     </g>
 
@@ -536,7 +526,6 @@ h1{font-family:var(--font-d);font-size:clamp(26px,4vw,44px);font-weight:300;font
       <polygon points="678,718 664,742 692,742" fill="rgba(228,232,238,0.4)"/>
     </g>
 
-    <!-- centre vignette -->
     <radialGradient id="cv" cx="50%" cy="50%" r="50%">
       <stop offset="0%"   stop-color="rgba(8,9,12,0.87)"/>
       <stop offset="100%" stop-color="rgba(8,9,12,0)"/>
@@ -545,7 +534,6 @@ h1{font-family:var(--font-d);font-size:clamp(26px,4vw,44px);font-weight:300;font
   </svg>
 </div>
 
-<!-- quadrant labels -->
 <div class="quad-label" id="ql-n">North · Scandinavia · Nordic</div>
 <div class="quad-label" id="ql-s">South · Mediterranean · Rome · Greece</div>
 <div class="quad-label" id="ql-w">West · Gothic · Celtic · Atlantic</div>
@@ -563,10 +551,9 @@ h1{font-family:var(--font-d);font-size:clamp(26px,4vw,44px);font-weight:300;font
   </header>
   <div class="room-divider"></div>
 
-  <!-- ══ WALL ══ -->
+  <!-- ══ WALL — 20 CARDS ══ -->
   <div id="wall">
-
-    <!-- ▼ START BOX 1 — Germany, Autumn -->
+    <!-- ▼ BOX 1 — Germany, Autumn (REAL) -->
     <div class="box" data-key="germany" aria-label="Open Germany look">
       <div class="box-band">
         <span class="loc">Germany</span>
@@ -582,26 +569,310 @@ h1{font-family:var(--font-d);font-size:clamp(26px,4vw,44px);font-weight:300;font
       </div>
       <span class="box-hint">click to open</span>
     </div>
-    <!-- ▲ END BOX 1 -->
-
-    <!-- placeholder 2 -->
-    <div class="box" style="opacity:.22;cursor:default;pointer-events:none">
-      <div class="box-band"><span class="loc">Coming</span><span class="season">—</span></div>
-      <div class="box-window" style="display:flex;align-items:center;justify-content:center;min-height:240px">
-        <span style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:rgba(195,155,80,.25)">next drop</span>
+    <!-- ▼ BOX 2 — Placeholder -->
+    <div class="box" data-key="placeholder_2" aria-label="Open look 2">
+      <div class="box-band">
+        <span class="loc">Coming</span>
+        <span class="season">—</span>
       </div>
-      <div class="box-foot"><p class="city-name" style="color:rgba(238,232,218,.18)">Kaelum</p><p class="continent-tag">Europe</p></div>
-    </div>
-
-    <!-- placeholder 3 -->
-    <div class="box" style="opacity:.12;cursor:default;pointer-events:none">
-      <div class="box-band"><span class="loc">Coming</span><span class="season">—</span></div>
-      <div class="box-window" style="display:flex;align-items:center;justify-content:center;min-height:240px">
-        <span style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:rgba(195,155,80,.15)">next drop</span>
+      <div class="box-window">
+        <img src="IMG_kaelum_2.jpg" alt="Look 2"/>
+        <span class="placeholder-label">next drop</span>
       </div>
-      <div class="box-foot"><p class="city-name" style="color:rgba(238,232,218,.12)">Kaelum</p><p class="continent-tag">Europe</p></div>
+      <div class="box-foot">
+        <p class="city-name" style="color:rgba(238,232,218,.18)">Kaelum</p>
+        <p class="continent-tag">Europe</p>
+      </div>
+      <span class="box-hint">click to open</span>
     </div>
-
+    <!-- ▼ BOX 3 — Placeholder -->
+    <div class="box" data-key="placeholder_3" aria-label="Open look 3">
+      <div class="box-band">
+        <span class="loc">Coming</span>
+        <span class="season">—</span>
+      </div>
+      <div class="box-window">
+        <img src="IMG_kaelum_3.jpg" alt="Look 3"/>
+        <span class="placeholder-label">next drop</span>
+      </div>
+      <div class="box-foot">
+        <p class="city-name" style="color:rgba(238,232,218,.18)">Kaelum</p>
+        <p class="continent-tag">Europe</p>
+      </div>
+      <span class="box-hint">click to open</span>
+    </div>
+    <!-- ▼ BOX 4 — Placeholder -->
+    <div class="box" data-key="placeholder_4" aria-label="Open look 4">
+      <div class="box-band">
+        <span class="loc">Coming</span>
+        <span class="season">—</span>
+      </div>
+      <div class="box-window">
+        <img src="IMG_kaelum_4.jpg" alt="Look 4"/>
+        <span class="placeholder-label">next drop</span>
+      </div>
+      <div class="box-foot">
+        <p class="city-name" style="color:rgba(238,232,218,.18)">Kaelum</p>
+        <p class="continent-tag">Europe</p>
+      </div>
+      <span class="box-hint">click to open</span>
+    </div>
+    <!-- ▼ BOX 5 — Placeholder -->
+    <div class="box" data-key="placeholder_5" aria-label="Open look 5">
+      <div class="box-band">
+        <span class="loc">Coming</span>
+        <span class="season">—</span>
+      </div>
+      <div class="box-window">
+        <img src="IMG_kaelum_5.jpg" alt="Look 5"/>
+        <span class="placeholder-label">next drop</span>
+      </div>
+      <div class="box-foot">
+        <p class="city-name" style="color:rgba(238,232,218,.18)">Kaelum</p>
+        <p class="continent-tag">Europe</p>
+      </div>
+      <span class="box-hint">click to open</span>
+    </div>
+    <!-- ▼ BOX 6 — Placeholder -->
+    <div class="box" data-key="placeholder_6" aria-label="Open look 6">
+      <div class="box-band">
+        <span class="loc">Coming</span>
+        <span class="season">—</span>
+      </div>
+      <div class="box-window">
+        <img src="IMG_kaelum_6.jpg" alt="Look 6"/>
+        <span class="placeholder-label">next drop</span>
+      </div>
+      <div class="box-foot">
+        <p class="city-name" style="color:rgba(238,232,218,.18)">Kaelum</p>
+        <p class="continent-tag">Europe</p>
+      </div>
+      <span class="box-hint">click to open</span>
+    </div>
+    <!-- ▼ BOX 7 — Placeholder -->
+    <div class="box" data-key="placeholder_7" aria-label="Open look 7">
+      <div class="box-band">
+        <span class="loc">Coming</span>
+        <span class="season">—</span>
+      </div>
+      <div class="box-window">
+        <img src="IMG_kaelum_7.jpg" alt="Look 7"/>
+        <span class="placeholder-label">next drop</span>
+      </div>
+      <div class="box-foot">
+        <p class="city-name" style="color:rgba(238,232,218,.18)">Kaelum</p>
+        <p class="continent-tag">Europe</p>
+      </div>
+      <span class="box-hint">click to open</span>
+    </div>
+    <!-- ▼ BOX 8 — Placeholder -->
+    <div class="box" data-key="placeholder_8" aria-label="Open look 8">
+      <div class="box-band">
+        <span class="loc">Coming</span>
+        <span class="season">—</span>
+      </div>
+      <div class="box-window">
+        <img src="IMG_kaelum_8.jpg" alt="Look 8"/>
+        <span class="placeholder-label">next drop</span>
+      </div>
+      <div class="box-foot">
+        <p class="city-name" style="color:rgba(238,232,218,.18)">Kaelum</p>
+        <p class="continent-tag">Europe</p>
+      </div>
+      <span class="box-hint">click to open</span>
+    </div>
+    <!-- ▼ BOX 9 — Placeholder -->
+    <div class="box" data-key="placeholder_9" aria-label="Open look 9">
+      <div class="box-band">
+        <span class="loc">Coming</span>
+        <span class="season">—</span>
+      </div>
+      <div class="box-window">
+        <img src="IMG_kaelum_9.jpg" alt="Look 9"/>
+        <span class="placeholder-label">next drop</span>
+      </div>
+      <div class="box-foot">
+        <p class="city-name" style="color:rgba(238,232,218,.18)">Kaelum</p>
+        <p class="continent-tag">Europe</p>
+      </div>
+      <span class="box-hint">click to open</span>
+    </div>
+    <!-- ▼ BOX 10 — Placeholder -->
+    <div class="box" data-key="placeholder_10" aria-label="Open look 10">
+      <div class="box-band">
+        <span class="loc">Coming</span>
+        <span class="season">—</span>
+      </div>
+      <div class="box-window">
+        <img src="IMG_kaelum_10.jpg" alt="Look 10"/>
+        <span class="placeholder-label">next drop</span>
+      </div>
+      <div class="box-foot">
+        <p class="city-name" style="color:rgba(238,232,218,.18)">Kaelum</p>
+        <p class="continent-tag">Europe</p>
+      </div>
+      <span class="box-hint">click to open</span>
+    </div>
+    <!-- ▼ BOX 11 — Placeholder -->
+    <div class="box" data-key="placeholder_11" aria-label="Open look 11">
+      <div class="box-band">
+        <span class="loc">Coming</span>
+        <span class="season">—</span>
+      </div>
+      <div class="box-window">
+        <img src="IMG_kaelum_11.jpg" alt="Look 11"/>
+        <span class="placeholder-label">next drop</span>
+      </div>
+      <div class="box-foot">
+        <p class="city-name" style="color:rgba(238,232,218,.18)">Kaelum</p>
+        <p class="continent-tag">Europe</p>
+      </div>
+      <span class="box-hint">click to open</span>
+    </div>
+    <!-- ▼ BOX 12 — Placeholder -->
+    <div class="box" data-key="placeholder_12" aria-label="Open look 12">
+      <div class="box-band">
+        <span class="loc">Coming</span>
+        <span class="season">—</span>
+      </div>
+      <div class="box-window">
+        <img src="IMG_kaelum_12.jpg" alt="Look 12"/>
+        <span class="placeholder-label">next drop</span>
+      </div>
+      <div class="box-foot">
+        <p class="city-name" style="color:rgba(238,232,218,.18)">Kaelum</p>
+        <p class="continent-tag">Europe</p>
+      </div>
+      <span class="box-hint">click to open</span>
+    </div>
+    <!-- ▼ BOX 13 — Placeholder -->
+    <div class="box" data-key="placeholder_13" aria-label="Open look 13">
+      <div class="box-band">
+        <span class="loc">Coming</span>
+        <span class="season">—</span>
+      </div>
+      <div class="box-window">
+        <img src="IMG_kaelum_13.jpg" alt="Look 13"/>
+        <span class="placeholder-label">next drop</span>
+      </div>
+      <div class="box-foot">
+        <p class="city-name" style="color:rgba(238,232,218,.18)">Kaelum</p>
+        <p class="continent-tag">Europe</p>
+      </div>
+      <span class="box-hint">click to open</span>
+    </div>
+    <!-- ▼ BOX 14 — Placeholder -->
+    <div class="box" data-key="placeholder_14" aria-label="Open look 14">
+      <div class="box-band">
+        <span class="loc">Coming</span>
+        <span class="season">—</span>
+      </div>
+      <div class="box-window">
+        <img src="IMG_kaelum_14.jpg" alt="Look 14"/>
+        <span class="placeholder-label">next drop</span>
+      </div>
+      <div class="box-foot">
+        <p class="city-name" style="color:rgba(238,232,218,.18)">Kaelum</p>
+        <p class="continent-tag">Europe</p>
+      </div>
+      <span class="box-hint">click to open</span>
+    </div>
+    <!-- ▼ BOX 15 — Placeholder -->
+    <div class="box" data-key="placeholder_15" aria-label="Open look 15">
+      <div class="box-band">
+        <span class="loc">Coming</span>
+        <span class="season">—</span>
+      </div>
+      <div class="box-window">
+        <img src="IMG_kaelum_15.jpg" alt="Look 15"/>
+        <span class="placeholder-label">next drop</span>
+      </div>
+      <div class="box-foot">
+        <p class="city-name" style="color:rgba(238,232,218,.18)">Kaelum</p>
+        <p class="continent-tag">Europe</p>
+      </div>
+      <span class="box-hint">click to open</span>
+    </div>
+    <!-- ▼ BOX 16 — Placeholder -->
+    <div class="box" data-key="placeholder_16" aria-label="Open look 16">
+      <div class="box-band">
+        <span class="loc">Coming</span>
+        <span class="season">—</span>
+      </div>
+      <div class="box-window">
+        <img src="IMG_kaelum_16.jpg" alt="Look 16"/>
+        <span class="placeholder-label">next drop</span>
+      </div>
+      <div class="box-foot">
+        <p class="city-name" style="color:rgba(238,232,218,.18)">Kaelum</p>
+        <p class="continent-tag">Europe</p>
+      </div>
+      <span class="box-hint">click to open</span>
+    </div>
+    <!-- ▼ BOX 17 — Placeholder -->
+    <div class="box" data-key="placeholder_17" aria-label="Open look 17">
+      <div class="box-band">
+        <span class="loc">Coming</span>
+        <span class="season">—</span>
+      </div>
+      <div class="box-window">
+        <img src="IMG_kaelum_17.jpg" alt="Look 17"/>
+        <span class="placeholder-label">next drop</span>
+      </div>
+      <div class="box-foot">
+        <p class="city-name" style="color:rgba(238,232,218,.18)">Kaelum</p>
+        <p class="continent-tag">Europe</p>
+      </div>
+      <span class="box-hint">click to open</span>
+    </div>
+    <!-- ▼ BOX 18 — Placeholder -->
+    <div class="box" data-key="placeholder_18" aria-label="Open look 18">
+      <div class="box-band">
+        <span class="loc">Coming</span>
+        <span class="season">—</span>
+      </div>
+      <div class="box-window">
+        <img src="IMG_kaelum_18.jpg" alt="Look 18"/>
+        <span class="placeholder-label">next drop</span>
+      </div>
+      <div class="box-foot">
+        <p class="city-name" style="color:rgba(238,232,218,.18)">Kaelum</p>
+        <p class="continent-tag">Europe</p>
+      </div>
+      <span class="box-hint">click to open</span>
+    </div>
+    <!-- ▼ BOX 19 — Placeholder -->
+    <div class="box" data-key="placeholder_19" aria-label="Open look 19">
+      <div class="box-band">
+        <span class="loc">Coming</span>
+        <span class="season">—</span>
+      </div>
+      <div class="box-window">
+        <img src="IMG_kaelum_19.jpg" alt="Look 19"/>
+        <span class="placeholder-label">next drop</span>
+      </div>
+      <div class="box-foot">
+        <p class="city-name" style="color:rgba(238,232,218,.18)">Kaelum</p>
+        <p class="continent-tag">Europe</p>
+      </div>
+      <span class="box-hint">click to open</span>
+    </div>
+    <!-- ▼ BOX 20 — Placeholder -->
+    <div class="box" data-key="placeholder_20" aria-label="Open look 20">
+      <div class="box-band">
+        <span class="loc">Coming</span>
+        <span class="season">—</span>
+      </div>
+      <div class="box-window">
+        <img src="IMG_kaelum_20.jpg" alt="Look 20"/>
+        <span class="placeholder-label">next drop</span>
+      </div>
+      <div class="box-foot">
+        <p class="city-name" style="color:rgba(238,232,218,.18)">Kaelum</p>
+        <p class="continent-tag">Europe</p>
+      </div>
+      <span class="box-hint">click to open</span>
+    </div>
   </div>
 </div>
 
@@ -641,7 +912,6 @@ h1{font-family:var(--font-d);font-size:clamp(26px,4vw,44px);font-weight:300;font
     'rgba(185,118,40,', 'rgba(195,155,80,', 'rgba(160,80,30,',
     'rgba(210,140,50,', 'rgba(140,80,25,'
   ];
-  /* leaf SVG paths — variety of shapes */
   var paths = [
     'M10,0 Q6,6 2,4 Q5,9 1,12 Q6,11 5,16 Q10,13 11,18 Q12,13 17,16 Q16,11 21,12 Q17,9 20,4 Q16,6 10,0Z',
     'M8,0 Q5,5 0,5 Q4,10 0,15 Q6,14 8,20 Q10,14 16,15 Q12,10 16,5 Q11,5 8,0Z',
@@ -666,7 +936,7 @@ h1{font-family:var(--font-d);font-size:clamp(26px,4vw,44px);font-weight:300;font
   setTimeout(function(){ c.remove(); }, 11000);
 })();
 
-/* ══ LOOK DATA ══ */
+/* ══ LOOK DATA — 20 entries ══ */
 var LOOKS = {
   germany: {
     loc:     'Germany',
@@ -685,26 +955,349 @@ var LOOKS = {
       { top:'91%', left:'25%', label:'Shoes',   note:'Placeholder — your note here.' },
       { top:'54%', left:'68%', label:'Perfume', note:'Libre Intense by YSL.' }
     ]
-  }
-  /* ADD NEW LOOK:
-  ,yourcitykey: {
-    loc:'Paris', season:'Spring',
-    img:'IMG_kaelum_2.jpg',
-    city:'Paris, France',
-    tag:'Kaelum · Europe',
-    ig:'https://instagram.com/kwissbae',
-    sub:'https://your-substack.com',
+  },
+  placeholder_2: {
+    loc:     'Coming Soon',
+    season:  '—',
+    img:     'IMG_kaelum_2.jpg',
+    city:    'Kaelum',
+    tag:     'Kaelum · Europe',
+    ig:      'https://instagram.com/kwissbae',
+    sub:     'https://substack.com/',
     hotspots:[
-      { top:'4%',  left:'28%', label:'Hair',    note:'Your note.' },
-      { top:'14%', left:'23%', label:'Makeup',  note:'Your note.' },
-      { top:'17%', left:'38%', label:'Jewelry', note:'Your note.' },
-      { top:'40%', left:'21%', label:'Outfit',  note:'Your note.' },
-      { top:'56%', left:'38%', label:'Bag',     note:'Your note.' },
-      { top:'91%', left:'25%', label:'Shoes',   note:'Your note.' },
-      { top:'54%', left:'68%', label:'Perfume', note:'Your note.' }
+      { top:'4%',  left:'28%', label:'Hair',    note:'Placeholder — your note here.' },
+      { top:'14%', left:'23%', label:'Makeup',  note:'Placeholder — your note here.' },
+      { top:'17%', left:'38%', label:'Jewelry', note:'Placeholder — your note here.' },
+      { top:'40%', left:'21%', label:'Outfit',  note:'Placeholder — your note here.' },
+      { top:'56%', left:'38%', label:'Bag',     note:'Placeholder — your note here.' },
+      { top:'91%', left:'25%', label:'Shoes',   note:'Placeholder — your note here.' },
+      { top:'54%', left:'68%', label:'Perfume', note:'Placeholder — your note here.' }
+    ]
+  },
+  placeholder_3: {
+    loc:     'Coming Soon',
+    season:  '—',
+    img:     'IMG_kaelum_3.jpg',
+    city:    'Kaelum',
+    tag:     'Kaelum · Europe',
+    ig:      'https://instagram.com/kwissbae',
+    sub:     'https://substack.com/',
+    hotspots:[
+      { top:'4%',  left:'28%', label:'Hair',    note:'Placeholder — your note here.' },
+      { top:'14%', left:'23%', label:'Makeup',  note:'Placeholder — your note here.' },
+      { top:'17%', left:'38%', label:'Jewelry', note:'Placeholder — your note here.' },
+      { top:'40%', left:'21%', label:'Outfit',  note:'Placeholder — your note here.' },
+      { top:'56%', left:'38%', label:'Bag',     note:'Placeholder — your note here.' },
+      { top:'91%', left:'25%', label:'Shoes',   note:'Placeholder — your note here.' },
+      { top:'54%', left:'68%', label:'Perfume', note:'Placeholder — your note here.' }
+    ]
+  },
+  placeholder_4: {
+    loc:     'Coming Soon',
+    season:  '—',
+    img:     'IMG_kaelum_4.jpg',
+    city:    'Kaelum',
+    tag:     'Kaelum · Europe',
+    ig:      'https://instagram.com/kwissbae',
+    sub:     'https://substack.com/',
+    hotspots:[
+      { top:'4%',  left:'28%', label:'Hair',    note:'Placeholder — your note here.' },
+      { top:'14%', left:'23%', label:'Makeup',  note:'Placeholder — your note here.' },
+      { top:'17%', left:'38%', label:'Jewelry', note:'Placeholder — your note here.' },
+      { top:'40%', left:'21%', label:'Outfit',  note:'Placeholder — your note here.' },
+      { top:'56%', left:'38%', label:'Bag',     note:'Placeholder — your note here.' },
+      { top:'91%', left:'25%', label:'Shoes',   note:'Placeholder — your note here.' },
+      { top:'54%', left:'68%', label:'Perfume', note:'Placeholder — your note here.' }
+    ]
+  },
+  placeholder_5: {
+    loc:     'Coming Soon',
+    season:  '—',
+    img:     'IMG_kaelum_5.jpg',
+    city:    'Kaelum',
+    tag:     'Kaelum · Europe',
+    ig:      'https://instagram.com/kwissbae',
+    sub:     'https://substack.com/',
+    hotspots:[
+      { top:'4%',  left:'28%', label:'Hair',    note:'Placeholder — your note here.' },
+      { top:'14%', left:'23%', label:'Makeup',  note:'Placeholder — your note here.' },
+      { top:'17%', left:'38%', label:'Jewelry', note:'Placeholder — your note here.' },
+      { top:'40%', left:'21%', label:'Outfit',  note:'Placeholder — your note here.' },
+      { top:'56%', left:'38%', label:'Bag',     note:'Placeholder — your note here.' },
+      { top:'91%', left:'25%', label:'Shoes',   note:'Placeholder — your note here.' },
+      { top:'54%', left:'68%', label:'Perfume', note:'Placeholder — your note here.' }
+    ]
+  },
+  placeholder_6: {
+    loc:     'Coming Soon',
+    season:  '—',
+    img:     'IMG_kaelum_6.jpg',
+    city:    'Kaelum',
+    tag:     'Kaelum · Europe',
+    ig:      'https://instagram.com/kwissbae',
+    sub:     'https://substack.com/',
+    hotspots:[
+      { top:'4%',  left:'28%', label:'Hair',    note:'Placeholder — your note here.' },
+      { top:'14%', left:'23%', label:'Makeup',  note:'Placeholder — your note here.' },
+      { top:'17%', left:'38%', label:'Jewelry', note:'Placeholder — your note here.' },
+      { top:'40%', left:'21%', label:'Outfit',  note:'Placeholder — your note here.' },
+      { top:'56%', left:'38%', label:'Bag',     note:'Placeholder — your note here.' },
+      { top:'91%', left:'25%', label:'Shoes',   note:'Placeholder — your note here.' },
+      { top:'54%', left:'68%', label:'Perfume', note:'Placeholder — your note here.' }
+    ]
+  },
+  placeholder_7: {
+    loc:     'Coming Soon',
+    season:  '—',
+    img:     'IMG_kaelum_7.jpg',
+    city:    'Kaelum',
+    tag:     'Kaelum · Europe',
+    ig:      'https://instagram.com/kwissbae',
+    sub:     'https://substack.com/',
+    hotspots:[
+      { top:'4%',  left:'28%', label:'Hair',    note:'Placeholder — your note here.' },
+      { top:'14%', left:'23%', label:'Makeup',  note:'Placeholder — your note here.' },
+      { top:'17%', left:'38%', label:'Jewelry', note:'Placeholder — your note here.' },
+      { top:'40%', left:'21%', label:'Outfit',  note:'Placeholder — your note here.' },
+      { top:'56%', left:'38%', label:'Bag',     note:'Placeholder — your note here.' },
+      { top:'91%', left:'25%', label:'Shoes',   note:'Placeholder — your note here.' },
+      { top:'54%', left:'68%', label:'Perfume', note:'Placeholder — your note here.' }
+    ]
+  },
+  placeholder_8: {
+    loc:     'Coming Soon',
+    season:  '—',
+    img:     'IMG_kaelum_8.jpg',
+    city:    'Kaelum',
+    tag:     'Kaelum · Europe',
+    ig:      'https://instagram.com/kwissbae',
+    sub:     'https://substack.com/',
+    hotspots:[
+      { top:'4%',  left:'28%', label:'Hair',    note:'Placeholder — your note here.' },
+      { top:'14%', left:'23%', label:'Makeup',  note:'Placeholder — your note here.' },
+      { top:'17%', left:'38%', label:'Jewelry', note:'Placeholder — your note here.' },
+      { top:'40%', left:'21%', label:'Outfit',  note:'Placeholder — your note here.' },
+      { top:'56%', left:'38%', label:'Bag',     note:'Placeholder — your note here.' },
+      { top:'91%', left:'25%', label:'Shoes',   note:'Placeholder — your note here.' },
+      { top:'54%', left:'68%', label:'Perfume', note:'Placeholder — your note here.' }
+    ]
+  },
+  placeholder_9: {
+    loc:     'Coming Soon',
+    season:  '—',
+    img:     'IMG_kaelum_9.jpg',
+    city:    'Kaelum',
+    tag:     'Kaelum · Europe',
+    ig:      'https://instagram.com/kwissbae',
+    sub:     'https://substack.com/',
+    hotspots:[
+      { top:'4%',  left:'28%', label:'Hair',    note:'Placeholder — your note here.' },
+      { top:'14%', left:'23%', label:'Makeup',  note:'Placeholder — your note here.' },
+      { top:'17%', left:'38%', label:'Jewelry', note:'Placeholder — your note here.' },
+      { top:'40%', left:'21%', label:'Outfit',  note:'Placeholder — your note here.' },
+      { top:'56%', left:'38%', label:'Bag',     note:'Placeholder — your note here.' },
+      { top:'91%', left:'25%', label:'Shoes',   note:'Placeholder — your note here.' },
+      { top:'54%', left:'68%', label:'Perfume', note:'Placeholder — your note here.' }
+    ]
+  },
+  placeholder_10: {
+    loc:     'Coming Soon',
+    season:  '—',
+    img:     'IMG_kaelum_10.jpg',
+    city:    'Kaelum',
+    tag:     'Kaelum · Europe',
+    ig:      'https://instagram.com/kwissbae',
+    sub:     'https://substack.com/',
+    hotspots:[
+      { top:'4%',  left:'28%', label:'Hair',    note:'Placeholder — your note here.' },
+      { top:'14%', left:'23%', label:'Makeup',  note:'Placeholder — your note here.' },
+      { top:'17%', left:'38%', label:'Jewelry', note:'Placeholder — your note here.' },
+      { top:'40%', left:'21%', label:'Outfit',  note:'Placeholder — your note here.' },
+      { top:'56%', left:'38%', label:'Bag',     note:'Placeholder — your note here.' },
+      { top:'91%', left:'25%', label:'Shoes',   note:'Placeholder — your note here.' },
+      { top:'54%', left:'68%', label:'Perfume', note:'Placeholder — your note here.' }
+    ]
+  },
+  placeholder_11: {
+    loc:     'Coming Soon',
+    season:  '—',
+    img:     'IMG_kaelum_11.jpg',
+    city:    'Kaelum',
+    tag:     'Kaelum · Europe',
+    ig:      'https://instagram.com/kwissbae',
+    sub:     'https://substack.com/',
+    hotspots:[
+      { top:'4%',  left:'28%', label:'Hair',    note:'Placeholder — your note here.' },
+      { top:'14%', left:'23%', label:'Makeup',  note:'Placeholder — your note here.' },
+      { top:'17%', left:'38%', label:'Jewelry', note:'Placeholder — your note here.' },
+      { top:'40%', left:'21%', label:'Outfit',  note:'Placeholder — your note here.' },
+      { top:'56%', left:'38%', label:'Bag',     note:'Placeholder — your note here.' },
+      { top:'91%', left:'25%', label:'Shoes',   note:'Placeholder — your note here.' },
+      { top:'54%', left:'68%', label:'Perfume', note:'Placeholder — your note here.' }
+    ]
+  },
+  placeholder_12: {
+    loc:     'Coming Soon',
+    season:  '—',
+    img:     'IMG_kaelum_12.jpg',
+    city:    'Kaelum',
+    tag:     'Kaelum · Europe',
+    ig:      'https://instagram.com/kwissbae',
+    sub:     'https://substack.com/',
+    hotspots:[
+      { top:'4%',  left:'28%', label:'Hair',    note:'Placeholder — your note here.' },
+      { top:'14%', left:'23%', label:'Makeup',  note:'Placeholder — your note here.' },
+      { top:'17%', left:'38%', label:'Jewelry', note:'Placeholder — your note here.' },
+      { top:'40%', left:'21%', label:'Outfit',  note:'Placeholder — your note here.' },
+      { top:'56%', left:'38%', label:'Bag',     note:'Placeholder — your note here.' },
+      { top:'91%', left:'25%', label:'Shoes',   note:'Placeholder — your note here.' },
+      { top:'54%', left:'68%', label:'Perfume', note:'Placeholder — your note here.' }
+    ]
+  },
+  placeholder_13: {
+    loc:     'Coming Soon',
+    season:  '—',
+    img:     'IMG_kaelum_13.jpg',
+    city:    'Kaelum',
+    tag:     'Kaelum · Europe',
+    ig:      'https://instagram.com/kwissbae',
+    sub:     'https://substack.com/',
+    hotspots:[
+      { top:'4%',  left:'28%', label:'Hair',    note:'Placeholder — your note here.' },
+      { top:'14%', left:'23%', label:'Makeup',  note:'Placeholder — your note here.' },
+      { top:'17%', left:'38%', label:'Jewelry', note:'Placeholder — your note here.' },
+      { top:'40%', left:'21%', label:'Outfit',  note:'Placeholder — your note here.' },
+      { top:'56%', left:'38%', label:'Bag',     note:'Placeholder — your note here.' },
+      { top:'91%', left:'25%', label:'Shoes',   note:'Placeholder — your note here.' },
+      { top:'54%', left:'68%', label:'Perfume', note:'Placeholder — your note here.' }
+    ]
+  },
+  placeholder_14: {
+    loc:     'Coming Soon',
+    season:  '—',
+    img:     'IMG_kaelum_14.jpg',
+    city:    'Kaelum',
+    tag:     'Kaelum · Europe',
+    ig:      'https://instagram.com/kwissbae',
+    sub:     'https://substack.com/',
+    hotspots:[
+      { top:'4%',  left:'28%', label:'Hair',    note:'Placeholder — your note here.' },
+      { top:'14%', left:'23%', label:'Makeup',  note:'Placeholder — your note here.' },
+      { top:'17%', left:'38%', label:'Jewelry', note:'Placeholder — your note here.' },
+      { top:'40%', left:'21%', label:'Outfit',  note:'Placeholder — your note here.' },
+      { top:'56%', left:'38%', label:'Bag',     note:'Placeholder — your note here.' },
+      { top:'91%', left:'25%', label:'Shoes',   note:'Placeholder — your note here.' },
+      { top:'54%', left:'68%', label:'Perfume', note:'Placeholder — your note here.' }
+    ]
+  },
+  placeholder_15: {
+    loc:     'Coming Soon',
+    season:  '—',
+    img:     'IMG_kaelum_15.jpg',
+    city:    'Kaelum',
+    tag:     'Kaelum · Europe',
+    ig:      'https://instagram.com/kwissbae',
+    sub:     'https://substack.com/',
+    hotspots:[
+      { top:'4%',  left:'28%', label:'Hair',    note:'Placeholder — your note here.' },
+      { top:'14%', left:'23%', label:'Makeup',  note:'Placeholder — your note here.' },
+      { top:'17%', left:'38%', label:'Jewelry', note:'Placeholder — your note here.' },
+      { top:'40%', left:'21%', label:'Outfit',  note:'Placeholder — your note here.' },
+      { top:'56%', left:'38%', label:'Bag',     note:'Placeholder — your note here.' },
+      { top:'91%', left:'25%', label:'Shoes',   note:'Placeholder — your note here.' },
+      { top:'54%', left:'68%', label:'Perfume', note:'Placeholder — your note here.' }
+    ]
+  },
+  placeholder_16: {
+    loc:     'Coming Soon',
+    season:  '—',
+    img:     'IMG_kaelum_16.jpg',
+    city:    'Kaelum',
+    tag:     'Kaelum · Europe',
+    ig:      'https://instagram.com/kwissbae',
+    sub:     'https://substack.com/',
+    hotspots:[
+      { top:'4%',  left:'28%', label:'Hair',    note:'Placeholder — your note here.' },
+      { top:'14%', left:'23%', label:'Makeup',  note:'Placeholder — your note here.' },
+      { top:'17%', left:'38%', label:'Jewelry', note:'Placeholder — your note here.' },
+      { top:'40%', left:'21%', label:'Outfit',  note:'Placeholder — your note here.' },
+      { top:'56%', left:'38%', label:'Bag',     note:'Placeholder — your note here.' },
+      { top:'91%', left:'25%', label:'Shoes',   note:'Placeholder — your note here.' },
+      { top:'54%', left:'68%', label:'Perfume', note:'Placeholder — your note here.' }
+    ]
+  },
+  placeholder_17: {
+    loc:     'Coming Soon',
+    season:  '—',
+    img:     'IMG_kaelum_17.jpg',
+    city:    'Kaelum',
+    tag:     'Kaelum · Europe',
+    ig:      'https://instagram.com/kwissbae',
+    sub:     'https://substack.com/',
+    hotspots:[
+      { top:'4%',  left:'28%', label:'Hair',    note:'Placeholder — your note here.' },
+      { top:'14%', left:'23%', label:'Makeup',  note:'Placeholder — your note here.' },
+      { top:'17%', left:'38%', label:'Jewelry', note:'Placeholder — your note here.' },
+      { top:'40%', left:'21%', label:'Outfit',  note:'Placeholder — your note here.' },
+      { top:'56%', left:'38%', label:'Bag',     note:'Placeholder — your note here.' },
+      { top:'91%', left:'25%', label:'Shoes',   note:'Placeholder — your note here.' },
+      { top:'54%', left:'68%', label:'Perfume', note:'Placeholder — your note here.' }
+    ]
+  },
+  placeholder_18: {
+    loc:     'Coming Soon',
+    season:  '—',
+    img:     'IMG_kaelum_18.jpg',
+    city:    'Kaelum',
+    tag:     'Kaelum · Europe',
+    ig:      'https://instagram.com/kwissbae',
+    sub:     'https://substack.com/',
+    hotspots:[
+      { top:'4%',  left:'28%', label:'Hair',    note:'Placeholder — your note here.' },
+      { top:'14%', left:'23%', label:'Makeup',  note:'Placeholder — your note here.' },
+      { top:'17%', left:'38%', label:'Jewelry', note:'Placeholder — your note here.' },
+      { top:'40%', left:'21%', label:'Outfit',  note:'Placeholder — your note here.' },
+      { top:'56%', left:'38%', label:'Bag',     note:'Placeholder — your note here.' },
+      { top:'91%', left:'25%', label:'Shoes',   note:'Placeholder — your note here.' },
+      { top:'54%', left:'68%', label:'Perfume', note:'Placeholder — your note here.' }
+    ]
+  },
+  placeholder_19: {
+    loc:     'Coming Soon',
+    season:  '—',
+    img:     'IMG_kaelum_19.jpg',
+    city:    'Kaelum',
+    tag:     'Kaelum · Europe',
+    ig:      'https://instagram.com/kwissbae',
+    sub:     'https://substack.com/',
+    hotspots:[
+      { top:'4%',  left:'28%', label:'Hair',    note:'Placeholder — your note here.' },
+      { top:'14%', left:'23%', label:'Makeup',  note:'Placeholder — your note here.' },
+      { top:'17%', left:'38%', label:'Jewelry', note:'Placeholder — your note here.' },
+      { top:'40%', left:'21%', label:'Outfit',  note:'Placeholder — your note here.' },
+      { top:'56%', left:'38%', label:'Bag',     note:'Placeholder — your note here.' },
+      { top:'91%', left:'25%', label:'Shoes',   note:'Placeholder — your note here.' },
+      { top:'54%', left:'68%', label:'Perfume', note:'Placeholder — your note here.' }
+    ]
+  },
+  placeholder_20: {
+    loc:     'Coming Soon',
+    season:  '—',
+    img:     'IMG_kaelum_20.jpg',
+    city:    'Kaelum',
+    tag:     'Kaelum · Europe',
+    ig:      'https://instagram.com/kwissbae',
+    sub:     'https://substack.com/',
+    hotspots:[
+      { top:'4%',  left:'28%', label:'Hair',    note:'Placeholder — your note here.' },
+      { top:'14%', left:'23%', label:'Makeup',  note:'Placeholder — your note here.' },
+      { top:'17%', left:'38%', label:'Jewelry', note:'Placeholder — your note here.' },
+      { top:'40%', left:'21%', label:'Outfit',  note:'Placeholder — your note here.' },
+      { top:'56%', left:'38%', label:'Bag',     note:'Placeholder — your note here.' },
+      { top:'91%', left:'25%', label:'Shoes',   note:'Placeholder — your note here.' },
+      { top:'54%', left:'68%', label:'Perfume', note:'Placeholder — your note here.' }
     ]
   }
-  */
 };
 
 /* ══ WIRE BOXES ══ */
@@ -730,7 +1323,6 @@ function openLightbox(data){
   var wrap = document.getElementById('lb-photo-wrap');
   wrap.querySelectorAll('.hotspot,.hs-tip').forEach(function(el){ el.remove(); });
 
-  /* show overlay first — image needs layout to calculate positions */
   document.getElementById('lb-overlay').classList.add('open');
   document.body.style.overflow = 'hidden';
 
