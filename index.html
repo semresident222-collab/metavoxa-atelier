@@ -526,6 +526,78 @@
                 min-height: 100dvh;
             }
         }
+        /* About button & modal */
+        #about-btn {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 10001;
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            font-size: 1rem;
+            letter-spacing: 0.05em;
+            color: #f0e6d3;
+            background: rgba(10, 8, 6, 0.4);
+            border: 1px solid #f0e6d3;
+            border-radius: 999px;
+            padding: 8px 22px;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+
+        #about-btn:hover {
+            border-color: #fff8ec;
+        }
+
+        #about-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 10002;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.6s ease-in;
+        }
+
+        #about-overlay.visible {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 1;
+        }
+
+        #about-modal {
+            background: rgba(10, 8, 6, 0.92);
+            border: 1px solid #c9a96e;
+            border-radius: 4px;
+            max-width: 560px;
+            width: 90%;
+            padding: 48px;
+            color: #f0e6d3;
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        #about-modal a {
+            color: #f0e6d3;
+            text-decoration: none;
+        }
+
+        #about-modal a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+            #about-modal {
+                padding: 28px;
+                font-size: 0.95rem;
+            }
+        }
     </style>
 <base target="_blank">
 </head>
@@ -838,6 +910,21 @@
             }, 250);
         });
     </script>
+
+    <button id="about-btn" onclick="document.getElementById('about-overlay').classList.add('visible')">About</button>
+    <div id="about-overlay" onclick="if(event.target===this) this.classList.remove('visible')">
+        <div id="about-modal">
+            MetaVoxa Atrium is the cognitive extension of Martha Wuya Koroma.<br>
+            A physician, researcher, and systems thinker based in Berlin.<br><br>
+            The rooms here hold what a CV cannot: her reading,<br>
+            her patterns, her world, her people.<br>
+            Built alone, from scratch, because no existing platform<br>
+            had the architecture her mind required.<br><br>
+            Her academic and career work lives separately.<br>
+            This is the rest.<br><br>
+            → <a href="https://www.marthakoroma.com">Visit her portfolio</a>
+        </div>
+    </div>
 
 </body>
 </html>
