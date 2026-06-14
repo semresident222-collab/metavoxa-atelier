@@ -98,6 +98,19 @@ a:hover {
         opacity: 1;
         transform: translateY(0);
     }
+    /* Scroll fade base state */
+.fade-up {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.8s ease;
+}
+
+/* When visible */
+.fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+    
 }
 
 </style>
@@ -161,6 +174,27 @@ a:hover {
 </div>
 
 </div>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
 
+    const elements = document.querySelectorAll("p");
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add("visible");
+            }
+        });
+    }, {
+        threshold: 0.1
+    });
+
+    elements.forEach(el => {
+        el.classList.add("fade-up");
+        observer.observe(el);
+    });
+
+});
+</script>
 </body>
 </html>
