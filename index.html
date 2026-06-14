@@ -898,18 +898,6 @@ This is the rest.
         const zones = document.querySelectorAll('.zone');
 
         zones.forEach(zone => {
-            zone.addEventListener('mouseenter', function() {
-                if (this.classList.contains('zone-study')) {
-                    candles.forEach(c => c.element.classList.add('lit'));
-                }
-            });
-
-            zone.addEventListener('mouseleave', function() {
-                if (this.classList.contains('zone-study')) {
-                    candles.forEach(c => c.element.classList.remove('lit'));
-                }
-            });
-
             zone.addEventListener('click', function() {
                 const target = this.getAttribute('data-target');
                 document.getElementById('transition').classList.add('active');
@@ -919,14 +907,6 @@ This is the rest.
             });
         });
 
-        const parallaxContainer = document.getElementById('parallax-container');
-        document.addEventListener('mousemove', (e) => {
-            const x = (e.clientX / window.innerWidth - 0.5) * 15;
-            const y = (e.clientY / window.innerHeight - 0.5) * 15;
-
-            parallaxContainer.style.transform = `translate(${-x}px, ${-y}px)`;
-        });
-
         const aboutButton = document.getElementById('aboutButton');
         const aboutOverlay = document.getElementById('aboutOverlay');
         const aboutModal = document.getElementById('aboutModal');
@@ -934,22 +914,16 @@ This is the rest.
         function openAboutModal() {
             aboutOverlay.classList.add('active');
             aboutModal.classList.add('active');
-            aboutButton.setAttribute('aria-expanded', 'true');
         }
 
         function closeAboutModal() {
             aboutOverlay.classList.remove('active');
             aboutModal.classList.remove('active');
-            aboutButton.setAttribute('aria-expanded', 'false');
         }
 
         aboutButton.addEventListener('click', function(e) {
             e.stopPropagation();
-            if (aboutModal.classList.contains('active')) {
-                closeAboutModal();
-            } else {
-                openAboutModal();
-            }
+            aboutModal.classList.contains('active') ? closeAboutModal() : openAboutModal();
         });
 
         aboutOverlay.addEventListener('click', closeAboutModal);
@@ -960,74 +934,15 @@ This is the rest.
             }
         });
 
-                       // ==================== MOBILE / TOUCH FIXES ====================
-        
-        const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
-        let activeZone = null; // Track which zone is currently showing its label
+        // ==================== FIXED ABOUT BUTTON TIMING ====================
+        setTimeout(() => {
+            const btn = document.querySelector('.about-button');
+            if (btn) {
+                btn.classList.add('visible');
+            }
+        }, 12000);
 
-        if (isTouchDevice) {
-            // Auto-light candles after intro (no hover on touch)
-            setTimeout(() => {
-                candles.forEach(c => c.element.classList.add('lit'));
-            }, 14000);
-            
-            // TAP-TRIGGERED WING LABELS + NAVIGATION
-            zones.forEach(zone => {
-                zone.addEventListener('touchstart', function(e) {
-                    e.preventDefault();
-                    
-                    if (activeZone === this) {
-                        // Second tap on same zone = NAVIGATE
-                        const target = this.getAttribute('data-target');
-                        document.getElementById('transition').classList.add('active');
-                        setTimeout(() => {
-                            window.location.href = target;
-                        }, 1500);
-                        return;
-                    }
-                    
-                    // First tap = show label, close others
-                    zones.forEach(z => z.classList.remove('touch-active'));
-                    this.classList.add('touch-active');
-                    activeZone = this;
-                    
-                    // Light candles if study wing tapped
-                    if (this.classList.contains('zone-study')) {
-                        candles.forEach(c => c.element.classList.add('lit'));
-                    }
-                }, { passive: false });
-            });
-            
-            // Tap outside zones to close all labels
-            document.addEventListener('touchstart', function(e) {
-                if (!e.target.closest('.zone')) {
-                    zones.forEach(z => z.classList.remove('touch-active'));
-                    activeZone = null;
-                }
-            });
-        }
-
-        // Better canvas resize for mobile orientation changes
-        let resizeTimeout;
-        window.addEventListener('resize', () => {
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(() => {
-                resizeCanvas();
-                // Reposition particles to new dimensions
-                particles.forEach(p => {
-                    if (p.x > canvas.width) p.x = canvas.width - 10;
-                    if (p.y > canvas.height) p.y = canvas.height - 10;
-                });
-            }, 250);
-       // About button appears after intro animation
-setTimeout(() => {
-    const btn = document.querySelector('.about-button');
-    if (btn) {
-        btn.classList.add('visible');
-    }
-}, 13000);
-        });
-    </script>
+</script>
 
 </body>
 </html>
